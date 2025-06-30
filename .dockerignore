@@ -1,0 +1,46 @@
+# پوشه‌ها و فایل‌های پایتون موقتی
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# فایل‌های virtualenv
+venv/
+.env/
+.env
+
+# فایل‌های دیتابیس SQLite
+*.sqlite3
+
+# فایل‌های migration تولیدشده توسط Django
+*/migrations/
+!*/migrations/__init__.py
+
+# فایل‌های cache و lock
+*.log
+*.pot
+*.pyc
+*.swp
+*.tmp
+*.bak
+*.lock
+
+# فایل‌های Media (آپلود شده توسط کاربر)
+media/
+
+# فایل‌های static که تولید می‌شن
+staticfiles/
+static/
+
+# فایل‌های Git
+.git/
+.gitignore
+
+# فایل‌های مربوط به IDE
+.vscode/
+.idea/
+*.code-workspace
+
+# فایل‌های سیستمی
+.DS_Store
+Thumbs.db
