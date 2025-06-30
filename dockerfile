@@ -19,3 +19,10 @@ RUN apt-get update && apt-get install -y \
 RUN python -m pip install --upgrade pip && pip install -r requirements.txt
 
 COPY . .
+
+# 🔧 کپی هر دو entrypoint
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# پیش‌فرض: حالت production
+ENTRYPOINT ["/entrypoint.sh"]
