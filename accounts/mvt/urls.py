@@ -6,8 +6,6 @@ from .views import (
     ForgotPasswordView
 )
 
-app_name = 'accounts'
-
 urlpatterns = [
     # MVT Part
     path('register/',RegisterView.as_view(),name='register'),
