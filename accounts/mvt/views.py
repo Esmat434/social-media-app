@@ -46,7 +46,7 @@ class RegisterView(LogoutRequiredMixin,CreateView):
         
         return render(self.request, 'accounts/register_success.html', {'user': user})
 
-class LoginView(AccountVerifiedBeforeLoginMixin,View):
+class LoginView(AccountVerifiedBeforeLoginMixin,LogoutRequiredMixin,View):
     def get(self,request):
         return render(request,'accounts/login.html')
     
@@ -76,7 +76,7 @@ class ProfileView(LoginRequiredMixin,DetailView):
     def get_object(self, queryset = ...):
         return self.request.user
 
-class ProfileUpdateView(UpdateView):
+class ProfileUpdateView(LoginRequiredMixin,UpdateView):
     model = CustomUser
     form_class = UserUpdateForm
     template_name = 'accounts/profile_update.html'    
