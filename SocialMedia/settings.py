@@ -14,6 +14,7 @@ from pathlib import Path
 from decouple import config
 from datetime import timedelta
 import os
+import sys
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -144,6 +145,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# MAINTENANCE_MODE
+MAINTENANCE_MODE = False
+
 # Celery Denpendencies
 WORKER_POOL = 'solo'
 CELERY_BROKER_URL = config('CELERY_BROKER_URL')  # توجه به نام سرویس redis در docker-compose
@@ -168,3 +172,8 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
 }
+
+# test part
+# When test is running the Axes will off
+if 'test' in sys.argv:
+    AXES_ENABLED = False
