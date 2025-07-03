@@ -19,7 +19,7 @@ from .serializers import (
     UserSerializer,LoginSerializer,ChangePasswordSerializer,ForgotPasswordSerializer
 )
 
-class RegisterView(APIView):
+class RegisterAPIView(APIView):
     permission_classes = [isNotAuthenticatedCustom]
 
     def post(self,request):
@@ -34,7 +34,7 @@ class RegisterView(APIView):
     
     
 
-class LoginView(APIView):
+class LoginAPIView(APIView):
     permission_classes = [isNotAuthenticatedCustom]
 
     def post(self,request):
@@ -51,7 +51,7 @@ class LoginView(APIView):
             return Response({"error":"Your username or password is incorrect."},status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
-class LogoutView(APIView):
+class LogoutAPIView(APIView):
     permission_classes = [isAuthenticatedCustom]
 
     def post(self,request):
@@ -69,7 +69,7 @@ class LogoutView(APIView):
         except TokenError:
             return Response({"error":"Invalid or expired token."},status=status.HTTP_400_BAD_REQUEST)
 
-class ProfileView(APIView):
+class ProfileAPIView(APIView):
     permission_classes = [isAuthenticatedCustom]
 
     def get(self,request,pk):
@@ -86,7 +86,7 @@ class ProfileView(APIView):
         else:
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
-class ChangePasswordView(APIView):
+class ChangePasswordAPIView(APIView):
     permission_classes = [isAuthenticatedCustom]
     
     def post(self,request):
@@ -96,7 +96,7 @@ class ChangePasswordView(APIView):
             return Response({'msg':'Your password successfully changed.'},status=status.HTTP_200_OK)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
-class ForgotPasswordView(APIView):
+class ForgotPasswordAPIView(APIView):
     permission_classes = [isNotAuthenticatedCustom]
 
     def post(self,request):
