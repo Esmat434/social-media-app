@@ -38,7 +38,7 @@ class RegisterView(LogoutRequiredMixin,CreateView):
         token_instace = AccountVerificationToken.objects.create(user=user)
 
         domain = getattr(settings,'SITE_DOMAIN','http://localhost:8000')
-        link = domain + reverse('accounts:account_verified', args=[token_instace.token])
+        link = domain + reverse('mvt:account_verified', args=[token_instace.token])
         send_verification_mail(
             token_instace.user.email,'Account Activation Token',token_instace.user.username,
             link
@@ -81,7 +81,7 @@ class ProfileUpdateView(LoginRequiredMixin,UpdateView):
     form_class = UserUpdateForm
     template_name = 'accounts/profile_update.html'    
     context_object_name = 'form'
-    success_url = reverse_lazy('accounts:profile')
+    success_url = reverse_lazy('mvt:profile')
 
     def get_object(self, queryset = ...):
         return self.request.user
@@ -98,7 +98,7 @@ class AccountVerifiedView(LogoutRequiredMixin,View):
         self.user.email_verified = True
         self.user.save()
 
-        return redirect('accounts:login')
+        return redirect('mvt:login')
 
 class CreateChangePasswordTokenView(LoginRequiredMixin,View):
     def post(self, request):
@@ -109,7 +109,7 @@ class CreateChangePasswordTokenView(LoginRequiredMixin,View):
         new_expiry_val = timezone.now() + timedelta(hours=24)
 
         # ایجاد توکن برای تغییر رمز عبور
-        cpt = ChangePasswordToken.objects.update_or_create(
+        cpt_obj,created = ChangePasswordToken.objects.update_or_create(
             user=user,
             defaults={
                 'token': new_token_val,
@@ -119,7 +119,7 @@ class CreateChangePasswordTokenView(LoginRequiredMixin,View):
 
         # ساخت لینک
         domain = getattr(settings, 'SITE_DOMAIN', 'http://localhost:8000')
-        link = domain + reverse('accounts:change_password', args=[cpt.token])
+        link = domain + reverse('accounts:change_password', args=[cpt_obj.token])
 
         # ارسال ایمیل
         send_verification_mail(
@@ -136,7 +136,7 @@ class ChangePasswordView(LoginRequiredMixin,FormView):
     form_class = ChangePasswordForm
     template_name = 'accounts/change_password.html'
     context_object_name = 'form'
-    success_url = reverse_lazy('accounts:profile')
+    success_url = reverse_lazy('mvt:profile')
 
     def dispatch(self, request, *args, **kwargs):
         self.token = self.kwargs['uuid']
@@ -148,7 +148,7 @@ class ChangePasswordView(LoginRequiredMixin,FormView):
         return super().dispatch(request, *args, **kwargs)
     
     def form_valid(self, form):
-        password = form.cleaned_data['password']
+        password = form.cleaned_data['password1']
         user = self.request.user
         user.set_password(password)
         user.save()
@@ -161,7 +161,7 @@ class ChangePasswordView(LoginRequiredMixin,FormView):
 
 class CreateForgotPasswordTokenView(LogoutRequiredMixin,FormView):
     form_class = ForgotPasswordTokenForm
-    template_name = 'accounts/create_forgot_password_token_form.html'
+    template_name = 'accounts/create_forgot_password_token.html'
     
     def form_valid(self, form):
         email = form.cleaned_data['email']
@@ -171,7 +171,7 @@ class CreateForgotPasswordTokenView(LogoutRequiredMixin,FormView):
         new_token_val = uuid.uuid4()
         new_expiry_at = timezone.now() + timedelta(hours=24)
 
-        fpt = ForgotPasswordToken.objects.update_or_create(
+        fpt_obj,created = ForgotPasswordToken.objects.update_or_create(
             user=user,
             defaults={
                 'token': new_token_val,
@@ -180,11 +180,11 @@ class CreateForgotPasswordTokenView(LogoutRequiredMixin,FormView):
         )
 
         domain = getattr(settings,'SITE_DOMAIN','http://localhost:8000')
-        link = domain + reverse('accounts:forgot_password', args=[fpt.token])
+        link = domain + reverse('accounts:forgot_password', args=[fpt_obj.token])
         send_verification_mail(
-            fpt.user.email,
+            fpt_obj.user.email,
             'Forgot Password Token.',
-            fpt.user.username,link
+            fpt_obj.user.username,link
         )
 
         return render(self.request,'accounts/forgot_password_token_message.html')
@@ -192,7 +192,7 @@ class CreateForgotPasswordTokenView(LogoutRequiredMixin,FormView):
 class ForgotPasswordView(LogoutRequiredMixin,FormView):
     form_class = ForgotPasswordForm
     template_name = 'accounts/forgot_password.html'
-    success_url = reverse_lazy('accounts:login')
+    success_url = reverse_lazy('mvt:login')
 
     def dispatch(self, request, *args, **kwargs):
         self.token_value = self.kwargs.get('uuid')
@@ -204,7 +204,7 @@ class ForgotPasswordView(LogoutRequiredMixin,FormView):
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        password = form.cleaned_data['password']
+        password = form.cleaned_data['password1']
 
         user=self.token_obj.user
         user.set_password(password)
