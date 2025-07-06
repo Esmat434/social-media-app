@@ -55,21 +55,78 @@ class UserSerializer(serializers.ModelSerializer):
 
         if not status:
             raise serializers.ValidationError("Your age must be at least 18+")
-        return status
+        return value
     
     def validate(self, attrs):
-        password1 = attrs['password']
-        password2 = attrs['password2']
+        password1 = attrs.get('password')
+        password2 = attrs.get('password2')
 
-        if password1 != password2:
-            raise serializers.ValidationError("Passwords do not match.")
-        
-        status = validate_password(password1)
-        if not status:
-            raise serializers.ValidationError("Your password must contain  a-zA-Z1-9!@#$%^&*")
+        if password1 and password2:
+            if password1 != password2:
+                raise serializers.ValidationError("Passwords do not match.")
+            
+            status = validate_password(password1)
+            if not status:
+                raise serializers.ValidationError("Your password must contain  a-zA-Z1-9!@#$%^&*")
         return attrs
 
-class LoginSerializer(serializers.ModelSerializer):
+class UpdateUserSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField(required=False)
+    last_name = serializers.CharField(required=False)
+    avatar = serializers.CharField(required=False)
+    phone_number = serializers.CharField(required=False)
+    password2 = serializers.CharField(max_length=128,required=True,write_only=True)
+
+    class Meta:
+        model = CustomUser
+        fields = (
+            'username','email','first_name','last_name','avatar','phone_number','address',
+            'city','country','birth_date','password','password2'
+        )
+    
+    def update(self, instance, validate_data):
+        validate_data.pop('password2')
+        password = validate_data.pop("password",None)
+        
+        for key,value in validate_data.items():
+            setattr(instance,key,value)
+        
+        if password:
+            instance.set_password(password)
+        instance.save()
+        return instance
+    
+    def validate_username(self,value):
+        if CustomUser.objects.filter(username = value).exlude(pk=self.instance.pk).exists():
+            raise serializers.ValidationError("This username already exists.")
+        return value
+    
+    def validate_email(self,value):
+        if CustomUser.objects.filter(email=value).exclude(pk=self.instance.pk).exists():
+            raise serializers.ValidationError("This email already exists.")
+        return value
+    
+    def validate_birth_date(self,value):
+        status = validate_birth_date(value)
+
+        if not status:
+            raise serializers.ValidationError("Your age must be at least 18+")
+        return value
+    
+    def validate(self, attrs):
+        password1 = attrs.get('password')
+        password2 = attrs.get('password2')
+
+        if password1 and password2:
+            if password1 != password2:
+                raise serializers.ValidationError("Passwords do not match.")
+            
+            status = validate_password(password1)
+            if not status:
+                raise serializers.ValidationError("Your password must contain  a-zA-Z1-9!@#$%^&*")
+        return attrs
+
+class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(required=True)
     password = serializers.CharField(required=True,write_only=True)
 
@@ -92,7 +149,7 @@ class LoginSerializer(serializers.ModelSerializer):
 
         return data
 
-class ChangePasswordSerializer(serializers.ModelSerializer):
+class ChangePasswordSerializer(serializers.Serializer):
     password = serializers.CharField(required=True)
     confirm_password = serializers.CharField(required=True)
 
@@ -112,7 +169,7 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
         
         return data
 
-class ForgotPasswordSerializer(serializers.ModelSerializer):
+class ForgotPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
     password = serializers.CharField(required=True)
     confirm_password = serializers.CharField(required=True)
