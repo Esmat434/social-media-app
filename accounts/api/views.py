@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 
-from .permessions import (
+from .permissions import (
     isAuthenticatedCustom,isNotAuthenticatedCustom
 )
 
@@ -16,7 +16,8 @@ from accounts.models import (
 )
 
 from .serializers import (
-    UserSerializer,LoginSerializer,ChangePasswordSerializer,ForgotPasswordSerializer
+    UserSerializer,UpdateUserSerializer,LoginSerializer,ChangePasswordSerializer,
+    ForgotPasswordSerializer
 )
 
 class RegisterAPIView(APIView):
@@ -47,7 +48,7 @@ class LoginAPIView(APIView):
 
             if user:
                 login(request,user)
-                return Response({'success':'You successfully Logged In.'},status=status.HTTP_201_CREATED)    
+                return Response({'success':'You successfully Logged In.'},status=status.HTTP_200_OK)    
             return Response({"error":"Your username or password is incorrect."},status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
@@ -77,9 +78,10 @@ class ProfileAPIView(APIView):
         serializer = UserSerializer(user)
         return Response(serializer.data,status=status.HTTP_200_OK)
     
+class ProfileUpdateAPIView(APIView):
     def put(self,request,pk):
         user = get_object_or_404(CustomUser,id=pk)
-        serializer = UserSerializer(data = request.data,instance=user,partial=True)
+        serializer = ProfileUpdateAPIView(instance=user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data,status=status.HTTP_200_OK)
