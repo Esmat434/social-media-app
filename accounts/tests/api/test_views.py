@@ -1,4 +1,5 @@
 import pytest
+import json
 
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -88,21 +89,25 @@ class TestProfileAPIView:
 
         assert response.status_code == 200
 
-# class TestProfileUpdateAPIView:
+class TestProfileUpdateAPIView:
 
-#     @pytest.fixture(autouse=True)
-#     def setUp(self,user,auth_client):
-#         self.client=auth_client
-#         self.user=user
+    @pytest.fixture(autouse=True)
+    def setUp(self,user,auth_client):
+        self.client=auth_client
+        self.user=user
     
-#     def test_profile_update_api_view(self):
-#         data = {
-#             'username':'change'
-#         }
-#         url = reverse('api:profile-update', args=[self.user.id])
-#         response = self.client.put(url,data)
+    def test_profile_update_api_view(self):
+        data = {
+            'username':'change'
+        }
+        url = reverse('api:profile-update', args=[self.user.id])
+        response = self.client.put(
+            url,
+            data=json.dumps(data),
+            content_type='application/json'
+        )
 
-#         assert response.status_code == 200
+        assert response.status_code == 200
 
 class TestChangePasswordAPIView:
 
