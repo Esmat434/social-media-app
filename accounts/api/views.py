@@ -47,8 +47,12 @@ class LoginAPIView(APIView):
             user = authenticate(request, username=username, password=password)
 
             if user:
-                login(request,user)
-                return Response({'success':'You successfully Logged In.'},status=status.HTTP_200_OK)    
+                refresh = RefreshToken.for_user(user)
+                return Response({
+                    'success': 'You successfully Logged In.',
+                    'access': str(refresh.access_token),
+                    'refresh': str(refresh)
+                }, status=status.HTTP_200_OK)
             return Response({"error":"Your username or password is incorrect."},status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
@@ -81,7 +85,7 @@ class ProfileAPIView(APIView):
 class ProfileUpdateAPIView(APIView):
     def put(self,request,pk):
         user = get_object_or_404(CustomUser,id=pk)
-        serializer = ProfileUpdateAPIView(instance=user, data=request.data, partial=True)
+        serializer = UpdateUserSerializer(instance=user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data,status=status.HTTP_200_OK)
