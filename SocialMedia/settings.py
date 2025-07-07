@@ -167,7 +167,7 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),  # توکن اصلی
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),     # توکن تمدید
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=60),     # توکن تمدید
     'AUTH_HEADER_TYPES': ('Bearer',),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
