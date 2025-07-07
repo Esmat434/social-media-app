@@ -4,6 +4,7 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponseNotFound
 from django.urls import reverse,reverse_lazy
 from django.utils import timezone
+from django.db import transaction
 from django.contrib.auth import authenticate,login,logout,update_session_auth_hash
 from django.contrib import messages
 from django.conf import settings
@@ -26,24 +27,32 @@ from .forms import (
     UserForm,UserUpdateForm,ChangePasswordForm,ForgotPasswordTokenForm,ForgotPasswordForm
 )
 
-class RegisterView(LogoutRequiredMixin,CreateView):
+class RegisterView(LogoutRequiredMixin, CreateView):
     model = CustomUser
     form_class = UserForm
     template_name = 'accounts/register_form.html'
     context_object_name = 'form'
 
     def form_valid(self, form):
-        user = form.save()
+        try:
+            with transaction.atomic():
+                user = form.save()
 
-        token_instace = AccountVerificationToken.objects.create(user=user)
+                token_instance = AccountVerificationToken.objects.create(user=user)
 
-        domain = getattr(settings,'SITE_DOMAIN','http://localhost:8000')
-        link = domain + reverse('mvt:account_verified', args=[token_instace.token])
-        send_verification_mail(
-            token_instace.user.email,'Account Activation Token',token_instace.user.username,
-            link
-            )
-        
+                domain = getattr(settings, 'SITE_DOMAIN', 'http://localhost:8000')
+                link = domain + reverse('mvt:account_verified', args=[token_instance.token])
+
+                send_verification_mail(
+                    token_instance.user.email,
+                    'Account Activation Token',
+                    token_instance.user.username,
+                    link
+                )
+        except Exception as e:
+            form.add_error(None, 'ثبت‌نام با خطا مواجه شد. لطفاً دوباره تلاش کنید.')
+            return self.form_invalid(form)
+
         return render(self.request, 'accounts/register_success.html', {'user': user})
 
 class LoginView(AccountVerifiedBeforeLoginMixin,LogoutRequiredMixin,View):
@@ -119,7 +128,7 @@ class CreateChangePasswordTokenView(LoginRequiredMixin,View):
 
         # ساخت لینک
         domain = getattr(settings, 'SITE_DOMAIN', 'http://localhost:8000')
-        link = domain + reverse('accounts:change_password', args=[cpt_obj.token])
+        link = domain + reverse('mvt:change_password', args=[cpt_obj.token])
 
         # ارسال ایمیل
         send_verification_mail(
@@ -180,7 +189,7 @@ class CreateForgotPasswordTokenView(LogoutRequiredMixin,FormView):
         )
 
         domain = getattr(settings,'SITE_DOMAIN','http://localhost:8000')
-        link = domain + reverse('accounts:forgot_password', args=[fpt_obj.token])
+        link = domain + reverse('mvt:forgot_password', args=[fpt_obj.token])
         send_verification_mail(
             fpt_obj.user.email,
             'Forgot Password Token.',
