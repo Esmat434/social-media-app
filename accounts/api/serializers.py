@@ -189,5 +189,5 @@ class ForgotPasswordSerializer(serializers.Serializer):
         password = validated_data.pop('password')
         user = CustomUser.objects.get(email=email)
         user.set_password(password)
-
+        user.save()
         return user
