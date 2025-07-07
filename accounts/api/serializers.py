@@ -75,17 +75,15 @@ class UpdateUserSerializer(serializers.ModelSerializer):
     last_name = serializers.CharField(required=False)
     avatar = serializers.CharField(required=False)
     phone_number = serializers.CharField(required=False)
-    password2 = serializers.CharField(max_length=128,required=True,write_only=True)
-
+    
     class Meta:
         model = CustomUser
         fields = (
             'username','email','first_name','last_name','avatar','phone_number','address',
-            'city','country','birth_date','password','password2'
+            'city','country','birth_date','password'
         )
     
     def update(self, instance, validate_data):
-        validate_data.pop('password2')
         password = validate_data.pop("password",None)
         
         for key,value in validate_data.items():
@@ -97,7 +95,7 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         return instance
     
     def validate_username(self,value):
-        if CustomUser.objects.filter(username = value).exlude(pk=self.instance.pk).exists():
+        if CustomUser.objects.filter(username = value).exclude(pk=self.instance.pk).exists():
             raise serializers.ValidationError("This username already exists.")
         return value
     
@@ -114,13 +112,9 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         return value
     
     def validate(self, attrs):
-        password1 = attrs.get('password')
-        password2 = attrs.get('password2')
+        password1 = attrs.get('password',None)
 
-        if password1 and password2:
-            if password1 != password2:
-                raise serializers.ValidationError("Passwords do not match.")
-            
+        if password1:
             status = validate_password(password1)
             if not status:
                 raise serializers.ValidationError("Your password must contain  a-zA-Z1-9!@#$%^&*")
