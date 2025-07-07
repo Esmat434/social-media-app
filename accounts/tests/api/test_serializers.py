@@ -3,7 +3,8 @@ import pytest
 from django.contrib.auth import get_user_model
 
 from accounts.api.serializers import (
-    UserSerializer,LoginSerializer,ChangePasswordSerializer,ForgotPasswordSerializer
+    UserSerializer,UpdateUserSerializer,LoginSerializer,ChangePasswordSerializer,
+    ForgotPasswordSerializer
 )
 
 User = get_user_model()
@@ -42,6 +43,20 @@ class TestUserSerializer:
 
         assert serializer.is_valid() == True
 
+class TestUpdateUserSerializer:
+    
+    @pytest.fixture(autouse=True)
+    def setUp(self,user):
+        self.user = user
+
+    def test_update_user_serializer(self):
+        data = {
+            'username':'ali','email':'ali@gmail.com'
+        }
+        serializer = UpdateUserSerializer(instance=self.user, data=data, partial=True)
+        
+        assert serializer.is_valid() == True
+    
 class TestLoginSerializer:
 
     @pytest.fixture(autouse=True)
