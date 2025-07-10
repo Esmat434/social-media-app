@@ -24,7 +24,8 @@ from accounts.models import (
     CustomUser,AccountVerificationToken,ChangePasswordToken,ForgotPasswordToken
 )
 from .forms import (
-    UserForm,UserUpdateForm,ChangePasswordForm,ForgotPasswordTokenForm,ForgotPasswordForm
+    UserForm,UserUpdateForm,ChangePasswordForm,ForgotPasswordTokenForm,ForgotPasswordForm,
+    CreateAccountVerifiedTokenForm
 )
 
 class RegisterView(LogoutRequiredMixin, CreateView):
@@ -74,6 +75,9 @@ class LoginView(AccountVerifiedBeforeLoginMixin,LogoutRequiredMixin,View):
             return render(request,'accounnts/login.html')
 
 class LogoutView(LoginRequiredMixin,View):
+    def get(self,request):
+        return render(request,'accounts/logout.html')
+    
     def post(self,request):
         logout(request)
         return redirect('/')
@@ -81,6 +85,7 @@ class LogoutView(LoginRequiredMixin,View):
 class ProfileView(LoginRequiredMixin,DetailView):
     model = CustomUser
     template_name = 'accounts/profile.html'
+    context_object_name = 'user'
 
     def get_object(self, queryset = ...):
         return self.request.user
@@ -95,6 +100,39 @@ class ProfileUpdateView(LoginRequiredMixin,UpdateView):
     def get_object(self, queryset = ...):
         return self.request.user
 
+class CreateAccountVerifiedTokenView(LogoutRequiredMixin,FormView):
+    form_class = CreateAccountVerifiedTokenForm
+    template_name = 'accounts/create_account_verify_token.html'
+    
+    def form_valid(self, form):
+        email = form.cleaned_data['email']
+
+        user = CustomUser.objects.get(email=email)
+
+        new_token_val = uuid.uuid4()
+        new_expiry_val = timezone.now() + timedelta(hours=24)
+
+        avt_token,created = AccountVerificationToken.objects.update_or_create(
+            user = user,
+            defaults={
+                'token':new_token_val,
+                'expires_at':new_expiry_val
+            }
+        )
+
+        domain = getattr(settings, 'SITE_DOMAIN', 'http://localhost:8000')
+        link = domain + reverse('mvt:account_verified', args=[avt_token.token])
+
+        send_verification_mail(
+            avt_token.user.email,
+            'Account Activation Token',
+            avt_token.user.username,
+            link
+        )
+
+        return render(self.request,'accounts/register_success.html')
+
+
 class AccountVerifiedView(LogoutRequiredMixin,View):
     def get(self, request,uuid):
         token_val = uuid
@@ -106,6 +144,7 @@ class AccountVerifiedView(LogoutRequiredMixin,View):
         self.user = token_obj.user
         self.user.email_verified = True
         self.user.save()
+        token_obj.delete()
 
         return redirect('mvt:login')
 
@@ -196,7 +235,7 @@ class CreateForgotPasswordTokenView(LogoutRequiredMixin,FormView):
             fpt_obj.user.username,link
         )
 
-        return render(self.request,'accounts/forgot_password_token_message.html')
+        return render(self.request,'accounts/forgot_password_token_message.html',{'email':user.email})
 
 class ForgotPasswordView(LogoutRequiredMixin,FormView):
     form_class = ForgotPasswordForm
