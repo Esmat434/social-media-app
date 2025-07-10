@@ -152,12 +152,12 @@ class ChangePasswordForm(forms.Form):
     password1 = forms.CharField(
         max_length=128,
         required=True,
-        widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Enter Password'})
+        widget=forms.PasswordInput(attrs={'class':'form-control','placeholder':'Enter Password'})
     )
     password2 = forms.CharField(
         max_length=128,
         required=True,
-        widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Enter Confirmation Password.'})
+        widget=forms.PasswordInput(attrs={'class':'form-control','placeholder':'Enter Confirmation Password.'})
     )
 
     def clean(self):
@@ -174,9 +174,28 @@ class ChangePasswordForm(forms.Form):
             raise forms.ValidationError("Your password must be contain one upper case one lower case letter and one digit and one !@#$%^&*")
 
         return cleaned_data
+    
+class CreateAccountVerifiedTokenForm(forms.Form):
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={'class':'form-control','placeholder':'Enter your email.'})
+    )
+
+    def clean(self):
+        validate =  super().clean()
+
+        email = validate['email']
+
+        if not CustomUser.objects.filter(email=email).exists():
+            return forms.ValidationError("Your don't have an account.")
+        
+        return validate
 
 class ForgotPasswordTokenForm(forms.Form):
-    email = forms.EmailField(required=True)
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={'class':'form-control','placeholder':'Enter your email.'})
+    )
 
     def clean(self):
         validate = super().clean()
@@ -192,12 +211,12 @@ class ForgotPasswordForm(forms.Form):
     password1 = forms.CharField(
         max_length=128,
         required=True,
-        widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Enter Password'})
+        widget=forms.PasswordInput(attrs={'class':'form-control','placeholder':'Enter Password'})
     )
     password2 = forms.CharField(
         max_length=128,
         required=True,
-        widget=forms.TextInput(attrs={'class':'form-control','placeholder':'Enter Confirmation Password.'})
+        widget=forms.PasswordInput(attrs={'class':'form-control','placeholder':'Enter Confirmation Password.'})
     )
 
     def clean(self):
