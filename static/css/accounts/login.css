@@ -1,0 +1,23 @@
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+.form-container {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Custom checkbox style */
+.custom-checkbox:checked {
+    background-color: #ec4899;
+    /* pink-500 */
+    border-color: #ec4899;
+    /* pink-500 */
+}
+
+.custom-checkbox:checked:hover {
+    background-color: #db2777;
+    /* pink-600 */
+    border-color: #db2777;
+    /* pink-600 */
+}
