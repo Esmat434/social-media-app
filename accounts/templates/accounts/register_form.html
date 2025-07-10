@@ -1,0 +1,113 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join Our Social Network</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" xintegrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/register_form.css' %}">
+</head>
+<body class="bg-gray-100 dark:bg-gray-900">
+    <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-4">
+        <div class="w-full max-w-md">
+            <div class="bg-white/10 dark:bg-gray-800/20 form-container rounded-2xl shadow-2xl p-8 space-y-6">
+                
+                <!-- Header -->
+                <div class="text-center">
+                    <h1 class="text-3xl font-bold text-white">Create Your Account</h1>
+                    <p class="text-indigo-200 mt-2">Join our community and connect with friends!</p>
+                </div>
+
+                <!-- Registration Form -->
+                <form method="POST" class="space-y-4" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div>
+                        <span>Username <span style="color: red;">*</span></span>
+                        {{ form.username }}
+                    </div>
+                    <div>
+                        <span>Email <span style="color: red;">*</span></span>
+                        {{ form.email }}
+                    </div>
+                    <div>
+                        <span>First Name</span>
+                        {{ form.first_name }}
+                    </div>
+                    <div>
+                        <span>Last Name</span>
+                        {{ form.last_name }}
+                    </div>
+                    <div>
+                        <span>Avatar</span>
+                        {{ form.avatar }}
+                    </div>
+                    <div>
+                        <span>Phone Number</span>
+                        {{ form.phone_number }}
+                    </div>
+                    <div>
+                        <span>Address <span style="color: red;">*</span></span>
+                        {{ form.address }}
+                    </div>
+                    <div>
+                        <span>City <span style="color: red;">*</span></span>
+                        {{ form.city }}
+                    </div>
+                    <div>
+                        <span>Country <span style="color: red;">*</span></span>
+                        {{ form.country }}
+                    </div>
+                    <div>
+                        <span>Birth-date <span style="color: red;">*</span></span>
+                        {{ form.birth_date }}
+                    </div>
+                    <div>
+                        <span>Password <span style="color: red;">*</span></span>
+                        {{ form.password }}
+                    </div>
+                    <div>
+                        <span>Confirm Password <span style="color: red;">*</span></span>
+                        {{ form.password1 }}
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <button type="submit" class="w-full bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg transform hover:scale-105 transition duration-300 ease-in-out">
+                        Create Account
+                    </button>
+                </form>
+
+                <!-- Divider -->
+                <div class="flex items-center justify-center space-x-2">
+                    <span class="h-px w-full bg-indigo-300/30"></span>
+                    <span class="text-indigo-200 text-sm font-medium">OR</span>
+                    <span class="h-px w-full bg-indigo-300/30"></span>
+                </div>
+
+                <!-- Social Logins -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <button class="w-full flex items-center justify-center py-2.5 px-4 bg-gray-900/50 hover:bg-gray-800/70 text-white rounded-lg border border-indigo-400/50 transition duration-300">
+                        <i class="fab fa-google mr-2"></i> Google
+                    </button>
+                    <button class="w-full flex items-center justify-center py-2.5 px-4 bg-gray-900/50 hover:bg-gray-800/70 text-white rounded-lg border border-indigo-400/50 transition duration-300">
+                        <i class="fab fa-facebook-f mr-2"></i> Facebook
+                    </button>
+                    <button class="w-full flex items-center justify-center py-2.5 px-4 bg-gray-900/50 hover:bg-gray-800/70 text-white rounded-lg border border-indigo-400/50 transition duration-300">
+                        <i class="fab fa-twitter mr-2"></i> Twitter
+                    </button>
+                </div>
+
+                <!-- Login Link -->
+                <div class="text-center mt-6">
+                    <p class="text-sm text-indigo-200">
+                        Already have an account? <a href="#" class="font-medium text-pink-400 hover:text-pink-300">Log in</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

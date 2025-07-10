@@ -1,0 +1,186 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - Social Network</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" xintegrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/profile_update.css' %}">
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+
+    <!-- Navbar Placeholder -->
+    <nav class="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+
+                <div class="flex items-center">
+                    <a href="#" class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">ConnectU</a>
+                </div>
+
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#" class="text-gray-500 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium"><i class="fas fa-home"></i></a>
+                        <a href="#" class="text-gray-500 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium"><i class="fas fa-users"></i></a>
+                        <a href="#" class="text-gray-500 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium"><i class="fas fa-bell"></i></a>
+                        <a href="#" class="text-gray-500 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium"><i class="fas fa-envelope"></i></a>
+                    </div>
+                </div>
+
+                <!-- Avatar Section with Dropdown -->
+                <div class="flex items-center space-x-3">
+                    <!-- Dropdown Menu Wrapper -->
+                    <div class="relative inline-block text-left">
+                      <!-- Dropdown Button -->
+                      <button id="menuButton" type="button"
+                        class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+                        onclick="toggleDropdown()">
+                        Menu
+                        <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                          stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </button>
+                  
+                      <!-- Dropdown Items -->
+                      <div id="dropdownMenu"
+                        class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                        <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="menuButton">
+                          <a href="{% url 'mvt:profile_update' %}"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Profile Update</a>
+                          <form action="{% url 'mvt:create_change_password_token' %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 btn btn-link" role="menuitem">Change Password</button>  
+                          </form>
+                          <a href="{% url 'mvt:logout' %}"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Logout</a>
+                        </div>
+                      </div>
+                    </div>                      
+
+                    <!-- Avatar Image -->
+                    {% if user.avatar %}
+                        <img id="selectedAvatar" class="h-8 w-8 rounded-full" src="{{ user.avatar.url }}" alt="User avatar">
+                    {% else %}
+                        <img id="selectedAvatar" class="h-8 w-8 rounded-full" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDQetl4A3MMwq9cdC14MDZH9JBSTrRYjolhzK6UIvbMXAY0duj9jWn9RHOOq11pDoOzR8&usqp=CAU" alt="User avatar">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-x-5">
+            
+            <!-- Settings Navigation (Left Column) -->
+            <aside class="py-6 px-2 sm:px-6 lg:py-0 lg:px-0 lg:col-span-3">
+                <nav class="space-y-1">
+                    <a href="#" class="bg-gray-200 dark:bg-gray-700 text-indigo-700 dark:text-indigo-300 group rounded-md px-3 py-2 flex items-center text-sm font-medium" aria-current="page">
+                        <i class="fas fa-user-edit w-6 h-6 mr-3 text-indigo-500 dark:text-indigo-400"></i>
+                        <span class="truncate">Edit Profile</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- Form Content (Right Column) -->
+            <div class="space-y-6 sm:px-6 lg:px-0 lg:col-span-9">
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="shadow sm:rounded-md sm:overflow-hidden">
+                        <div class="bg-white dark:bg-gray-800 py-6 px-4 space-y-6 sm:p-6">
+                            <div>
+                                <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-white">Public Profile</h3>
+                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">This information will be displayed publicly so be careful what you share.</p>
+                            </div>
+                            <!-- Form Fields -->
+                            <div class="grid grid-cols-6 gap-6">
+                                <div class="col-span-6 sm:col-span-3">
+                                    <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Username</label>
+                                    <div class="mt-1 flex rounded-md shadow-sm">
+                                        <span class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-900 text-gray-500 sm:text-sm">@</span>
+                                        {{ form.username }}
+                                    </div>
+                                </div>
+
+                                <div class="col-span-6 sm:col-span-3">
+                                    <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
+                                    {{ form.email }}
+                                </div>
+                                
+                                <div class="col-span-6 sm:col-span-3">
+                                    <label for="first_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">First Name</label>
+                                    {{ form.first_name }}
+                                </div>
+
+                                <div class="col-span-6 sm:col-span-3">
+                                    <label for="last-name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Last Name</label>
+                                    {{ form.last_name }}
+                                </div>
+
+                                <div class="col-span-6 sm:col-span-3">
+                                    <label for="avatar" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Avatar</label>
+                                    {{ form.avatar }}
+                                </div>
+
+                                <div class="col-span-6 sm:col-span-3">
+                                    <label for="phone-number" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Phone Number</label>
+                                    {{ form.phone_number }}
+                                </div>
+
+                                <div class="col-span-6 sm:col-span-3">
+                                    <label for="addr" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Address</label>
+                                    {{ form.address }}
+                                </div>
+
+                                <div class="col-span-6 sm:col-span-3">
+                                    <label for="city" class="block text-sm font-medium text-gray-700 dark:text-gray-300">City</label>
+                                    {{ form.city }}
+                                </div>
+
+                                <div class="col-span-6 sm:col-span-3">
+                                    <label for="website" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Country</label>
+                                    {{ form.country }}
+                                </div>
+
+                                <div class="col-span-6 sm:col-span-3">
+                                    <label for="birth-date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Birth Date</label>
+                                    {{ form.birth_date }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="px-4 py-3 bg-gray-50 dark:bg-gray-800/50 text-right sm:px-6">
+                            <a href="{% url 'mvt:profile' %}">
+                                <button type="button" class="bg-white dark:bg-gray-700 py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Cancel</button>
+                            </a>
+                            <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Save Changes</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+</body>
+<!-- JavaScript -->
+<script>
+    function toggleDropdown() {
+      const menu = document.getElementById("dropdownMenu");
+      menu.classList.toggle("hidden");
+    }
+  
+    // Close dropdown when clicking outside
+    document.addEventListener("click", function (event) {
+      const dropdown = document.getElementById("dropdownMenu");
+      const button = document.getElementById("menuButton");
+  
+      if (!button.contains(event.target) && !dropdown.contains(event.target)) {
+        dropdown.classList.add("hidden");
+      }
+    });
+</script>  
+</html>

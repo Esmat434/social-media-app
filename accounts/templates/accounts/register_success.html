@@ -1,0 +1,50 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activate Your Account - Social Network</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" xintegrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{% static 'css/account_verified_message.html' %}">
+</head>
+<body class="bg-gray-100 dark:bg-gray-900">
+    <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-4">
+        <div class="w-full max-w-md">
+            <div class="bg-white/10 dark:bg-gray-800/20 form-container rounded-2xl shadow-2xl p-8 space-y-6 text-center">
+                
+                <!-- Header -->
+                <div>
+                     <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-yellow-500/20">
+                        <i class="fas fa-exclamation-triangle text-2xl text-yellow-400"></i>
+                    </div>
+                    <h1 class="text-3xl font-bold text-white mt-4">Activate Your Account</h1>
+                    <p class="text-indigo-200 mt-2">
+                        You must activate your account before you can log in. We've sent a verification link to <strong class="font-medium text-white">user@example.com</strong>.
+                    </p>
+                </div>
+
+                <!-- Resend Section -->
+                <div class="pt-4">
+                    <p class="text-sm text-indigo-200">
+                        Didn't receive the verification email?
+                    </p>
+                    <a href="{% url 'mvt:create_account_verify_token' %}"><button class="w-full mt-2 bg-pink-500/80 hover:bg-pink-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg transform hover:scale-105 transition duration-300 ease-in-out">
+                        Resend Verification Email
+                    </button></a>
+                </div>
+
+                <!-- Back to Login Link -->
+                <div class="mt-4">
+                    <a href="{% url 'mvt:login' %}" class="flex items-center justify-center text-sm font-medium text-indigo-200 hover:text-white">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Back to Login
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

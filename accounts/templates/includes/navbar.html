@@ -1,0 +1,60 @@
+<!-- Navbar Placeholder -->
+<nav class="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+
+            <div class="flex items-center">
+                <a href="#" class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">ConnectU</a>
+            </div>
+
+            <div class="hidden md:block">
+                <div class="ml-10 flex items-baseline space-x-4">
+                    <a href="#" class="text-gray-500 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium"><i class="fas fa-home"></i></a>
+                    <a href="#" class="text-gray-500 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium"><i class="fas fa-users"></i></a>
+                    <a href="#" class="text-gray-500 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium"><i class="fas fa-bell"></i></a>
+                    <a href="#" class="text-gray-500 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium"><i class="fas fa-envelope"></i></a>
+                </div>
+            </div>
+
+            <!-- Avatar Section with Dropdown -->
+            <div class="flex items-center space-x-3">
+                <!-- Dropdown Menu Wrapper -->
+                <div class="relative inline-block text-left">
+                  <!-- Dropdown Button -->
+                  <button id="menuButton" type="button"
+                    class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+                    onclick="toggleDropdown()">
+                    Menu
+                    <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                      stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+              
+                  <!-- Dropdown Items -->
+                  <div id="dropdownMenu"
+                    class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                    <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="menuButton">
+                      <a href="{% url 'mvt:profile_update' %}"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Profile Update</a>
+                      <form action="{% url 'mvt:create_change_password_token' %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 btn btn-link" role="menuitem">Change Password</button>  
+                      </form>
+                      <a href="{% url 'mvt:logout' %}"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Logout</a>
+                    </div>
+                  </div>
+                </div>                      
+
+                <!-- Avatar Image -->
+                {% if user.avatar %}
+                    <img id="selectedAvatar" class="h-8 w-8 rounded-full" src="{{ user.avatar.url }}" alt="User avatar">
+                {% else %}
+                    <img id="selectedAvatar" class="h-8 w-8 rounded-full" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDQetl4A3MMwq9cdC14MDZH9JBSTrRYjolhzK6UIvbMXAY0duj9jWn9RHOOq11pDoOzR8&usqp=CAU" alt="User avatar">
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>

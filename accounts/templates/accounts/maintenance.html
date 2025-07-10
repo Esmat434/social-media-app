@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site Under Maintenance - ConnectU</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" xintegrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{% static 'css/maintenance.css' %}">
+</head>
+<body class="bg-gray-100 dark:bg-gray-900">
+    <div class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-black p-4 text-white">
+        <div class="w-full max-w-lg text-center">
+            
+            <!-- Icon -->
+            <div class="mb-8">
+                <i class="fas fa-cogs text-6xl text-indigo-400 animate-spin" style="--fa-animation-duration: 5s;"></i>
+            </div>
+            
+            <!-- Header -->
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+                We'll be back soon!
+            </h1>
+            
+            <!-- Message -->
+            <p class="text-lg md:text-xl text-gray-300 mb-8">
+                Sorry for the inconvenience, but we're performing some scheduled maintenance at the moment. We'll be back online shortly!
+            </p>
+
+            <!-- Countdown/ETA -->
+            <div class="bg-white/10 rounded-xl p-6 mb-8">
+                <h2 class="text-2xl font-semibold text-white mb-2">Estimated Time Remaining</h2>
+                <p class="text-4xl font-bold text-pink-400">~ 1 Hour</p>
+                <p class="text-sm text-gray-400 mt-2">We appreciate your patience.</p>
+            </div>
+
+            <!-- Social Links -->
+            <div>
+                <p class="text-gray-400 mb-4">In the meantime, you can follow us for updates:</p>
+                <div class="flex items-center justify-center space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">
+                        <i class="fab fa-twitter fa-2x"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">
+                        <i class="fab fa-facebook-f fa-2x"></i>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-300">
+                        <i class="fab fa-instagram fa-2x"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer class="mt-12 text-sm text-gray-500">
+                &copy; 2024 ConnectU. All Rights Reserved.
+            </footer>
+        </div>
+    </div>
+</body>
+</html>

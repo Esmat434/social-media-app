@@ -1,0 +1,185 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    User Profile - Social Network
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+
+{% block content %}
+    <!-- Profile Header -->
+    <header class="bg-white dark:bg-gray-800 shadow-sm">
+        <div class="max-w-5xl mx-auto">
+            <!-- Cover Photo -->
+            <div class="h-48 md:h-64 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-b-lg relative">
+                {% if user.avatar %}
+                    <img src="{{ user.avatar.url }}" class="object-cover w-full h-full rounded-b-lg" alt="Cover photo">
+                {% else %}
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDQetl4A3MMwq9cdC14MDZH9JBSTrRYjolhzK6UIvbMXAY0duj9jWn9RHOOq11pDoOzR8&usqp=CAU" class="object-cover w-full h-full rounded-b-lg" alt="Cover photo">
+                {% endif %}
+            </div>
+
+            <!-- Profile Info & Actions -->
+            <div class="px-4 sm:px-6 lg:px-8 mt-16">
+                <div class="flex flex-col sm:flex-row items-center sm:items-end -mt-16 sm:-mt-20">
+                    <!-- Profile Picture -->
+                    <div class="flex-shrink-0 mt-8">
+                        {% if user.avatar %}
+                            <img class="h-32 w-32 rounded-full ring-4 ring-white dark:ring-gray-800 object-cover" src="{{ user.avatar.url }}" alt="Profile of Jane Doe">
+                        {% else %}
+                            <img class="h-32 w-32 rounded-full ring-4 ring-white dark:ring-gray-800 object-cover" src="https://www.shutterstock.com/image-vector/user-profile-icon-vector-avatar-600nw-2247726673.jpg" alt="Profile of Jane Doe">
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mt-4 sm:mt-0 sm:ml-6 flex-grow">
+                        <div class="flex flex-col sm:flex-row items-center sm:items-baseline gap-2">
+                            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ user.username }} {{ user.last_name }}</h1>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">{{ user.email}}</p>
+                        </div>
+                        <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">{{ user.username }} is living in {{ user.address }} {{ user.city }} 🌍✨ | Coffee enthusiast ☕</p>
+                    </div>
+
+                    <div class="mt-4 sm:mt-0 flex space-x-2">
+                        <button class="flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+                            <i class="fas fa-user-plus mr-2"></i> Add Friend
+                        </button>
+                        <button class="flex items-center bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+                            <i class="fas fa-envelope mr-2"></i> Message
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Profile Stats & Navigation -->
+                <div class="mt-6 flex flex-wrap items-center justify-center sm:justify-start gap-y-2 gap-x-6 border-t border-gray-200 dark:border-gray-700 pt-4">
+                    <a href="#" class="text-sm font-medium text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400 pb-2">Timeline</a>
+                    <a href="#" class="text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">About</a>
+                    <a href="#" class="text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">Friends <span class="bg-gray-200 dark:bg-gray-700 rounded-full px-2 py-0.5 text-xs">129</span></a>
+                    <a href="#" class="text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">Photos</a>
+                     <div class="hidden sm:flex ml-auto items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
+                        <div><strong>1,2K</strong> Posts</div>
+                        <div><strong>23K</strong> Followers</div>
+                        <div><strong>1.5K</strong> Following</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto mt-6 px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- Left Column -->
+            <div class="lg:col-span-1 space-y-6">
+                <!-- Intro Card -->
+                <div class="bg-white dark:bg-gray-800 p-5 rounded-lg shadow">
+                    <h3 class="font-bold text-lg text-gray-900 dark:text-white">Intro</h3>
+                    <ul class="mt-4 space-y-3 text-sm text-gray-600 dark:text-gray-300">
+                        <li class="flex items-center"><i class="fas fa-briefcase w-5 mr-2 text-gray-400"></i> Works at <a href="#" class="font-semibold ml-1">...</a></li>
+                        <li class="flex items-center"><i class="fas fa-graduation-cap w-5 mr-2 text-gray-400"></i> Studied at <a href="#" class="font-semibold ml-1">....</a></li>
+                        <li class="flex items-center"><i class="fas fa-home w-5 mr-2 text-gray-400"></i> Lives in <a href="#" class="font-semibold ml-1">{{ user.city }}</a></li>
+                        <li class="flex items-center"><i class="fas fa-map-marker-alt w-5 mr-2 text-gray-400"></i> From <a href="#" class="font-semibold ml-1">{{ user.country }}</a></li>
+                        <li class="flex items-center"><i class="fas fa-heart w-5 mr-2 text-gray-400"></i> Single </li>
+                    </ul>
+                </div>
+
+                <!-- Photos Card -->
+                <div class="bg-white dark:bg-gray-800 p-5 rounded-lg shadow">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-lg text-gray-900 dark:text-white">Photos</h3>
+                        <a href="#" class="text-sm text-indigo-600 dark:text-indigo-400 hover:underline">See All Photos</a>
+                    </div>
+                    <div class="grid grid-cols-3 gap-2 mt-4">
+                        {% if user.avatar %}
+                            <img src="{{ user.avatar.url }}" class="rounded-lg aspect-square object-cover" alt="photo 1">
+                        {% endif %}
+                        {% for post in posts %}        
+                            {% if post.image %}
+                                <img src="{{ post.image.url }}" class="rounded-lg aspect-square object-cover" alt="photo 2">
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column (Timeline) -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Create Post Card -->
+                <div class="bg-white dark:bg-gray-800 p-5 rounded-lg shadow">
+                    <div class="flex items-start space-x-4">
+                        {% if user.avatar %}
+                            <img class="h-10 w-10 rounded-full" src="{{ user.avatar.url }}" alt="User avatar">
+                        {% else %}
+                            <img class="h-10 w-10 rounded-full" src="https://www.shutterstock.com/image-vector/user-profile-icon-vector-avatar-600nw-2247726673.jpg" alt="User avatar">
+                        {% endif %}
+                        <div class="flex-1">
+                            <textarea class="w-full p-3 bg-gray-100 dark:bg-gray-700 rounded-lg border border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:text-gray-200" rows="3" placeholder="What's on your mind, Jane?"></textarea>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center mt-4">
+                        <div class="flex space-x-4 text-gray-500 dark:text-gray-400">
+                            <button class="hover:text-indigo-600"><i class="fas fa-camera mr-1"></i> Photo/Video</button>
+                            <button class="hover:text-indigo-600"><i class="fas fa-user-tag mr-1"></i> Tag Friends</button>
+                            <button class="hover:text-indigo-600"><i class="fas fa-smile mr-1"></i> Feeling</button>
+                        </div>
+                        <button class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-6 rounded-lg transition duration-300">Post</button>
+                    </div>
+                </div>
+                
+                {% for post in posts %}
+                    <!-- Post 1 -->
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow">
+                        <div class="p-5">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    {% if user.avatar %}
+                                        <img class="h-10 w-10 rounded-full" src="{{ user.avatar.url }}" alt="User avatar">
+                                    {% else %}
+                                        <img class="h-10 w-10 rounded-full" src="https://www.shutterstock.com/image-vector/user-profile-icon-vector-avatar-600nw-2247726673.jpg" alt="User avatar">
+                                    {% endif %}
+                                    <div class="ml-3">
+                                        <p class="font-bold text-gray-900 dark:text-white">{{ user.username }} {{ user.last_name }}</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ user.birth_date }}</p>
+                                    </div>
+                                </div>
+                                <button class="text-gray-400 hover:text-gray-600"><i class="fas fa-ellipsis-h"></i></button>
+                            </div>
+                            <p class="mt-4 text-gray-700 dark:text-gray-300">
+                                {{ post.content|truncatewords:20 }}
+                            </p>
+                        </div>
+                        {% if post.image %}
+                            <img src="{{ post.image.url }}" class="w-full h-auto" alt="Post image">
+                        {% elif post.video %}
+                            <video controls class="w-full h-auto">
+                                <source src="{{ post.video.url }}" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
+                        {% endif %}
+                        <div class="p-5">
+                            <div class="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400">
+                                <div class="flex items-center space-x-1">
+                                    <span class="text-red-500"><i class="fas fa-heart"></i></span>
+                                    <span>{{ post.likes }} Likes</span>
+                                </div>
+                                <div>
+                                    <span>{{ post.comments.count }} Comments</span>
+                                    <span class="ml-2">{{ post.shares.count }} Shares</span>
+                                </div>
+                            </div>
+                            <div class="border-t border-gray-200 dark:border-gray-700 my-3"></div>
+                            <div class="flex justify-around text-gray-600 dark:text-gray-300">
+                                <button class="flex-1 text-center py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition"><i class="far fa-heart mr-2"></i>Like</button>
+                                <button class="flex-1 text-center py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition"><i class="far fa-comment-alt mr-2"></i>Comment</button>
+                                <button class="flex-1 text-center py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition"><i class="far fa-share-square mr-2"></i>Share</button>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+{% endblock %}

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+    <meta charset="utf-8">
+    <meta name="x-apple-disable-message-reformatting">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
+    <!--[if mso]>
+    <xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml>
+    <style>
+      td,th,div,p,a,h1,h2,h3,h4,h5,h6 {font-family: "Segoe UI", sans-serif; mso-line-height-rule: exactly;}
+    </style>
+    <![endif]-->
+    <title>Email Template</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" media="screen">
+    <style>
+      /* General Reset */
+      img {
+        max-width: 100%;
+        vertical-align: middle;
+        line-height: 100%;
+        border: 0;
+      }
+      .hover-bg-pink-600:hover {
+        background-color: #db2777 !important;
+      }
+      .hover-text-indigo-400:hover {
+        color: #818cf8 !important;
+      }
+
+      /* Dark Mode Styles */
+      @media (prefers-color-scheme: dark) {
+        .dark-bg-gray-900 {
+          background-color: #111827 !important;
+        }
+        .dark-bg-gray-800 {
+          background-color: #1f2937 !important;
+        }
+        .dark-text-gray-200 {
+          color: #e5e7eb !important;
+        }
+        .dark-text-gray-400 {
+          color: #9ca3af !important;
+        }
+        .dark-text-white {
+          color: #ffffff !important;
+        }
+        .dark-border-gray-700 {
+            border-color: #374151 !important;
+        }
+      }
+
+      /* Responsive Styles */
+      @media (max-width: 600px) {
+        .sm-w-full {
+          width: 100% !important;
+        }
+        .sm-px-6 {
+          padding-left: 24px !important;
+          padding-right: 24px !important;
+        }
+        .sm-py-8 {
+          padding-top: 32px !important;
+          padding-bottom: 32px !important;
+        }
+        .sm-leading-8 {
+            line-height: 32px !important;
+        }
+      }
+    </style>
+</head>
+<body style="margin: 0; width: 100%; padding: 0; word-break: break-word; -webkit-font-smoothing: antialiased; background-color: #f3f4f6;">
+    <div style="display: none;">This is a transactional email from ConnectU.</div>
+    <div role="article" aria-roledescription="email" aria-label="Email from ConnectU" lang="en">
+        <table style="width: 100%; font-family: 'Inter', sans-serif;" cellpadding="0" cellspacing="0" role="presentation">
+            <tr>
+                <td align="center" class="dark-bg-gray-900" style="background-color: #f3f4f6; padding-top: 24px; padding-bottom: 24px;">
+                    <table class="sm-w-full" style="width: 600px;" cellpadding="0" cellspacing="0" role="presentation">
+                        <tr>
+                            <td class="sm-py-8 sm-px-6" style="padding: 48px; text-align: center;">
+                                <a href="#" style="text-decoration: none; font-size: 24px; font-weight: 700; color: #4f46e5;">
+                                    ConnectU
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center" class="sm-px-6">
+                                <table style="width: 100%;" cellpadding="0" cellspacing="0" role="presentation">
+                                    <tr>
+                                        <td class="dark-bg-gray-800 dark-border-gray-700" style="background-color: #ffffff; border-radius: 12px; border: 1px solid #e5e7eb; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);">
+                                            <table style="width: 100%;" cellpadding="0" cellspacing="0" role="presentation">
+                                                <tr>
+                                                    <td style="padding: 32px 40px;">
+                                                        <h1 class="dark-text-white" style="margin: 0; font-size: 24px; font-weight: 700; color: #111827; line-height: 1.2;">
+                                                            <!-- Dynamic Header -->
+                                                            Reset Your Password
+                                                        </h1>
+                                                        <p class="dark-text-gray-400" style="margin: 24px 0 0; font-size: 16px; color: #4b5563; line-height: 1.5;">
+                                                            <!-- Dynamic Greeting -->
+                                                            Hello {{ username }},
+                                                        </p>
+                                                        <p class="dark-text-gray-400" style="margin: 16px 0 0; font-size: 16px; color: #4b5563; line-height: 1.5;">
+                                                            <!-- Dynamic Body -->
+                                                            A request has been received to change the password for your ConnectU account. To proceed, please click the button below. This link is valid for 30 minutes.
+                                                        </p>
+                                                        
+                                                        <!-- CTA Button -->
+                                                        <div style="padding-top: 24px; padding-bottom: 24px; text-align: left;">
+                                                            <a href="{{ link }}" class="hover-bg-pink-600" style="display: inline-block; background-color: #ec4899; padding: 14px 28px; font-size: 16px; font-weight: 600; line-height: 1; color: #ffffff; text-decoration: none; border-radius: 8px; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);">
+                                                                <!--[if mso]><i style="letter-spacing: 28px; mso-font-width: -100%; mso-text-raise: 26pt;">&nbsp;</i><![endif]-->
+                                                                <span style="mso-text-raise: 13pt;">Reset Password &rarr;</span>
+                                                                <!--[if mso]><i style="letter-spacing: 28px; mso-font-width: -100%;">&nbsp;</i><![endif]-->
+                                                            </a>
+                                                        </div>
+
+                                                        <p class="dark-text-gray-400" style="margin: 16px 0 0; font-size: 16px; color: #4b5563; line-height: 1.5;">
+                                                          If you did not request a password reset, you can safely ignore this email. Only a person with access to your email can reset your account password.
+                                                        </p>
+                                                        <p class="dark-text-gray-400" style="margin: 16px 0 0; font-size: 16px; color: #4b5563; line-height: 1.5;">
+                                                          Thanks, <br>The ConnectU Team
+                                                        </p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding: 32px; text-align: center; font-size: 12px; color: #6b7280;" class="dark-text-gray-400">
+                                            <p style="margin: 0 0 8px;">
+                                                <a href="#" class="hover-text-indigo-400" style="color: #6366f1; text-decoration: none;">Facebook</a> &bull;
+                                                <a href="#" class="hover-text-indigo-400" style="color: #6366f1; text-decoration: none;">Twitter</a> &bull;
+                                                <a href="#" class="hover-text-indigo-400" style="color: #6366f1; text-decoration: none;">Instagram</a>
+                                            </p>
+                                            <p style="margin: 0;">&copy; 2024 ConnectU. All rights reserved.</p>
+                                            <p style="margin: 8px 0 0;">ConnectU, 123 Social Ave, Internet City, 98765</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
