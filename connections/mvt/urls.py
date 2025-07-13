@@ -1,11 +1,12 @@
 from django.urls import path
 
 from .views import (
-    ConnectionView
+    FollowView,UnFollowView
 )
 
 app_name = 'connections'
 
 urlpatterns = [
-    path('connection/',ConnectionView.as_view(),name='connection')
+    path('follow/<str:username>/',FollowView.as_view(),name='follow'),
+    path('unfollow/<str:username>/',UnFollowView.as_view(),name='un-follow'),
 ]
