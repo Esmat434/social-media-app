@@ -4,7 +4,7 @@ from .views import (
     ConnectionView
 )
 
-app_name = 'connection'
+app_name = 'connections'
 
 urlpatterns = [
     path('connection/',ConnectionView.as_view(),name='connection')
