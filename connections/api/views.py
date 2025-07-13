@@ -1,21 +1,41 @@
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.views import APIView
+from .permissions import CustomIsAuthenticated # فرض بر اینکه این پرمیشن شماست
+from django.contrib.auth.models import User
+from connections.models import Connection
+from .serializers import ConnectionSerializer
+from django.shortcuts import get_object_or_404
 
-from .permissions import CustomIsAuthenticated
-
-from .serializers import (
-    ConnectionSerializer
-)
-
-class ConnectionAPIView(APIView):
-    permission_classes = [CustomIsAuthenticated]
+class FollowToggleAPIView(APIView):
     
-    def post(self,request):
-        serializer = ConnectionSerializer(request.data)
+    permission_classes = [CustomIsAuthenticated]
+
+    def post(self, request, username):
+        
+        to_user = get_object_or_404(User, username=username)
+        from_user = request.user
+
+        
+        data = {'to_user': to_user.pk}
+        serializer = ConnectionSerializer(data=data, context={'request': request})
 
         if serializer.is_valid():
-            serializer.save()
-            return Response({"success":"your connection was successfully."},status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+            serializer.save(from_user=from_user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, username):
+        
+        to_user = get_object_or_404(User, username=username)
+        from_user = request.user
+
+        connection = Connection.objects.filter(from_user=from_user, to_user=to_user)
+        
+        if connection.exists():
+            connection.delete()
+            
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        
+        return Response({"error": "You are not following this user."}, status=status.HTTP_404_NOT_FOUND)
