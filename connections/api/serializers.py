@@ -9,19 +9,19 @@ User = get_user_model()
 class ConnectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Connection
-        fields = ('from_user', 'to_user')
+        fields = ('to_user')
+        extra_kwargs = {
+            'to_user':{'write_only': True}
+        }
 
     def validate(self, attrs):
-        from_user = attrs.get('from_user')
+        from_user = self.context['request'].user
         to_user = attrs.get('to_user')
 
-        if not from_user or not to_user:
-            raise serializers.ValidationError("Both users must be provided.")
+        if from_user == to_user:
+            raise serializers.ValidationError("You cannot follow yourself.")
 
         if Connection.objects.filter(from_user=from_user, to_user=to_user).exists():
             raise serializers.ValidationError("This connection already exists.")
 
         return attrs
-
-    def create(self, validated_data):
-        return Connection.objects.create(**validated_data)
