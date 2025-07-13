@@ -1,11 +1,11 @@
 from django.urls import path
 
 from .views import (
-    ConnectionAPIView
+    FollowToggleAPIView
 )
 
 app_name = 'connections'
 
 urlpatterns = [
-    path('connection/',ConnectionAPIView.as_view(),name='connection'),
+    path('follow/<str:username>/',FollowToggleAPIView.as_view(),name='follow'),
 ]
