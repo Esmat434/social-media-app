@@ -24,7 +24,7 @@ class FollowToggleAPIView(APIView):
 
         if serializer.is_valid():
             serializer.save(from_user=from_user)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response({"success":"Your connection was successfull."}, status=status.HTTP_201_CREATED)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
