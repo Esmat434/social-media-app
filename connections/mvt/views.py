@@ -22,6 +22,9 @@ class FollowView(CustomLoginRequiredMixin,View):
         from_user = request.user
         to_user = self.user_instance
 
+        if from_user == to_user:
+            return JsonResponse({"error":"You cannot connect to yourself."}, status=400)
+
         if Connection.objects.filter(from_user=from_user, to_user=to_user).exists():
             return JsonResponse({"error": "Connection already exists."}, status=400)
         
