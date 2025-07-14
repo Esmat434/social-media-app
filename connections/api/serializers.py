@@ -9,7 +9,7 @@ User = get_user_model()
 class ConnectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Connection
-        fields = ('to_user')
+        fields = ('to_user',)
         extra_kwargs = {
             'to_user':{'write_only': True}
         }
