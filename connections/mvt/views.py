@@ -30,12 +30,12 @@ class FollowView(CustomLoginRequiredMixin,View):
 
 class UnFollowView(CustomLoginRequiredMixin,View):
     def dispatch(self, request, *args, **kwargs):
-        user_username = kwargs['username']
-        self.user_instance = get_object_or_404(Connection, username=user_username)
+        username = kwargs['username']
+        self.user_instance = get_object_or_404(User, username=username)
 
         return super().dispatch(request, *args, **kwargs)
     
-    def post(self,request):
+    def post(self,request, *args, **kwargs):
         from_user = request.user
         to_user = self.user_instance
 
