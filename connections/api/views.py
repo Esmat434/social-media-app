@@ -1,11 +1,13 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .permissions import CustomIsAuthenticated # فرض بر اینکه این پرمیشن شماست
-from django.contrib.auth.models import User
+from .permissions import CustomIsAuthenticated 
+from django.contrib.auth import get_user_model
 from connections.models import Connection
 from .serializers import ConnectionSerializer
 from django.shortcuts import get_object_or_404
+
+User = get_user_model()
 
 class FollowToggleAPIView(APIView):
     
