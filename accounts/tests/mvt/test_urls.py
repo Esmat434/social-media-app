@@ -14,12 +14,12 @@ def test_logout_url():
     assert url == '/logout/'
 
 def test_profile_url():
-    url = reverse('mvt:profile')
-    assert url == '/profile/'
+    url = reverse('mvt:profile', args=['testuser'])
+    assert url == '/profile/testuser/'
 
 def test_profile_update_url():
     url = reverse('mvt:profile_update')
-    assert url == '/profile/update/'
+    assert url == '/profile_update/'
 
 def test_account_verified_url():
     token = uuid.uuid4()
