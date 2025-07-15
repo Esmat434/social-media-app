@@ -18,17 +18,15 @@ def user(db):
 @pytest.mark.django_db
 class TestLoginRequiredMixin:
     def test_render_template_login_profile_view(self,user,client):
-        login_successful = client.login(username=user.username, password=user.raw_password)
+        client.force_login(user)
 
-        assert login_successful == True
-
-        url = reverse('mvt:profile')
+        url = reverse('mvt:profile', args=[user.username])
         response = client.get(url)
 
         assert response.status_code == 200
 
-    def test_redirect_no_login_profile_view(self,client):
-        url = reverse('mvt:profile')
+    def test_redirect_no_login_profile_view(self,user,client):
+        url = reverse('mvt:profile', args=[user.username])
         response = client.get(url)
 
         assert response.status_code == 302
@@ -43,9 +41,7 @@ class TestLogoutRequiredMixin:
         assert response.status_code == 200
     
     def test_redirect_home_register_view(self,user,client):
-        login_successfull = client.login(username=user.username, password=user.raw_password)
-
-        assert login_successfull == True
+        client.force_login(user)
 
         url = reverse('mvt:login')
         response = client.get(url)
