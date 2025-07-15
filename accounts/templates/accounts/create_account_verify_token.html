@@ -12,6 +12,33 @@
     <link rel="stylesheet" href="{% static 'css/create_account_verify_token.css' %}">
 </head>
 <body class="bg-gray-100 dark:bg-gray-900">
+    {% if form.errors %}
+        <div class="max-w-md mx-auto mt-6">
+          <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-md" role="alert">
+            <div class="flex items-start space-x-2">
+              <svg class="w-5 h-5 mt-1 text-red-600" fill="none" stroke="currentColor" stroke-width="2"
+                   viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M12 8v4m0 4h.01M21 12A9 9 0 113 12a9 9 0 0118 0z"/>
+              </svg>
+              <div>
+                <p class="font-bold">لطفاً خطاهای زیر را برطرف کنید:</p>
+                <ul class="mt-2 list-disc list-inside text-sm">
+                  {% for field in form %}
+                    {% for error in field.errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  {% endfor %}
+                  {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+    {% endif %}
+
     <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-4">
         <div class="w-full max-w-md">
             <div class="bg-white/10 dark:bg-gray-800/20 form-container rounded-2xl shadow-2xl p-8 space-y-6 text-center">

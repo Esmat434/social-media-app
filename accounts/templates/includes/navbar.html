@@ -30,22 +30,24 @@
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
-              
-                  <!-- Dropdown Items -->
-                  <div id="dropdownMenu"
-                    class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
-                    <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="menuButton">
-                      <a href="{% url 'mvt:profile_update' %}"
-                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Profile Update</a>
-                      <form action="{% url 'mvt:create_change_password_token' %}" method="POST">
-                        {% csrf_token %}
-                        <button type="submit"
-                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 btn btn-link" role="menuitem">Change Password</button>  
-                      </form>
-                      <a href="{% url 'mvt:logout' %}"
-                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Logout</a>
-                    </div>
-                  </div>
+                  
+                  {% if request.user.is_authenticated %}
+                        <!-- Dropdown Items -->
+                        <div id="dropdownMenu"
+                          class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                          <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="menuButton">
+                            <a href="{% url 'mvt:profile_update' %}"
+                              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Profile Update</a>
+                            <form action="{% url 'mvt:create_change_password_token' %}" method="POST">
+                              {% csrf_token %}
+                              <button type="submit"
+                              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 btn btn-link" role="menuitem">Change Password</button>  
+                            </form>
+                            <a href="{% url 'mvt:logout' %}"
+                              class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Logout</a>
+                          </div>
+                        </div>
+                  {% endif %}
                 </div>                      
 
                 <!-- Avatar Image -->
