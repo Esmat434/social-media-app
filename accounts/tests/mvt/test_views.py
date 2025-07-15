@@ -57,7 +57,7 @@ class TestLoginView:
 
 class TestLogoutView:
     def test_post_method_logout_view(self,user,client):
-        client.login(username=user.username, password=user.raw_password)
+        client.force_login(user)
         url = reverse('mvt:logout')
         response = client.post(url)
 
@@ -65,9 +65,9 @@ class TestLogoutView:
         assert response.url == '/'
 
 class TestProfileView:
-    def test_get_method_profile_view(self,user,client):
-        client.login(username=user.username, password=user.raw_password)
-        url = reverse('mvt:profile')
+    def test_profile_view(self,user,client):
+        client.force_login(user)
+        url = reverse('mvt:profile', args=[user.username])
         response = client.get(url)
 
         assert response.status_code == 200
@@ -79,7 +79,7 @@ class TestProfileUpdateView:
     def setUp(self,user,client):
         self.client = client
         self.user = user
-        self.client.login(username=self.user.username, password=self.user.raw_password)
+        self.client.force_login(self.user)
 
     def test_get_method_profile_update_view(self):
         url = reverse('mvt:profile_update')
@@ -96,7 +96,7 @@ class TestProfileUpdateView:
         }
         response = self.client.post(url,data)
         assert response.status_code == 302
-        assert response.url == reverse('mvt:profile')
+        assert response.url == reverse('mvt:profile', args=['change'])
 
 class TestAccountVerifiedView:
     
@@ -119,7 +119,7 @@ class TestCreateChangePasswordTokenView:
     def setUp(self,user,client):
         self.user = user
         self.client = client
-        self.client.login(username=self.user.username, password=self.user.raw_password)
+        self.client.force_login(self.user)
     
     def test_post_method_create_change_password_token_view(self):
         url = reverse('mvt:create_change_password_token')
@@ -134,7 +134,7 @@ class TestChangePasswordView:
     def setUp(self,user,client):
         self.user = user
         self.client = client
-        self.client.login(username=user.username, password=user.raw_password)
+        self.client.force_login(self.user)
         self.token_obj = ChangePasswordToken.objects.create(user=self.user)
     
     def test_get_method_change_password(self):
@@ -153,7 +153,8 @@ class TestChangePasswordView:
         response = self.client.post(url,data)
 
         assert response.status_code == 302
-        assert response.url == reverse('mvt:profile')
+        print(response.url)
+        assert response.url == reverse('mvt:profile', args=[self.user.username])
 
 class TestCreateForgotPasswordTokenView:
 
