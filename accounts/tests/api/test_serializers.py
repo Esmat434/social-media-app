@@ -78,7 +78,7 @@ class TestChangePasswordSerializer:
     def setUp(self,user,client):
         self.client = client
         self.user = user
-        self.client.login(username=self.user.username, password=self.user.raw_password)
+        self.client.force_login(self.user)
     
     def test_change_password_serializer(self):
         data = {
