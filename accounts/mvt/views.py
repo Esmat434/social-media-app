@@ -13,6 +13,7 @@ from django.views import View
 from django.views.generic import (
     DetailView,CreateView,UpdateView
 )
+from django.contrib.auth import get_user_model
 
 from .email import send_verification_mail
 
@@ -21,15 +22,17 @@ from .mixins import (
 )
 
 from accounts.models import (
-    CustomUser,AccountVerificationToken,ChangePasswordToken,ForgotPasswordToken
+    AccountVerificationToken,ChangePasswordToken,ForgotPasswordToken
 )
 from .forms import (
     UserForm,UserUpdateForm,ChangePasswordForm,ForgotPasswordTokenForm,ForgotPasswordForm,
     CreateAccountVerifiedTokenForm
 )
 
+User = get_user_model()
+
 class RegisterView(LogoutRequiredMixin, CreateView):
-    model = CustomUser
+    model = User
     form_class = UserForm
     template_name = 'accounts/register_form.html'
     context_object_name = 'form'
@@ -83,23 +86,30 @@ class LogoutView(LoginRequiredMixin,View):
         return redirect('/')
 
 class ProfileView(LoginRequiredMixin,DetailView):
-    model = CustomUser
+    model = User
     template_name = 'accounts/profile.html'
     context_object_name = 'user'
 
+    def dispatch(self, request, *args, **kwargs):
+        username = kwargs['username']
+        self.user_instance = get_object_or_404(User, username=username)
+        return super().dispatch(request, *args, **kwargs)
+
     def get_object(self, queryset = ...):
-        return self.request.user
+        return self.user_instance
 
 class ProfileUpdateView(LoginRequiredMixin,UpdateView):
-    model = CustomUser
+    model = User
     form_class = UserUpdateForm
     template_name = 'accounts/profile_update.html'    
     context_object_name = 'form'
-    success_url = reverse_lazy('mvt:profile')
 
     def get_object(self, queryset = ...):
         return self.request.user
-
+    
+    def get_success_url(self):
+        return reverse_lazy('mvt:profile', kwargs={'username':self.request.user.username})
+    
 class CreateAccountVerifiedTokenView(LogoutRequiredMixin,FormView):
     form_class = CreateAccountVerifiedTokenForm
     template_name = 'accounts/create_account_verify_token.html'
@@ -107,7 +117,7 @@ class CreateAccountVerifiedTokenView(LogoutRequiredMixin,FormView):
     def form_valid(self, form):
         email = form.cleaned_data['email']
 
-        user = CustomUser.objects.get(email=email)
+        user = User.objects.get(email=email)
 
         new_token_val = uuid.uuid4()
         new_expiry_val = timezone.now() + timedelta(hours=24)
@@ -151,7 +161,7 @@ class AccountVerifiedView(LogoutRequiredMixin,View):
 class CreateChangePasswordTokenView(LoginRequiredMixin,View):
     def post(self, request):
         username = request.user.username
-        user = get_object_or_404(CustomUser, username=username)
+        user = get_object_or_404(User, username=username)
 
         new_token_val = uuid.uuid4()
         new_expiry_val = timezone.now() + timedelta(hours=24)
@@ -184,7 +194,6 @@ class ChangePasswordView(LoginRequiredMixin,FormView):
     form_class = ChangePasswordForm
     template_name = 'accounts/change_password.html'
     context_object_name = 'form'
-    success_url = reverse_lazy('mvt:profile')
 
     def dispatch(self, request, *args, **kwargs):
         self.token = self.kwargs['uuid']
@@ -207,6 +216,9 @@ class ChangePasswordView(LoginRequiredMixin,FormView):
 
         return super().form_valid(form)
 
+    def get_success_url(self):
+        return reverse_lazy('mvt:profile', kwargs={'username':self.request.user.username})
+
 class CreateForgotPasswordTokenView(LogoutRequiredMixin,FormView):
     form_class = ForgotPasswordTokenForm
     template_name = 'accounts/create_forgot_password_token.html'
@@ -214,7 +226,7 @@ class CreateForgotPasswordTokenView(LogoutRequiredMixin,FormView):
     def form_valid(self, form):
         email = form.cleaned_data['email']
 
-        user = CustomUser.objects.get(email=email)
+        user = User.objects.get(email=email)
 
         new_token_val = uuid.uuid4()
         new_expiry_at = timezone.now() + timedelta(hours=24)
