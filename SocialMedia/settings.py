@@ -174,6 +174,15 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
 }
 
+# add Authentication Backend
+AUTHENTICATION_BACKENDS = [
+    'axes.backends.AxesBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+AXES_FAILURE_LIMIT = 5  
+AXES_COOLOFF_TIME = timedelta(minutes=15) 
+AXES_ENABLED = True
+
 # test part
 # When test is running the Axes will off
 if 'test' in sys.argv:
