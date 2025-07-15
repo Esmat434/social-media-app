@@ -153,7 +153,6 @@ class TestChangePasswordView:
         response = self.client.post(url,data)
 
         assert response.status_code == 302
-        print(response.url)
         assert response.url == reverse('mvt:profile', args=[self.user.username])
 
 class TestCreateForgotPasswordTokenView:
