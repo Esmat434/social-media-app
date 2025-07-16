@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     # myapp
     'accounts',
     'connections',
+    'posts',
 ]
 
 MIDDLEWARE = [
