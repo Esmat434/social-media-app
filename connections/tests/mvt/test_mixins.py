@@ -27,7 +27,7 @@ class TestCustomLoginRequiredMixin:
         self.client = client
 
     def test_success_login_required_mixin(self):
-        self.client.login(username=self.from_user.username, password=self.from_user.raw_password)
+        self.client.force_login(self.from_user)
         url = reverse('mvt_connection:follow', args=[self.to_user.username])
         response = self.client.post(url)
 
