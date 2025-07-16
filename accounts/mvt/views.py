@@ -21,6 +21,10 @@ from .mixins import (
     LoginRequiredMixin,LogoutRequiredMixin,AccountVerifiedBeforeLoginMixin
 )
 
+from connections.models import (
+    Connection
+)
+
 from accounts.models import (
     AccountVerificationToken,ChangePasswordToken,ForgotPasswordToken
 )
@@ -85,18 +89,23 @@ class LogoutView(LoginRequiredMixin,View):
         logout(request)
         return redirect('/')
 
-class ProfileView(LoginRequiredMixin,DetailView):
+class ProfileView(LoginRequiredMixin, DetailView):
     model = User
     template_name = 'accounts/profile.html'
     context_object_name = 'user'
 
     def dispatch(self, request, *args, **kwargs):
-        username = kwargs['username']
-        self.user_instance = get_object_or_404(User, username=username)
+        self.user_instance = get_object_or_404(User, username=kwargs['username'])
         return super().dispatch(request, *args, **kwargs)
 
-    def get_object(self, queryset = ...):
+    def get_object(self, queryset=None):
         return self.user_instance
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        from_user = self.request.user
+        context['is_followed'] = Connection.objects.filter(from_user=from_user, to_user=self.user_instance).exists()
+        return context
 
 class ProfileUpdateView(LoginRequiredMixin,UpdateView):
     model = User
