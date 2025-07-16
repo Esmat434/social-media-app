@@ -28,7 +28,7 @@ class TestFollowView:
         self.client = client
     
     def test_follow_view(self):
-        self.client.login(username=self.from_user.username, password=self.from_user.raw_password)
+        self.client.force_login(self.from_user)
         url = reverse('mvt_connection:follow', args=[self.to_user.username])
         response = self.client.post(url)
 
@@ -44,7 +44,7 @@ class TestUnFollowView:
         self.connection = Connection.objects.create(from_user=self.from_user, to_user=self.to_user)
     
     def test_unfollow_view(self):
-        self.client.login(username=self.from_user.username, password=self.from_user.raw_password)
+        self.client.force_login(self.from_user)
         url = reverse('mvt_connection:un-follow', args=[self.to_user.username])
         response = self.client.post(url)
 
