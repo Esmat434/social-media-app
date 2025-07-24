@@ -43,9 +43,10 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = (
-            'post','parent','comment'
+            'id','post','parent','comment'
         )
         extra_kwargs = {
+            'id':{'read_only':True},
             'post':{'write_only':True}
         }
 
@@ -53,7 +54,7 @@ class LikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
         fields = (
-            'post','status'
+            'id','post','status'
         )
         extra_kwargs = {
             'post':{'write_only':True}
@@ -63,7 +64,7 @@ class ShareSerializer(serializers.ModelSerializer):
     class Meta:
         model = Share
         fields = (
-            'post','status'
+            'id','post','status'
         )
         extra_kwargs = {
             'post':{'write_only':True}
@@ -73,7 +74,7 @@ class SaveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Save
         fields = (
-            'post','status'
+            'id','post','status'
         )
         extra_kwargs = {
             'post':{'write_only':True}
