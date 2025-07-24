@@ -16,6 +16,21 @@ class Post(models.Model):
         verbose_name = 'Post'
         verbose_name_plural = 'Posts'
 
+class PostMedia(models.Model):
+    MEDIA_TYPE_CHOICES = (
+        ('image','Image'),
+        ('video','Video')
+    )
+
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_media')
+    file = models.FileField(upload_to='post_media/')
+    media_type = models.CharField(max_length=10, choices=MEDIA_TYPE_CHOICES, default=MEDIA_TYPE_CHOICES[0][0])
+    upload_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'PostMedia'
+        verbose_name_plural = 'PostMedias'
+
 class Like(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_like')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_like')
@@ -35,6 +50,7 @@ class Like(models.Model):
 class Share(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='user_share')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_share')
+    status = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -55,7 +71,7 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.user.username} wrote comment to post{self.post.id}"
+        return f"{self.user.username} wrote comment to post_{self.post.id}"
     
     class Meta:
         verbose_name = 'Comment'
@@ -64,10 +80,11 @@ class Comment(models.Model):
 class Save(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_save')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='post_save')
+    status = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.post.id} saved by {self.user.username}"
+        return f"post_{self.post.id} saved by {self.user.username}"
     
     class Meta:
         verbose_name = 'Save'
