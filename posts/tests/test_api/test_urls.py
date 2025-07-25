@@ -4,7 +4,7 @@ class TestUrls:
     def test_create_post_url(self):
         url = reverse('api_posts:post_create')
 
-        assert url == '/api/post/create/'
+        assert url == '/api/post/'
     
     def test_post_delete_or_update_url(self):
         url = reverse('api_posts:post_delete_or_update', args=[1])
@@ -14,7 +14,7 @@ class TestUrls:
     def test_comment_create_url(self):
         url = reverse('api_posts:comment_create')
 
-        assert url == f'/api/comment/create/'
+        assert url == f'/api/comment/'
     
     def test_comment_delete_or_update_url(self):
         url = reverse('api_posts:comment_delete_or_update', args=[1])
@@ -24,7 +24,7 @@ class TestUrls:
     def test_like_create_url(self):
         url = reverse('api_posts:like_create')
 
-        assert url == '/api/like/create/'
+        assert url == '/api/like/'
     
     def test_like_delete(self):
         url = reverse('api_posts:like_delete', args=[1])
@@ -34,7 +34,7 @@ class TestUrls:
     def test_share_create(self):
         url = reverse('api_posts:share_create')
 
-        assert url == '/api/share/create/'
+        assert url == '/api/share/'
     
     def test_share_delete_url(self):
         url = reverse('api_posts:share_delete', args=[1])
@@ -44,7 +44,7 @@ class TestUrls:
     def test_save_create_url(self):
         url = reverse('api_posts:save_create')
 
-        assert url == '/api/save/create/'
+        assert url == '/api/save/'
     
     def test_save_delete_url(self):
         url = reverse('api_posts:save_delete', args=[1])
