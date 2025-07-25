@@ -1,3 +1,4 @@
+import json
 import pytest
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.urls import reverse
@@ -58,13 +59,17 @@ class TestPostRetrieveUpdateDeleteView:
 
         assert response.status_code == 200
     
-    # def test_put_method(self):
-    #     data = {
-    #         'content':'change data'
-    #     }
-    #     response = self.client.put(self.url, data=data)
+    def test_put_method(self):
+        data = {
+            'content':'change data'
+        }
+        response = self.client.put(
+            self.url, 
+            data=json.dumps(data),
+            content_type='application/json'
+        )
         
-    #     assert response.status_code == 200
+        assert response.status_code == 200
     
     def test_delete_method(self): 
         response = self.client.delete(self.url)
@@ -102,12 +107,16 @@ class TestCommentRetrieveUpdateDeleteView:
         response = self.client.get(self.url)
         assert response.status_code == 200
 
-    # def test_put_method(self):
-    #     data = {
-    #         'comment':'change comment'
-    #     }
-    #     response = self.client.put(self.url, data=data)
-    #     assert response.status_code == 200
+    def test_put_method(self):
+        data = {
+            'comment':'change comment'
+        }
+        response = self.client.put(
+            self.url, 
+            data=json.dumps(data),
+            content_type='application/json'
+        )
+        assert response.status_code == 200
     
     def test_delete_method(self):
         response = self.client.delete(self.url)
