@@ -1,5 +1,9 @@
 from django import forms
 
+from posts.algorithms.validators import (
+    word_filtering
+)
+
 from posts.models import (
     Post,PostMedia,Comment
 )
@@ -36,6 +40,15 @@ class PostMediaForm(forms.ModelForm):
             raise forms.ValidationError("Your file type is incorrect.")
         
         return file
+
+    def clean_text(self):
+        content = self.cleaned_data['content']
+
+        text_status = word_filtering(content)
+        if not text_status:
+            raise forms.ValidationError("Your content is not legal and politness.")
+        
+        return content
     
     def save(self, commit=True):
         post_media = super().save(commit=False)
@@ -62,3 +75,12 @@ class CommentForm(forms.ModelForm):
         widgets = {
             'comment':forms.Textarea(attrs={'class':'form-control', 'placeholder':'Enter your comment.'})
         }
+    
+    def clean_comment(self):
+        comment = self.cleaned_data['comment']
+
+        text_status = word_filtering(comment)
+        if not text_status:
+            raise forms.ValidationError("Your comment is not legal and politness.")
+        
+        return comment
