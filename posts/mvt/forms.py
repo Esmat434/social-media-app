@@ -20,8 +20,9 @@ class PostForm(forms.ModelForm):
     
     def clean_content(self):
         content = self.cleaned_data['content']
-
+        
         text_status = word_filtering(content)
+        
         if text_status:
             raise forms.ValidationError("Your content is not legal and politness.")
         
@@ -79,7 +80,7 @@ class CommentForm(forms.ModelForm):
         comment = self.cleaned_data['comment']
 
         text_status = word_filtering(comment)
-        if not text_status:
+        if text_status:
             raise forms.ValidationError("Your comment is not legal and politness.")
         
         return comment
