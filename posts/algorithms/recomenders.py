@@ -1,4 +1,4 @@
-from django.db.models import Count,Q,F,Value,Case,When
+from django.db.models import Count,F,Value,Case,When
 from django.db.models.functions import Coalesce
 
 from posts.models import Post
