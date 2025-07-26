@@ -13,6 +13,14 @@ class TestPostForm:
         form = PostForm(data=data)
 
         assert form.is_valid() == True
+    
+    def test_post_form_invalid_data(self):
+        data = {
+            'content':'fuck you'
+        }
+        form = PostForm(data=data)
+
+        assert form.is_valid() == False
 
 class TestPostMediaForm:
     def test_post_media_form_validate(self):
