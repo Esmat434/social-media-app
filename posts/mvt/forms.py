@@ -18,11 +18,11 @@ class PostForm(forms.ModelForm):
             'content':forms.Textarea(attrs={'class':'form-control','placeholder':'Enter your content.'})
         }
     
-    def clean_text(self):
+    def clean_content(self):
         content = self.cleaned_data['content']
 
         text_status = word_filtering(content)
-        if not text_status:
+        if text_status:
             raise forms.ValidationError("Your content is not legal and politness.")
         
         return content
