@@ -6,7 +6,7 @@ from posts.mvt.forms import (
 )
 
 class TestPostForm:
-    def test_post_form(self):
+    def test_post_form_valid_data(self):
         data = {
             'content':'test content'
         }
@@ -50,10 +50,18 @@ class TestPostMediaForm:
         assert form.is_valid() == False
         
 class TestCommentForm:
-    def test_comment_form(self):
+    def test_comment_form_validate_data(self):
         data = {
             'comment':'test comment'
         }
         form = CommentForm(data=data)
 
         assert form.is_valid() == True
+    
+    def test_comment_form_invalid_data(self):
+        data = {
+            'comment':'this is fuck comment'
+        }
+        form = CommentForm(data=data)
+
+        assert form.is_valid() == False
