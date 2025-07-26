@@ -18,6 +18,14 @@ class PostForm(forms.ModelForm):
             'content':forms.Textarea(attrs={'class':'form-control','placeholder':'Enter your content.'})
         }
     
+    def clean_text(self):
+        content = self.cleaned_data['content']
+
+        text_status = word_filtering(content)
+        if not text_status:
+            raise forms.ValidationError("Your content is not legal and politness.")
+        
+        return content
     
 class PostMediaForm(forms.ModelForm):
     VIDEO_TYPES = ['mp4','mkv','avi','webm']
@@ -40,15 +48,6 @@ class PostMediaForm(forms.ModelForm):
             raise forms.ValidationError("Your file type is incorrect.")
         
         return file
-
-    def clean_text(self):
-        content = self.cleaned_data['content']
-
-        text_status = word_filtering(content)
-        if not text_status:
-            raise forms.ValidationError("Your content is not legal and politness.")
-        
-        return content
     
     def save(self, commit=True):
         post_media = super().save(commit=False)
