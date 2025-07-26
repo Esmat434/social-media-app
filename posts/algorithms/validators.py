@@ -1,3 +1,4 @@
+import re
 from langdetect import detect
 
 def word_filtering(text):
@@ -40,9 +41,11 @@ def word_filtering(text):
     }
     text = text.lower()
     lang = detect(text)
+    print(lang)
     if lang in BAD_WORDS:
         for word in BAD_WORDS[lang]:
-            if word in text:
-                return False
+            pattern = r'\b' + re.escape(word) + r'\b'
+            if re.search(pattern, text):
+                return True
     
-    return True
+    return False
