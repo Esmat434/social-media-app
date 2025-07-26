@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from posts.algorithms.validators import word_filtering
+
 from posts.models import (
     Post,PostMedia,Like,Share,Save,Comment
 )
@@ -16,6 +18,15 @@ class PostSerializer(serializers.ModelSerializer):
         model = Post
         
         fields = ('id', 'content', 'media')
+    
+    def validate_content(self,value):
+        print(value)
+        status_text = word_filtering(value)
+       
+        if status_text == True:
+            raise serializers.ValidationError('Your content is not legal and politness.')
+        
+        return value
     
     def create(self, validated_data):
         media_data = validated_data.pop('media', [])
@@ -49,6 +60,13 @@ class CommentSerializer(serializers.ModelSerializer):
             'id':{'read_only':True},
             'post':{'write_only':True}
         }
+    
+    def validate_comment(self,value):
+        status_text = word_filtering(value)
+        if status_text:
+            raise serializers.ValidationError('Your comment is not legal and politness.')
+        
+        return value
 
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:
