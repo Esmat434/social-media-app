@@ -38,7 +38,7 @@ def word_filtering(text):
         "fa": persian_bad_words,
         "ar": arabic_bad_words,
     }
-
+    text = text.lower()
     lang = detect(text)
     if lang in BAD_WORDS:
         for word in BAD_WORDS[lang]:
