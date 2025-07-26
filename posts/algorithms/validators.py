@@ -1,5 +1,4 @@
 import re
-from langdetect import detect
 
 def word_filtering(text):
     english_bad_words = {
@@ -40,10 +39,8 @@ def word_filtering(text):
         "ar": arabic_bad_words,
     }
     text = text.lower()
-    lang = detect(text)
-    print(lang)
-    if lang in BAD_WORDS:
-        for word in BAD_WORDS[lang]:
+    for key in BAD_WORDS:
+        for word in BAD_WORDS[key]:
             pattern = r'\b' + re.escape(word) + r'\b'
             if re.search(pattern, text):
                 return True
