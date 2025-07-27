@@ -45,14 +45,12 @@ class PostSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Post
-        
         fields = ('id', 'content', 'media')
     
     def validate_content(self,value):
         status_text = word_filtering(value)
         if status_text == True:
             raise serializers.ValidationError('Your content is not legal and politness.')
-        
         return value
 
     def get_file_type(self,file):
