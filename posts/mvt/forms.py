@@ -44,9 +44,20 @@ class PostMediaForm(forms.ModelForm):
         file = self.cleaned_data['file']
 
         extension = file.name.split('.')[-1].lower()
+        is_image = extension in self.IMAGE_TYPES
+        is_video = extension in self.VIDEO_TYPES
 
-        if extension not in self.VIDEO_TYPES and extension not in self.IMAGE_TYPES:
-            raise forms.ValidationError("Your file type is incorrect.")
+        if not is_image and not is_video:
+            raise forms.ValidationError("this file type does not support please select image or video.")
+        
+        IMAGE_MAX_SIZE = 5 * 1024 * 1024
+        VIDEO_MAX_SIZE = 50 * 1024 * 1024
+
+        if is_image and file.size > IMAGE_MAX_SIZE:
+            raise forms.ValidationError(f"your image size {file.size / 1024 / 1024:.2f} MB")
+        
+        if is_video and file.size > VIDEO_MAX_SIZE:
+            raise forms.ValidationError(f"your video size {file.size / 1024 / 1024:.2f} MB")
         
         return file
     
