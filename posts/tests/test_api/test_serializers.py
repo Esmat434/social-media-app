@@ -22,7 +22,7 @@ def user(db):
     return user
 
 @pytest.mark.django_db
-class TestSerializers:
+class TestPostSerializer:
     @pytest.fixture(autouse=True)
     def setUp(self,user):
         self.user = user
@@ -53,20 +53,42 @@ class TestSerializers:
         
         assert 'content' in serializer.errors
 
-    def test_post_media_serializer(self):
+class TestMediaSerializer:
+    def test_post_media_serializer_validate_data(self):
+        small_content = b'a' * (4 * 1024 * 1024)
         fake_file = SimpleUploadedFile(
             name='test.jpeg',
-            content=b'\x47\x49\x46',
+            content=small_content,
             content_type='image/jpeg'
         )
         data = {
-            'file':fake_file,
-            'media_type':'image'
+            'file':fake_file
         }
         serializer = PostMediaSerializer(data=data)
 
         assert serializer.is_valid() == True
     
+    def test_post_media_serializer_invalid_data(self):
+        large_content = b'a' * (50 * 1024 * 1024)
+        fake_file = SimpleUploadedFile(
+            name='test.jpeg',
+            content=large_content,
+            content_type='image/jpeg'
+        )
+        data = {
+            'file':fake_file
+        }
+        serializer = PostMediaSerializer(data=data)
+
+        assert serializer.is_valid() == False
+
+@pytest.mark.django_db
+class TestCommentSerializer:
+    @pytest.fixture(autouse=True)
+    def setUp(self,user):
+        self.user = user
+        self.post = Post.objects.create(user=self.user, content='test content')
+
     def test_comment_serializer_validate_data(self):
         valid_data = {
             'post':self.post.id,
@@ -96,6 +118,13 @@ class TestSerializers:
 
         assert 'comment' in serializer.errors
 
+@pytest.mark.django_db
+class TestLikeSerializer:
+    @pytest.fixture(autouse=True)
+    def setUp(self,user):
+        self.user = user
+        self.post = Post.objects.create(user=self.user, content='test content')
+
     def test_like_serializer(self):
         data = {
             'post':self.post.id,
@@ -105,6 +134,13 @@ class TestSerializers:
 
         assert serializer.is_valid() == True
     
+@pytest.mark.django_db
+class TestShareSerializer:
+    @pytest.fixture(autouse=True)
+    def setUp(self,user):
+        self.user = user
+        self.post = Post.objects.create(user=self.user, content='test content')
+
     def test_share_serializer(self):
         data = {
             'post':self.post.id,
@@ -114,6 +150,13 @@ class TestSerializers:
 
         assert serializer.is_valid() == True
     
+@pytest.mark.django_db
+class TestSaveSerializer:
+    @pytest.fixture(autouse=True)
+    def setUp(self,user):
+        self.user = user
+        self.post = Post.objects.create(user=self.user, content='test content')
+
     def test_save_serializer(self):
         data = {
             'post':self.post.id,
