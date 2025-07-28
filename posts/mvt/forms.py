@@ -15,7 +15,12 @@ class PostForm(forms.ModelForm):
             'content',
         )
         widgets = {
-            'content':forms.Textarea(attrs={'class':'form-control','placeholder':'Enter your content.'})
+            'content':forms.Textarea(
+                attrs={
+                    'class':'form-control w-full p-3 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-300',
+                    'placeholder':'Enter your content'
+                    }
+                )
         }
     
     def clean_content(self):
@@ -30,14 +35,19 @@ class PostForm(forms.ModelForm):
     
 class PostMediaForm(forms.ModelForm):
     VIDEO_TYPES = ['mp4','mkv','avi','webm']
-    IMAGE_TYPES = ['jpg','jpeg','png','gif','svg']
+    IMAGE_TYPES = ['jpg','jpeg','png','gif','svg','avif']
     class Meta:
         model = PostMedia
         fields = (
             'file',
         )
         widgets = {
-            'file': forms.FileInput(attrs={'class':'form-control','placeholder':'Enter your file.'})
+            'file': forms.FileInput(attrs={
+                "id":"file-upload", 
+                "name":"image", 
+                "type":"file", 
+                "accept":"image/*", 
+                "onchange":"previewImage(event)"})
         }
     
     def clean_file(self):
