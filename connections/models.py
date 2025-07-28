@@ -3,6 +3,12 @@ from django.conf import settings
 # Create your models here.
 
 class Connection(models.Model):
+    
+    class ConnectionStatus(models.TextChoices):
+        PENDING = 'pending',
+        ACCEPTED = 'accepted', 
+        REJECTED = 'rejected', 
+    
     from_user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -13,6 +19,7 @@ class Connection(models.Model):
         on_delete=models.CASCADE,
         related_name='follower_connections'
     )
+    status = models.CharField(max_length=20, choices=ConnectionStatus.choices, default=ConnectionStatus.PENDING)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
