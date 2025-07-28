@@ -103,12 +103,14 @@
                     <button type="submit" class="btn btn-primary btn-lg fw-bold py-3 rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300">
                         Save Changes
                     </button>
-                    <!-- دکمه حذف پست - می‌توانید آن را به یک URL مجزا برای حذف لینک دهید -->
-                    <a href="{% url 'mvt_posts:delete_post' form.instance.id %}" class="btn btn-danger-soft btn-lg fw-bold py-3 rounded-lg text-center" onclick="return confirm('آیا از حذف این پست مطمئن هستید؟')">
-                        Delete Post
-                    </a>
                 </div>
-
+            </form>
+            <form action="{% url 'mvt_posts:delete_post' form.instance.id %}" method="POST">
+                        {% csrf_token %}
+                        <!-- دکمه حذف پست - می‌توانید آن را به یک URL مجزا برای حذف لینک دهید -->
+                        <button type="submit" class="mt-2 btn w-full btn-danger-soft btn-lg fw-bold py-3 rounded-lg text-center">
+                            Delete Post
+                        </button>
             </form>
         </div>
     </div>
