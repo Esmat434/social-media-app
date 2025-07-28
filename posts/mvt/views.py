@@ -1,4 +1,5 @@
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404,render,redirect
+from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.http import JsonResponse
 from django.db import transaction
@@ -11,7 +12,7 @@ from .mixins import (
 )
 
 from posts.models import (
-    Post,Like,Comment,Share,Save
+    Post,PostMedia,Like,Comment,Share,Save
 )
 
 from .forms import (
@@ -30,6 +31,7 @@ class CreatePostView(CustomLoginRequiredMixin,CreateView):
             post = form.save(commit=False)
             post.user = self.request.user
             post.save()
+            self.object = post
 
             if self.request.FILES:
                 media_form = PostMediaForm(files=self.request.FILES)
@@ -38,9 +40,17 @@ class CreatePostView(CustomLoginRequiredMixin,CreateView):
                     media.post = post
                     media.save()
                 else:
-                    form.add_error(None,'Media form is not valid.')
+                    return render(self.request, 'posts/post_create.html', {
+                        'form': form,
+                        'media_form': media_form,
+                    })
 
-        return super().form_valid(form)
+        return HttpResponseRedirect(self.get_success_url())
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['media_form'] = PostMediaForm()
+        return context
 
 class EditPostView(CustomLoginRequiredMixin,UpdateView):
     model = Post
@@ -51,15 +61,37 @@ class EditPostView(CustomLoginRequiredMixin,UpdateView):
 
     def get_queryset(self):
         return Post.objects.filter(user=self.request.user)
+    
+    def form_valid(self, form):
+        post = form.save()
+        media = PostMedia.objects.filter(post=post).first()
+        self.object = post
 
-class DeletePostView(CustomLoginRequiredMixin,DeleteView):
-    model = Post
+        if self.request.FILES:
+            media_form = PostMediaForm(files=self.request.FILES, instance=media)
+            if media_form.is_valid():
+                media_form.save()
+            else:
+                return render(self.request, self.template_name, {
+                    'form': form,
+                    'media_form': media_form
+                })
+
+        return HttpResponseRedirect(self.get_success_url())
     
-    def get_queryset(self):
-        return Post.objects.filter(user=self.request.user)
-    
-    def get_success_url(self):
-        return reverse_lazy('mvt:profile', kwargs={'username':self.request.user.username})
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        post = self.object
+        media = PostMedia.objects.filter(post=post).first()
+        context['media_form'] = PostMediaForm(instance=media)
+        return context
+
+class DeletePostView(CustomLoginRequiredMixin,View):
+    def post(self,request,pk):
+        post = get_object_or_404(Post, id=pk, user=request.user)
+        post.delete()
+        print('success')
+        return redirect('/')
 
 class CreateCommentView(CustomLoginRequiredMixin,View):
 
