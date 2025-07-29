@@ -47,3 +47,31 @@ class TestFollowToggleAPIView:
         response = self.client.delete(url)
 
         assert response.status_code == 204
+
+@pytest.mark.django_db
+class TestUserPrivateToggleAPIView:
+    @pytest.fixture(autouse=True)
+    def setUp(self,from_user,to_user,auth_client):
+        self.client=auth_client
+        self.from_user=to_user
+        self.to_user=from_user
+    
+    def test_post_method(self):
+        url = reverse('api_connection:connection-request', args=[self.to_user.username])
+        response = self.client.post(url)
+
+        assert response.status_code == 201
+    
+    def test_put_method(self):
+        Connection.objects.create(from_user=self.from_user, to_user=self.to_user)
+        url = reverse('api_connection:connection-request', args=[self.from_user.username])
+        response = self.client.put(url)
+        
+        assert response.status_code == 200
+    
+    def test_delete_method(self):
+        Connection.objects.create(from_user=self.from_user, to_user=self.to_user)
+        url = reverse('api_connection:connection-request', args=[self.from_user.username])
+        response = self.client.delete(url)
+
+        assert response.status_code == 204
