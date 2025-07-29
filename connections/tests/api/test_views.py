@@ -57,7 +57,7 @@ class TestUserPrivateToggleAPIView:
         self.to_user=from_user
     
     def test_post_method(self):
-        url = reverse('api_connection:connection-request', args=[self.to_user.username])
+        url = reverse('api_connection:connection-request', args=[self.from_user.username])
         response = self.client.post(url)
 
         assert response.status_code == 201
