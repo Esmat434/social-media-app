@@ -82,11 +82,15 @@ class UserPrivateRejectRequestView(CustomLoginRequiredMixin,View):
             from_user = request.user
             to_user = self.user_instance
 
-            connection = get_object_or_404(Connection, from_user=to_user, to_user=from_user, status=Connection.ConnectionStatus.PENDING)
-            connection.status = Connection.ConnectionStatus.REJECTED
-            connection.save()
+            connection = get_object_or_404(
+                    Connection, 
+                    from_user=to_user, 
+                    to_user=from_user, 
+                    status=Connection.ConnectionStatus.PENDING
+                )
+            connection.delete()
 
-            return JsonResponse({'success':"your connection rejected."}, status=200)
+            return HttpResponse(status=204)
 
 class UnFollowView(CustomLoginRequiredMixin,View):
     def dispatch(self, request, *args, **kwargs):
