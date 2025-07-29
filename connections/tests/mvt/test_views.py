@@ -76,7 +76,7 @@ class TestUserPrivateRejectedRequestView:
         url = reverse('mvt_connection:follow-private-reject', args=[self.to_user.username])
         response = self.client.post(url)
 
-        assert response.status_code == 200
+        assert response.status_code == 204
 
 @pytest.mark.django_db
 class TestUnFollowView:
