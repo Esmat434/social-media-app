@@ -1,0 +1,71 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f4f2ee;
+    /* LinkedIn-like background color */
+}
+
+.card {
+    background-color: white;
+    border-radius: 0.75rem;
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+    transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.action-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    /* Adjusted padding for mobile */
+    border-radius: 0.5rem;
+    font-weight: 600;
+    color: #666;
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+    flex-grow: 1;
+    /* Make buttons take equal space */
+}
+
+.action-button:hover {
+    background-color: #f3f4f6;
+}
+
+/* Animation for dropdowns */
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.dropdown-menu {
+    animation: fadeInScale 0.1s ease-out;
+}
+
+/* Animation for comments section */
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.comments-section {
+    animation: slideDown 0.3s ease-out;
+}

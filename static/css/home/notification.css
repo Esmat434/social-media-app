@@ -1,0 +1,37 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f4f2ee;
+}
+.card {
+    background-color: white;
+    border-radius: 0.75rem;
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+}
+.notification-item {
+    transition: background-color 0.2s ease;
+    cursor: pointer;
+}
+.notification-item:hover {
+    background-color: #f9fafb;
+}
+.notification-item.unread {
+    background-color: #eef5ff;
+}
+.filter-btn {
+    background-color: #eef5ff;
+    color: #0a66c2;
+    border: 1px solid transparent;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+.filter-btn.active, .filter-btn:hover {
+    background-color: #dbeafe;
+    color: #004182;
+}
+.stacked-images > * {
+    border: 2px solid white;
+    margin-right: -1rem; /* Overlap images */
+}

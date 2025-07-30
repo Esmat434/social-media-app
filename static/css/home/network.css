@@ -1,0 +1,38 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f4f2ee;
+}
+
+.card {
+    background-color: white;
+    border-radius: 0.75rem;
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.profile-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary {
+    background-color: #0a66c2;
+    color: white;
+    border: 1px solid transparent;
+}
+
+.btn-primary:hover {
+    background-color: #004182;
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: #5E5E5E;
+    border: 1px solid #ADADAD;
+}
+
+.btn-secondary:hover {
+    background-color: #f3f4f6;
+    border-color: #5E5E5E;
+}
