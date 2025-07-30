@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Homepage | Social Network
+{% endblock %}
+
+{% block extra_styles %}
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="{% static 'home/home.css' %}">
+{% endbock %}
+
+{% block content %}
+    <!-- Main Content -->
+    <main class="container mx-auto px-2 sm:px-4 mt-4 sm:mt-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <!-- Left Column (User Profile) -->
+            <aside class="lg:col-span-3 hidden lg:block">
+                <div class="card text-center sticky top-24">
+                    <div class="h-20 bg-cover bg-center" style="background-image: url('https://placehold.co/600x150/a5b4fc/ffffff?text=Banner')"></div>
+                    <div class="p-4">
+                        <img src="https://placehold.co/80x80/6366f1/ffffff?text=U" alt="Profile Picture" class="w-20 h-20 rounded-full mx-auto -mt-14 border-4 border-white">
+                        <h2 class="mt-2 text-lg font-bold hover:underline cursor-pointer">User Name</h2>
+                        <p class="text-sm text-gray-500">Web Developer at Sample Co.</p>
+                    </div>
+                    <hr>
+                    <div class="p-4 text-sm text-gray-600 text-left">
+                        <div class="flex justify-between items-center py-2 hover:bg-gray-100 rounded-lg px-2 cursor-pointer">
+                            <span>Who's viewed your profile</span>
+                            <span class="font-bold text-blue-600">123</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 hover:bg-gray-100 rounded-lg px-2 cursor-pointer">
+                            <span>Impressions of your post</span>
+                            <span class="font-bold text-blue-600">456</span>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="p-4 text-left">
+                        <p class="text-sm font-semibold">My Items</p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Center Column (Main Feed) -->
+            <div class="lg:col-span-6">
+                <!-- New Search Section -->
+                <div class="card p-4 mb-6">
+                    <form action="/search/" method="get" class="flex items-center gap-2 sm:gap-3 w-full">
+                        <input type="search" name="q" placeholder="Search..." class="flex-grow bg-gray-100 border border-gray-300 rounded-full py-2 px-4 focus:ring-2 focus:ring-blue-500 focus:outline-none transition text-sm sm:text-base">
+                        <button type="submit" class="bg-blue-600 text-white font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-full hover:bg-blue-700 transition-colors">
+                            Search
+                        </button>
+                    </form>
+                </div>
+
+                <div class="flex items-center gap-2 my-4">
+                    <hr class="flex-grow border-t border-gray-300">
+                    <span class="text-xs text-gray-500">Sort by: <span class="font-bold">Recent</span></span>
+                </div>
+
+                <!-- Django post loop start: {% for post in posts %} -->
+                <div class="card mb-4">
+                    <!-- Post Header with conditional connect button / 3-dot menu -->
+                    <div class="p-4 flex items-start gap-3">
+                        <img src="https://placehold.co/48x48/ec4899/ffffff?text=A" alt="Author's profile picture" class="w-12 h-12 rounded-full">
+                        <div class="flex-grow">
+                            <p class="font-bold hover:underline cursor-pointer">Post Author</p>
+                            <p class="text-xs text-gray-500">Author's Job Title • 2h ago</p>
+                        </div>
+                        
+                        <!-- Conditional Button/Menu: Django logic required -->
+                        <!-- {% if user_is_not_connected_to_post_author %} -->
+                        <button class="ml-auto bg-blue-100 text-blue-600 font-semibold px-3 py-1.5 text-sm rounded-full hover:bg-blue-200 transition-colors flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
+                              <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                              <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
+                            </svg>
+                            <span class="hidden sm:inline">Connect</span>
+                        </button>
+                        <!-- {% else %} -->
+                        <!-- 3-dot menu for connected users -->
+                        <div class="relative ml-auto">
+                            <button class="p-2 rounded-full hover:bg-gray-200" data-menu-button="1">
+                                <svg class="w-5 h-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                                </svg>
+                            </button>
+                            <!-- Dropdown Menu -->
+                            <div id="post-menu-1" class="dropdown-menu absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20 hidden">
+                                <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+                                    <span>Save</span>
+                                </a>
+                                <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7.5" r="4.5"></circle><line x1="23" y1="11" x2="17" y2="17"></line><line x1="17" y1="11" x2="23" y2="17"></line></svg>
+                                    <span>Unfollow</span>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- {% endif %} -->
+                    </div>
+
+                    <div class="px-4 pb-2">
+                        <p>This is a sample post content. Designing a homepage that resembles and improves upon LinkedIn is an exciting challenge.</p>
+                    </div>
+                    <img src="https://placehold.co/1200x800/d8b4fe/7e22ce?text=Post+Image" alt="Post image" class="w-full">
+                    <div class="p-4 flex justify-between items-center text-xs text-gray-500">
+                        <span>15 Likes</span>
+                        <span>4 Comments</span>
+                    </div>
+                    <hr class="mx-4">
+                    <div class="flex justify-around p-1 text-xs sm:text-sm">
+                        <div class="action-button">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+                            <span>Like</span>
+                        </div>
+                         <div class="action-button comment-button" data-post-id="1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                            <span>Comment</span>
+                        </div>
+                         <div class="action-button">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"></path><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><path d="M7 23l-4-4 4-4"></path><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+                            <span>Repost</span>
+                        </div>
+                         <div class="action-button">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                            <span>Send</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Comments Section (Initially Hidden) -->
+                    <div id="comments-section-1" class="p-4 border-t border-gray-200 comments-section" style="display: none;">
+                        <div class="flex items-start gap-3 mb-4">
+                            <img src="https://placehold.co/40x40/6366f1/ffffff?text=U" alt="Your Profile Picture" class="w-10 h-10 rounded-full">
+                            <div class="flex-grow">
+                                <textarea class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition" rows="2" placeholder="Add a comment..."></textarea>
+                                <div class="text-right mt-2">
+                                    <button class="bg-blue-600 text-white font-semibold px-4 py-1.5 rounded-full hover:bg-blue-700 disabled:bg-blue-300 transition-colors">Post</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex items-start gap-3">
+                                <img src="https://placehold.co/40x40/f472b6/ffffff?text=C1" alt="Commenter's Picture" class="w-10 h-10 rounded-full">
+                                <div class="bg-gray-100 p-3 rounded-lg flex-grow">
+                                    <p class="font-bold text-sm hover:underline cursor-pointer">Commenter One</p>
+                                    <p class="text-sm">This is a great post! Very insightful.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <img src="https://placehold.co/40x40/34d399/ffffff?text=C2" alt="Commenter's Picture" class="w-10 h-10 rounded-full">
+                                <div class="bg-gray-100 p-3 rounded-lg flex-grow">
+                                    <p class="font-bold text-sm hover:underline cursor-pointer">Commenter Two</p>
+                                    <p class="text-sm">Thanks for sharing this. I learned a lot.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End of post loop: {% endfor %} -->
+
+            </div>
+
+        </div>
+    </main>
+{% endblock %}
+{% block extra_scripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Toggle comments section
+            const commentButtons = document.querySelectorAll('.comment-button');
+            commentButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    const postId = button.getAttribute('data-post-id');
+                    const commentsSection = document.getElementById(`comments-section-${postId}`);
+                    if (commentsSection) {
+                        commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
+                    }
+                });
+            });
+
+            // Toggle post options menu (3-dot)
+            const menuButtons = document.querySelectorAll('[data-menu-button]');
+            menuButtons.forEach(button => {
+                button.addEventListener('click', (event) => {
+                    event.stopPropagation(); // Prevent this click from closing the menu immediately
+                    const postId = button.dataset.menuButton;
+                    const menu = document.getElementById(`post-menu-${postId}`);
+                    
+                    // Close all other open menus before opening the new one
+                    document.querySelectorAll('.dropdown-menu').forEach(m => {
+                        if (m.id !== `post-menu-${postId}`) {
+                            m.classList.add('hidden');
+                        }
+                    });
+
+                    // Toggle the clicked menu
+                    menu.classList.toggle('hidden');
+                });
+            });
+
+            // Close all menus when clicking anywhere on the page
+            window.addEventListener('click', () => {
+                document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                    menu.classList.add('hidden');
+                });
+            });
+        });
+    </script>
+{% endblock %}

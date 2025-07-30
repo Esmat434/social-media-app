@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>My Network | Social Network</title>
+{% endblock %}
+
+{% block extra_styles %}
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="{% static 'home/network.css' %}">
+{% endblock %}
+
+{% block content %}
+    <!-- Main Content -->
+    <main class="container mx-auto px-2 sm:px-4 mt-4 sm:mt-8 max-w-5xl">
+        
+        <!-- Invitations Section -->
+        <div class="card p-4 mb-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold">Invitations</h2>
+                <a href="#" class="text-sm text-blue-600 hover:underline">See all</a>
+            </div>
+            <div class="space-y-4">
+                <!-- Django invitations loop starts: {% for invitation in invitations %} -->
+                <!-- Sample Invitation 1 -->
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3 flex-grow min-w-0">
+                        <img src="https://placehold.co/48x48/f472b6/ffffff?text=C1" alt="Profile Picture" class="w-12 h-12 rounded-full flex-shrink-0">
+                        <div class="min-w-0">
+                            <p class="font-bold text-sm truncate">User One</p>
+                            <p class="text-xs text-gray-500 truncate">Python Developer</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-start gap-2 flex-shrink-0 ml-2">
+                        <button class="px-3 sm:px-4 py-1 rounded-full font-semibold btn-secondary text-xs sm:text-sm">Reject</button>
+                        <button class="px-3 sm:px-4 py-1 rounded-full font-semibold btn-primary text-xs sm:text-sm">Accept</button>
+                    </div>
+                </div>
+                <hr>
+                <!-- End Sample Invitation 1 -->
+
+                <!-- Sample Invitation 2 -->
+                <div class="flex items-center justify-between">
+                   <div class="flex items-center gap-3 flex-grow min-w-0">
+                        <img src="https://placehold.co/48x48/34d399/ffffff?text=C2" alt="Profile Picture" class="w-12 h-12 rounded-full flex-shrink-0">
+                        <div class="min-w-0">
+                            <p class="font-bold text-sm truncate">User Two With a Very Long Name</p>
+                            <p class="text-xs text-gray-500 truncate">UI/UX Designer and Frontend Specialist</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-start gap-2 flex-shrink-0 ml-2">
+                        <button class="px-3 sm:px-4 py-1 rounded-full font-semibold btn-secondary text-xs sm:text-sm">Reject</button>
+                        <button class="px-3 sm:px-4 py-1 rounded-full font-semibold btn-primary text-xs sm:text-sm">Accept</button>
+                    </div>
+                </div>
+                <!-- End Sample Invitation 2 -->
+                <!-- Django loop ends: {% endfor %} -->
+            </div>
+        </div>
+
+        <!-- Suggestions Section -->
+        <div class="card p-4">
+            <h2 class="text-lg font-semibold mb-4">People you may know</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                
+                <!-- Django suggestions loop starts: {% for person in suggestions %} -->
+                <!-- Sample Profile Card 1 -->
+                <div class="card profile-card text-center">
+                    <div class="h-16 bg-cover bg-center" style="background-image: url('https://placehold.co/400x100/a5b4fc/ffffff')"></div>
+                    <div class="p-4">
+                        <img src="https://placehold.co/64x64/ec4899/ffffff?text=P1" alt="Profile Picture" class="w-16 h-16 rounded-full mx-auto -mt-12 border-2 border-white">
+                        <h3 class="mt-2 font-bold text-md hover:underline cursor-pointer">Person One</h3>
+                        <p class="text-xs text-gray-500 mb-2">Project Manager</p>
+                        <p class="text-xs text-gray-500 flex items-center justify-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                            <span>5 mutual connections</span>
+                        </p>
+                        <button class="w-full mt-4 py-1.5 px-4 rounded-full font-semibold btn-secondary text-sm">Connect</button>
+                    </div>
+                </div>
+                <!-- End Sample Profile Card 1 -->
+
+                <!-- Sample Profile Card 2 -->
+                <div class="card profile-card text-center">
+                    <div class="h-16 bg-cover bg-center" style="background-image: url('https://placehold.co/400x100/93c5fd/ffffff')"></div>
+                    <div class="p-4">
+                        <img src="https://placehold.co/64x64/34d399/ffffff?text=P2" alt="Profile Picture" class="w-16 h-16 rounded-full mx-auto -mt-12 border-2 border-white">
+                        <h3 class="mt-2 font-bold text-md hover:underline cursor-pointer">Person Two</h3>
+                        <p class="text-xs text-gray-500 mb-2">Software Engineer</p>
+                        <p class="text-xs text-gray-500 flex items-center justify-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                            <span>2 mutual connections</span>
+                        </p>
+                        <button class="w-full mt-4 py-1.5 px-4 rounded-full font-semibold btn-secondary text-sm">Connect</button>
+                    </div>
+                </div>
+                <!-- End Sample Profile Card 2 -->
+                
+                <!-- Sample Profile Card 1 -->
+                <div class="card profile-card text-center">
+                    <div class="h-16 bg-cover bg-center" style="background-image: url('https://placehold.co/400x100/a5b4fc/ffffff')"></div>
+                    <div class="p-4">
+                        <img src="https://placehold.co/64x64/ec4899/ffffff?text=P1" alt="Profile Picture" class="w-16 h-16 rounded-full mx-auto -mt-12 border-2 border-white">
+                        <h3 class="mt-2 font-bold text-md hover:underline cursor-pointer">Person One</h3>
+                        <p class="text-xs text-gray-500 mb-2">Project Manager</p>
+                        <p class="text-xs text-gray-500 flex items-center justify-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                            <span>5 mutual connections</span>
+                        </p>
+                        <button class="w-full mt-4 py-1.5 px-4 rounded-full font-semibold btn-secondary text-sm">Connect</button>
+                    </div>
+                </div>
+                <!-- End Sample Profile Card 1 -->
+
+                <!-- Sample Profile Card 2 -->
+                <div class="card profile-card text-center">
+                    <div class="h-16 bg-cover bg-center" style="background-image: url('https://placehold.co/400x100/93c5fd/ffffff')"></div>
+                    <div class="p-4">
+                        <img src="https://placehold.co/64x64/34d399/ffffff?text=P2" alt="Profile Picture" class="w-16 h-16 rounded-full mx-auto -mt-12 border-2 border-white">
+                        <h3 class="mt-2 font-bold text-md hover:underline cursor-pointer">Person Two</h3>
+                        <p class="text-xs text-gray-500 mb-2">Software Engineer</p>
+                        <p class="text-xs text-gray-500 flex items-center justify-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                            <span>2 mutual connections</span>
+                        </p>
+                        <button class="w-full mt-4 py-1.5 px-4 rounded-full font-semibold btn-secondary text-sm">Connect</button>
+                    </div>
+                </div>
+                <!-- End Sample Profile Card 2 -->
+                <!-- Sample Profile Card 1 -->
+                <div class="card profile-card text-center">
+                    <div class="h-16 bg-cover bg-center" style="background-image: url('https://placehold.co/400x100/a5b4fc/ffffff')"></div>
+                    <div class="p-4">
+                        <img src="https://placehold.co/64x64/ec4899/ffffff?text=P1" alt="Profile Picture" class="w-16 h-16 rounded-full mx-auto -mt-12 border-2 border-white">
+                        <h3 class="mt-2 font-bold text-md hover:underline cursor-pointer">Person One</h3>
+                        <p class="text-xs text-gray-500 mb-2">Project Manager</p>
+                        <p class="text-xs text-gray-500 flex items-center justify-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                            <span>5 mutual connections</span>
+                        </p>
+                        <button class="w-full mt-4 py-1.5 px-4 rounded-full font-semibold btn-secondary text-sm">Connect</button>
+                    </div>
+                </div>
+                <!-- End Sample Profile Card 1 -->
+
+                <!-- Sample Profile Card 2 -->
+                <div class="card profile-card text-center">
+                    <div class="h-16 bg-cover bg-center" style="background-image: url('https://placehold.co/400x100/93c5fd/ffffff')"></div>
+                    <div class="p-4">
+                        <img src="https://placehold.co/64x64/34d399/ffffff?text=P2" alt="Profile Picture" class="w-16 h-16 rounded-full mx-auto -mt-12 border-2 border-white">
+                        <h3 class="mt-2 font-bold text-md hover:underline cursor-pointer">Person Two</h3>
+                        <p class="text-xs text-gray-500 mb-2">Software Engineer</p>
+                        <p class="text-xs text-gray-500 flex items-center justify-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                            <span>2 mutual connections</span>
+                        </p>
+                        <button class="w-full mt-4 py-1.5 px-4 rounded-full font-semibold btn-secondary text-sm">Connect</button>
+                    </div>
+                </div>
+                <!-- End Sample Profile Card 2 -->
+                <!-- Sample Profile Card 1 -->
+                <div class="card profile-card text-center">
+                    <div class="h-16 bg-cover bg-center" style="background-image: url('https://placehold.co/400x100/a5b4fc/ffffff')"></div>
+                    <div class="p-4">
+                        <img src="https://placehold.co/64x64/ec4899/ffffff?text=P1" alt="Profile Picture" class="w-16 h-16 rounded-full mx-auto -mt-12 border-2 border-white">
+                        <h3 class="mt-2 font-bold text-md hover:underline cursor-pointer">Person One</h3>
+                        <p class="text-xs text-gray-500 mb-2">Project Manager</p>
+                        <p class="text-xs text-gray-500 flex items-center justify-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                            <span>5 mutual connections</span>
+                        </p>
+                        <button class="w-full mt-4 py-1.5 px-4 rounded-full font-semibold btn-secondary text-sm">Connect</button>
+                    </div>
+                </div>
+                <!-- End Sample Profile Card 1 -->
+
+                <!-- Sample Profile Card 2 -->
+                <div class="card profile-card text-center">
+                    <div class="h-16 bg-cover bg-center" style="background-image: url('https://placehold.co/400x100/93c5fd/ffffff')"></div>
+                    <div class="p-4">
+                        <img src="https://placehold.co/64x64/34d399/ffffff?text=P2" alt="Profile Picture" class="w-16 h-16 rounded-full mx-auto -mt-12 border-2 border-white">
+                        <h3 class="mt-2 font-bold text-md hover:underline cursor-pointer">Person Two</h3>
+                        <p class="text-xs text-gray-500 mb-2">Software Engineer</p>
+                        <p class="text-xs text-gray-500 flex items-center justify-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                            <span>2 mutual connections</span>
+                        </p>
+                        <button class="w-full mt-4 py-1.5 px-4 rounded-full font-semibold btn-secondary text-sm">Connect</button>
+                    </div>
+                </div>
+                <!-- End Sample Profile Card 2 -->
+                
+                <!-- Add more cards here -->
+
+            </div>
+        </div>
+
+    </main>
+{% endblock %}
