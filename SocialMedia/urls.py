@@ -24,6 +24,7 @@ urlpatterns = [
     path('',include('accounts.urls')),
     path('',include('connections.urls')),
     path('',include('posts.urls')),
+    path('',include('notification.urls',namespace='home')),
 ]
 
 if settings.DEBUG:
