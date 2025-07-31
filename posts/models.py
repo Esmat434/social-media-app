@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 from django.conf import settings
 # Create your models here.
 
@@ -15,6 +16,9 @@ class Post(models.Model):
     class Meta:
         verbose_name = 'Post'
         verbose_name_plural = 'Posts'
+    
+    def get_absolute_url(self):
+        return reverse('home:home-feed') + f'#post-{self.pk}'
 
 class PostMedia(models.Model):
     MEDIA_TYPE_CHOICES = (
