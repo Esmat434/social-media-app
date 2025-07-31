@@ -1,10 +1,11 @@
 from django.shortcuts import render,get_object_or_404,redirect
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 
 from .models import Notification
 # Create your views here.
 
-class DeleteNotificatoinView(View):
+class DeleteNotificatoinView(LoginRequiredMixin,View):
     def post(self,request, pk):
         notification = get_object_or_404(
             Notification, 
