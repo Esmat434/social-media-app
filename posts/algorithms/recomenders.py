@@ -4,7 +4,7 @@ from django.db.models.functions import Coalesce
 from posts.models import Post
 
 def get_recomended_posts(user):
-    
+
     following = set(user.following_connections.values_list('to_user', flat=True))
     followers = set(user.follower_connections.values_list('from_user', flat=True))
     friends = following & followers
@@ -16,8 +16,8 @@ def get_recomended_posts(user):
     posts = Post.objects.filter(user__in=following)
 
     recomended_posts = posts.annotate(
-        like_count=Coalesce(Count('likes', distinct=True), Value(0)),
-        comment_count=Coalesce(Count('comments', distinct=True), Value(0)),
+        like_count=Coalesce(Count('post_like', distinct=True), Value(0)),
+        comment_count=Coalesce(Count('post_comment', distinct=True), Value(0)),
         is_friend_bonus=Case(
             When(user__in=friends, then=Value(FRIEND_BONUS)),
             default=Value(0)
