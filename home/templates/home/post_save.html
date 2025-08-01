@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+<title>Saved Items | Social Network</title>
+{% endblock %}
+
+{% block extra_styles %}
+<link rel="stylesheet" href="{% static 'home/post_save.css' %}">
+{% endblock %}    
+
+{% block content %}
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 mt-8 sm:mt-12 mb-12 main-container">
+        
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-900">Saved Items</h1>
+            <p class="mt-2 text-gray-500">Your collection of interesting posts and articles.</p>
+        </div>
+
+        <!-- List of Saved Posts -->
+        <div class="space-y-6">
+            
+            <!-- Sample Saved Post 1 -->
+            <div class="saved-post-card">
+                <!-- Post Thumbnail Image -->
+                <img src="https://placehold.co/128x128/a5b4fc/ffffff?text=Thumb" alt="Post Thumbnail" class="w-20 h-20 sm:w-32 sm:h-32 rounded-lg object-cover flex-shrink-0">
+                
+                <!-- Post Details -->
+                <div class="flex-grow">
+                    <p class="text-sm text-gray-500 mb-1">From <span class="font-semibold text-gray-700">Author Name</span></p>
+                    <h2 class="text-lg font-bold text-gray-900 hover:text-indigo-600 cursor-pointer leading-tight">
+                        A Deep Dive into Modern Web Development Trends
+                    </h2>
+                    <p class="hidden sm:block text-sm text-gray-600 mt-2">
+                        An overview of the latest technologies and methodologies shaping the future of the web...
+                    </p>
+                    <div class="mt-4 flex items-center justify-between">
+                        <p class="text-xs text-gray-400">Saved 2 days ago</p>
+                        <button class="unsave-button">Unsave</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sample Saved Post 2 -->
+            <div class="saved-post-card">
+                <!-- Post Thumbnail Image -->
+                <img src="https://placehold.co/128x128/93c5fd/ffffff?text=Thumb" alt="Post Thumbnail" class="w-20 h-20 sm:w-32 sm:h-32 rounded-lg object-cover flex-shrink-0">
+                
+                <!-- Post Details -->
+                <div class="flex-grow">
+                    <p class="text-sm text-gray-500 mb-1">From <span class="font-semibold text-gray-700">Another Author</span></p>
+                    <h2 class="text-lg font-bold text-gray-900 hover:text-indigo-600 cursor-pointer leading-tight">
+                        The Art of Minimalist UI/UX Design
+                    </h2>
+                    <p class="hidden sm:block text-sm text-gray-600 mt-2">
+                        Discover how less is more when it comes to creating intuitive and beautiful user interfaces...
+                    </p>
+                    <div class="mt-4 flex items-center justify-between">
+                        <p class="text-xs text-gray-400">Saved 1 week ago</p>
+                        <button class="unsave-button">Unsave</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sample Saved Post 3 (No Image) -->
+            <div class="saved-post-card">
+                <!-- Post Details -->
+                <div class="flex-grow">
+                    <p class="text-sm text-gray-500 mb-1">From <span class="font-semibold text-gray-700">Jane Doe</span></p>
+                    <h2 class="text-lg font-bold text-gray-900 hover:text-indigo-600 cursor-pointer leading-tight">
+                        Quick Thoughts on the Future of Remote Work
+                    </h2>
+                    <div class="mt-4 flex items-center justify-between">
+                        <p class="text-xs text-gray-400">Saved 3 weeks ago</p>
+                        <button class="unsave-button">Unsave</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+{% block content %}
