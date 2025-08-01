@@ -1,5 +1,6 @@
 from django.shortcuts import render,get_object_or_404
 from django.views import View
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from connections.models import (
     Connection
@@ -9,10 +10,14 @@ from connections.algorithms.FriendsConnections import (
 )
 
 from posts.models import (
-    Post
+    Post,Save
 )
 from posts.algorithms.recomenders import (
     get_recomended_posts
+)
+
+from notification.models import (
+    Notification
 )
 
 class PostListView(View):
@@ -50,3 +55,20 @@ class NetworkListView(View):
 
         return render(request,'home/network.html',context=context)
 
+class NotificationListView(View):
+    def get(self,request):
+        notifications = Notification.objects.filter(recipient=request.user)
+
+        context = {
+            'notifications':notifications
+        }
+        return render(request,'home/notification.html',context=context)
+
+class SaveListView(LoginRequiredMixin,View):
+    def get(self,request):
+        post_save = Save.objects.filter(user=request.user)
+
+        context = {
+            'posts':post_save
+        }
+        return render(request,'home/post_save.html',context=context)
