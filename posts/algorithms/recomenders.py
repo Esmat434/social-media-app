@@ -5,9 +5,9 @@ from posts.models import Post
 
 def get_recomended_posts(user):
     
-    following = user.following.all()
-    followers = user.followers.all()
-    friends = following.intersection(followers)
+    following = set(user.following_connections.values_list('to_user', flat=True))
+    followers = set(user.follower_connections.values_list('from_user', flat=True))
+    friends = following & followers
 
     FRIEND_BONUS = 15
     LIKE_WEIGHT = 1
