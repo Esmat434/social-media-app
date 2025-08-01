@@ -1,0 +1,41 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f8f9fa;
+    /* A lighter, cleaner background */
+}
+
+.main-container {
+    max-width: 800px;
+}
+
+.saved-post-card {
+    background-color: white;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+    padding: 1.5rem;
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    transition: all 0.3s ease;
+}
+
+.saved-post-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.07);
+    border-color: #dee2e6;
+}
+
+.unsave-button {
+    background-color: #f1f3f5;
+    color: #495057;
+    border-radius: 9999px;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+}
+
+.unsave-button:hover {
+    background-color: #e9ecef;
+    color: #212529;
+}
