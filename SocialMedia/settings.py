@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'connections',
     'posts',
     'notification',
+    'home',
 ]
 
 MIDDLEWARE = [
