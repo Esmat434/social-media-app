@@ -1,212 +1,416 @@
-{% extends 'base.html' %}
-{% load static %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | Modern Social Network</title>
 
-{% block title %}
-    Homepage | Social Network
-{% endblock %}
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-{% block extra_styles %}
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/htmx/2.0.6/htmx.min.js">
     <!-- Custom Styles -->
-    <link rel="stylesheet" href="{% static 'home/home.css' %}">
-{% endbock %}
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f7f8; /* A very light grey for a premium feel */
+        }
+        .main-container {
+            max-width: 1200px;
+        }
+        .card {
+            background-color: white;
+            border-radius: 12px; /* Softer corners */
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+        }
+        .post-card {
+            transition: box-shadow 0.3s ease;
+        }
+        .post-card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+        }
+        .action-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #4b5563; /* Darker grey for better contrast */
+            transition: background-color 0.2s ease;
+            cursor: pointer;
+        }
+        .action-button:hover {
+            background-color: #f3f4f6;
+        }
+        .btn-primary-soft {
+            background-color: #e0e7ff;
+            color: #3730a3;
+            font-weight: 600;
+        }
+        .btn-primary-soft:hover {
+            background-color: #c7d2fe;
+        }
+        /* Styles for new elements */
+        .dropdown-menu {
+            display: none;
+            animation: fadeInScale 0.1s ease-out;
+        }
+        .dropdown-menu.open {
+            display: block;
+        }
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .comments-section {
+            display: none;
+            animation: slideDown 0.3s ease-out;
+        }
+        .comments-section.open {
+            display: block;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .reply-form {
+            animation: slideDown 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="text-gray-900">
 
-{% block content %}
-    <!-- Main Content -->
-    <main class="container mx-auto px-2 sm:px-4 mt-4 sm:mt-8">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-
-            <!-- Left Column (User Profile) -->
-            <aside class="lg:col-span-3 hidden lg:block">
-                <div class="card text-center sticky top-24">
-                    <div class="h-20 bg-cover bg-center" style="background-image: url('https://placehold.co/600x150/a5b4fc/ffffff?text=Banner')"></div>
-                    <div class="p-4">
-                        <img src="https://placehold.co/80x80/6366f1/ffffff?text=U" alt="Profile Picture" class="w-20 h-20 rounded-full mx-auto -mt-14 border-4 border-white">
-                        <h2 class="mt-2 text-lg font-bold hover:underline cursor-pointer">User Name</h2>
-                        <p class="text-sm text-gray-500">Web Developer at Sample Co.</p>
-                    </div>
-                    <hr>
-                    <div class="p-4 text-sm text-gray-600 text-left">
-                        <div class="flex justify-between items-center py-2 hover:bg-gray-100 rounded-lg px-2 cursor-pointer">
-                            <span>Who's viewed your profile</span>
-                            <span class="font-bold text-blue-600">123</span>
+    <!-- Header / Navbar -->
+    <header class="bg-white sticky top-0 z-50 border-b border-gray-200">
+        <div class="container mx-auto px-4 main-container">
+            <div class="flex justify-between items-center py-3">
+                <!-- Left Side: Logo and Search -->
+                <div class="flex items-center gap-6">
+                    <a href="#" class="text-2xl font-bold text-indigo-700">Connect</a>
+                    <!-- Updated Search Form -->
+                    <form class="hidden md:flex items-center">
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
+                            </span>
+                            <input type="text" placeholder="Search" class="bg-gray-100 border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:bg-white rounded-l-full py-2 pl-10 pr-4 w-64 transition border">
                         </div>
-                        <div class="flex justify-between items-center py-2 hover:bg-gray-100 rounded-lg px-2 cursor-pointer">
-                            <span>Impressions of your post</span>
-                            <span class="font-bold text-blue-600">456</span>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="p-4 text-left">
-                        <p class="text-sm font-semibold">My Items</p>
-                    </div>
-                </div>
-            </aside>
-
-            <!-- Center Column (Main Feed) -->
-            <div class="lg:col-span-6">
-                <!-- New Search Section -->
-                <div class="card p-4 mb-6">
-                    <form action="/search/" method="get" class="flex items-center gap-2 sm:gap-3 w-full">
-                        <input type="search" name="q" placeholder="Search..." class="flex-grow bg-gray-100 border border-gray-300 rounded-full py-2 px-4 focus:ring-2 focus:ring-blue-500 focus:outline-none transition text-sm sm:text-base">
-                        <button type="submit" class="bg-blue-600 text-white font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-full hover:bg-blue-700 transition-colors">
+                        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-r-full hover:bg-indigo-700 transition-colors border border-indigo-600 -ml-1 font-semibold">
                             Search
                         </button>
                     </form>
                 </div>
+                <!-- Right Side: Navigation and Profile -->
+                <nav class="flex items-center gap-4">
+                    <a href="{% url 'home:home-feed' %}" class="nav-link active flex flex-col items-center justify-center text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400" title="Home">
+                        <!-- Solid icon for active state, outline for others -->
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7">
+                            <path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z" />
+                            <path d="M12 5.432l8.159 8.159c.026.026.05.054.07.084v6.101A2.25 2.25 0 0117.75 22H6.25a2.25 2.25 0 01-2.25-2.25V13.675a.75.75 0 01.07-.084l8.159-8.159zM12 7.932L6.75 13.182V20h10.5V13.182L12 7.932z" />
+                        </svg>
+                        <span class="text-xs font-medium mt-1">Home</span>
+                    </a>
 
-                <div class="flex items-center gap-2 my-4">
-                    <hr class="flex-grow border-t border-gray-300">
-                    <span class="text-xs text-gray-500">Sort by: <span class="font-bold">Recent</span></span>
-                </div>
+                    <!-- My Network Link -->
+                    <a href="{% url 'home:networks' %}" class="nav-link flex flex-col items-center justify-center text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400" title="My Network">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m-7.5-2.962A3.75 3.75 0 0112 15v-2.25L9.375 9.75M9 11.25v2.25a3.75 3.75 0 01-3.75 3.75v-2.25m1.5-1.5l-1.5-1.5m0 0a3.75 3.75 0 015.25 0l1.5 1.5m-5.25 0l1.5 1.5m3-3l1.5-1.5m-1.5 1.5l-1.5-1.5m-3 3l-1.5-1.5m6.75 1.5l-1.5-1.5m-3.75-1.5a3.75 3.75 0 015.25 0m-5.25 0a3.75 3.75 0 01-5.25 0m5.25 0l-1.5-1.5m-1.5 1.5l-1.5-1.5" />
+                        </svg>
+                        <span class="text-xs font-medium mt-1">Network</span>
+                    </a>
 
-                <!-- Django post loop start: {% for post in posts %} -->
-                <div class="card mb-4">
-                    <!-- Post Header with conditional connect button / 3-dot menu -->
-                    <div class="p-4 flex items-start gap-3">
-                        <img src="https://placehold.co/48x48/ec4899/ffffff?text=A" alt="Author's profile picture" class="w-12 h-12 rounded-full">
-                        <div class="flex-grow">
-                            <p class="font-bold hover:underline cursor-pointer">Post Author</p>
-                            <p class="text-xs text-gray-500">Author's Job Title • 2h ago</p>
-                        </div>
-                        
-                        <!-- Conditional Button/Menu: Django logic required -->
-                        <!-- {% if user_is_not_connected_to_post_author %} -->
-                        <button class="ml-auto bg-blue-100 text-blue-600 font-semibold px-3 py-1.5 text-sm rounded-full hover:bg-blue-200 transition-colors flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-plus-fill" viewBox="0 0 16 16">
-                              <path d="M1 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-                              <path fill-rule="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5z"/>
-                            </svg>
-                            <span class="hidden sm:inline">Connect</span>
-                        </button>
-                        <!-- {% else %} -->
-                        <!-- 3-dot menu for connected users -->
-                        <div class="relative ml-auto">
-                            <button class="p-2 rounded-full hover:bg-gray-200" data-menu-button="1">
-                                <svg class="w-5 h-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16">
-                                    <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
-                                </svg>
-                            </button>
-                            <!-- Dropdown Menu -->
-                            <div id="post-menu-1" class="dropdown-menu absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-20 hidden">
-                                <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
-                                    <span>Save</span>
-                                </a>
-                                <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7.5" r="4.5"></circle><line x1="23" y1="11" x2="17" y2="17"></line><line x1="17" y1="11" x2="23" y2="17"></line></svg>
-                                    <span>Unfollow</span>
-                                </a>
-                            </div>
-                        </div>
-                        <!-- {% endif %} -->
-                    </div>
+                    <!-- Create Post Link -->
+                    <a href="{% url 'mvt_posts:create_post' %}" class="nav-link flex flex-col items-center justify-center text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400" title="Create Post">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span class="text-xs font-medium mt-1">Post</span>
+                    </a>
 
-                    <div class="px-4 pb-2">
-                        <p>This is a sample post content. Designing a homepage that resembles and improves upon LinkedIn is an exciting challenge.</p>
+                    <!-- Messaging Link -->
+                    <a href="#" class="nav-link flex flex-col items-center justify-center text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400" title="Messaging">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                        </svg>
+                        <span class="text-xs font-medium mt-1">Messaging</span>
+                    </a>
+                    <!-- Notifications Link -->
+                    <a href="{% url 'home:notifications' %}" class="nav-link relative flex flex-col items-center justify-center text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400" title="Notifications">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                        </svg>
+                        <span class="text-xs font-medium mt-1">Notifications</span>
+                        <!-- Notification Badge -->
+                        <span class="absolute top-0 right-0 -mt-1 -mr-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">3</span>
+                    </a>
+                    <div class="relative">
+                        {% if request.user.avatar %}
+                            <img src="{{ request.user.avatar.url }}" alt="Profile Picture" class="w-10 h-10 rounded-full cursor-pointer">
+                        {% else %}
+                            <img src="https://placehold.co/40x40/7048e8/ffffff?text=U" alt="Profile Picture" class="w-10 h-10 rounded-full cursor-pointer">
+                        {% endif %}
                     </div>
-                    <img src="https://placehold.co/1200x800/d8b4fe/7e22ce?text=Post+Image" alt="Post image" class="w-full">
-                    <div class="p-4 flex justify-between items-center text-xs text-gray-500">
-                        <span>15 Likes</span>
-                        <span>4 Comments</span>
-                    </div>
-                    <hr class="mx-4">
-                    <div class="flex justify-around p-1 text-xs sm:text-sm">
-                        <div class="action-button">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
-                            <span>Like</span>
-                        </div>
-                         <div class="action-button comment-button" data-post-id="1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                            <span>Comment</span>
-                        </div>
-                         <div class="action-button">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"></path><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><path d="M7 23l-4-4 4-4"></path><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
-                            <span>Repost</span>
-                        </div>
-                         <div class="action-button">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                            <span>Send</span>
-                        </div>
-                    </div>
-                    
-                    <!-- Comments Section (Initially Hidden) -->
-                    <div id="comments-section-1" class="p-4 border-t border-gray-200 comments-section" style="display: none;">
-                        <div class="flex items-start gap-3 mb-4">
-                            <img src="https://placehold.co/40x40/6366f1/ffffff?text=U" alt="Your Profile Picture" class="w-10 h-10 rounded-full">
-                            <div class="flex-grow">
-                                <textarea class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition" rows="2" placeholder="Add a comment..."></textarea>
-                                <div class="text-right mt-2">
-                                    <button class="bg-blue-600 text-white font-semibold px-4 py-1.5 rounded-full hover:bg-blue-700 disabled:bg-blue-300 transition-colors">Post</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="space-y-4">
-                            <div class="flex items-start gap-3">
-                                <img src="https://placehold.co/40x40/f472b6/ffffff?text=C1" alt="Commenter's Picture" class="w-10 h-10 rounded-full">
-                                <div class="bg-gray-100 p-3 rounded-lg flex-grow">
-                                    <p class="font-bold text-sm hover:underline cursor-pointer">Commenter One</p>
-                                    <p class="text-sm">This is a great post! Very insightful.</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-3">
-                                <img src="https://placehold.co/40x40/34d399/ffffff?text=C2" alt="Commenter's Picture" class="w-10 h-10 rounded-full">
-                                <div class="bg-gray-100 p-3 rounded-lg flex-grow">
-                                    <p class="font-bold text-sm hover:underline cursor-pointer">Commenter Two</p>
-                                    <p class="text-sm">Thanks for sharing this. I learned a lot.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- End of post loop: {% endfor %} -->
-
+                </nav>
             </div>
+        </div>
+    </header>
 
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 mt-6 sm:mt-8 main-container">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            {% if request.user.is_authenticated %}
+                <!-- Left Sidebar -->
+                <aside class="lg:col-span-3 hidden lg:block space-y-6 sticky top-24 self-start">
+                    <!-- Profile Card -->
+                    <div class="card p-4 text-center">
+                        {% if request.user.avatar %}
+                            <img src="{{ request.user.avatar.url }}" alt="Profile Picture" class="w-20 h-20 rounded-full mx-auto border-4 border-white shadow-md">
+                        {% else %}
+                            <img src="https://placehold.co/80x80/7048e8/ffffff?text=U" alt="Profile Picture" class="w-20 h-20 rounded-full mx-auto border-4 border-white shadow-md">
+                        {% endif %}    
+                        <h2 class="mt-2 text-lg font-bold">{{ request.user.username}}</h2>
+                        <a href="{% url 'mvt:profile' request.user.username %}" class="mt-4 w-full py-2 px-4 rounded-full font-semibold btn-primary-soft text-sm">View Profile</button>
+                    </div>
+                    <!-- Quick Links Card -->
+                    <div class="card p-4">
+                        <h3 class="font-bold mb-3">Quick Links</h3>
+                        <nav class="">
+                            <a href="{% url 'home:saves' %}" class="flex items-center gap-3 p-2 hover:bg-gray-100 rounded-lg"><span>Saved Posts</span></a>
+                        </nav>
+                    </div>
+                </aside>
+            {% endif %}
+
+            <!-- Center Feed -->
+            <div class="lg:col-span-6">
+                <!-- Create Post Card -->
+                <div class="card p-4 mb-6">
+                    <div class="flex items-center gap-3">
+                        {% if request.user.avatar %}
+                            <img src="{{ request.user.avatar.url }}" alt="Profile Picture" class="w-12 h-12 rounded-full">
+                        {% else %}
+                            <img src="https://placehold.co/48x48/7048e8/ffffff?text=U" alt="Profile Picture" class="w-12 h-12 rounded-full">
+                        {% endif %}    
+                        <button class="flex-grow text-left bg-gray-100 hover:bg-gray-200 rounded-full py-3 px-4 text-gray-500 font-medium">Start a post...</button>
+                    </div>
+                </div>
+
+                <!-- Post 1 -->
+                {% for post in best_posts %}
+                    <article class="card post-card mb-6">
+                        <div class="p-5">
+                            <div class="flex items-start gap-3 mb-4">
+                                {% if post.user.avatar %}
+                                    <img src="{{ post.user.avatar.url }}" alt="Author's profile picture" class="w-12 h-12 rounded-full flex-shrink-0">
+                                {% else %}
+                                    <img src="https://placehold.co/48x48/10b981/ffffff?text=A" alt="Author's profile picture" class="w-12 h-12 rounded-full flex-shrink-0">
+                                {% endif %}    
+                                <div class="flex-grow">
+                                    <p class="font-bold">{{ post.user.username }}</p>
+                                    <p class="text-xs text-gray-500">{{ post.created_at }}</p>
+                                </div>
+                                <button
+                                    hx-post="{% url 'connect_user' user.id %}" 
+                                    hx-target="this" 
+                                    hx-swap="outerHTML"
+ 
+                                    class="ml-auto mr-2 px-3 py-1 text-sm rounded-full font-semibold border border-indigo-600 text-indigo-600 hover:bg-indigo-50 flex items-center gap-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 11a1 1 0 100-2 1 1 0 000 2z" /><path d="M16 11a1 1 0 100-2 1 1 0 000 2z" /></svg>
+                                    <span>Connect</span>
+                                </button>
+                                <div class="relative">
+                                    <button class="p-2 rounded-full hover:bg-gray-100 post-menu-button">
+                                        <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/></svg>
+                                    </button>
+                                    <div class="dropdown-menu absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10">
+                                        <a
+                                        hx-post="{% url 'mvt_connection:follow_private_request' user.username %}" 
+                                        hx-target="this" 
+                                        hx-swap="outerHTML"
+ 
+                                        href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-3.13L5 18V4z" /></svg>
+                                            <span>Save</span>
+                                        </a>
+                                        <a 
+                                            hx-post="{% url 'mvt_connection:un-follow' request.user.username %}" 
+                                            hx-target="this" 
+                                            hx-swap="outerHTML"
+                                            href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.022 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" /></svg>
+                                            <span
+                                                hx-post="{% url 'connect_user' user.id %}" 
+                                                hx-target="this" 
+                                                hx-swap="outerHTML">
+                                                Unfollow
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-gray-700 leading-relaxed">{{ post.content }}</p>
+                        </div>
+                        {% if post.post_media.all %}
+                           {% with media=post.post_media.all.first %}
+                                {% if media.media_type == 'image' %}
+                                    <!-- اگر نوع مدیا 'image' باشد، این بخش تصویر را نمایش می‌دهد -->
+                                    <div class="mt-3">
+                                        <img src="{{ media.file.url }}" alt="Post image" class="w-full h-auto rounded-lg object-cover">
+                                    </div>
+                                {% elif media.media_type == 'video' %}
+                                    <!-- اگر نوع مدیا 'video' باشد، این بخش ویدیو را به همراه کنترل‌ها نمایش می‌دهد -->
+                                    <div class="mt-3">
+                                        <video controls class="w-full h-auto rounded-lg">
+                                            <source src="{{ media.file.url }}" type="video/mp4">
+                                            مرورگر شما از تگ ویدیو پشتیبانی نمی‌کند. (Your browser does not support the video tag.)
+                                        </video>
+                                    </div>
+                                {% endif %}
+                            {% endwith %}
+                        {% endif %}        
+                        <div class="p-3 border-t flex justify-around">
+                            <div class="action-button"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3zM7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3" /></svg><span>Like</span></div>
+                            <div class="action-button comment-toggle-button"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 5.523-4.477 10-10 10S1 17.523 1 12 5.477 2 11 2s10 4.477 10 10z" /></svg><span>Comment</span></div>
+                            <div class="action-button"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5M5.5 9.5L4 11m5.5-1.5L11 11m0 0l-1.5 1.5M11 11l1.5-1.5m0 0l1.5 1.5M11 11l1.5 1.5M12 2.252A8.014 8.014 0 0117.748 8H12V2.252zM17.748 8a8.014 8.014 0 01-5.748 5.748V8h5.748zM8 17.748A8.014 8.014 0 012.252 12H8v5.748zM8 12A8.014 8.014 0 0113.748 6.252V12H8z" /></svg><span>Repost</span></div>
+                        </div>
+                        <!-- Comments Section -->
+                        <div class="comments-section bg-gray-50 p-5 border-t">
+                            <!-- New Comment Form -->
+                            <div class="flex items-start gap-3 mb-5">
+                                <img src="https://placehold.co/40x40/7048e8/ffffff?text=U" alt="Your profile picture" class="w-10 h-10 rounded-full">
+                                <div class="flex-grow">
+                                    <textarea class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition comment-input" rows="1" placeholder="Add a comment..."></textarea>
+                                    <div class="text-right mt-2">
+                                        <button class="bg-indigo-600 text-white font-semibold px-4 py-1.5 rounded-full hover:bg-indigo-700 transition-colors text-sm disabled:bg-indigo-300 disabled:cursor-not-allowed" disabled>Post</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Existing Comments -->
+                            <div class="space-y-4">
+                                <!-- Comment 1 -->
+                                <div class="flex items-start gap-3">
+                                    <img src="https://placehold.co/40x40/f97316/ffffff?text=C1" alt="Commenter's picture" class="w-10 h-10 rounded-full">
+                                    <div class="flex-grow">
+                                        <p class="font-semibold text-sm">Commenter One</p>
+                                        <p class="text-sm text-gray-700">This is a great design! Very clean.</p>
+                                        <button class="text-xs font-bold text-gray-500 hover:underline mt-1 reply-button">Reply</button>
+                                    </div>
+                                </div>
+                                <!-- Comment 2 with a visible reply -->
+                                <div class="flex items-start gap-3">
+                                    <img src="https://placehold.co/40x40/10b981/ffffff?text=C2" alt="Commenter's picture" class="w-10 h-10 rounded-full">
+                                    <div class="flex-grow">
+                                        <p class="font-semibold text-sm">Commenter Two</p>
+                                        <p class="text-sm text-gray-700">I agree, the use of whitespace is excellent.</p>
+                                        <button class="text-xs font-bold text-gray-500 hover:underline mt-1 reply-button">Reply</button>
+                                        <!-- Visible Reply -->
+                                        <div class="flex items-start gap-3 mt-3">
+                                            <img src="https://placehold.co/32x32/10b981/ffffff?text=A" alt="Author's reply picture" class="w-8 h-8 rounded-full">
+                                            <div>
+                                                <p class="font-semibold text-sm">Author One</p>
+                                                <p class="text-sm text-gray-700">Thanks for the feedback!</p>
+                                                <button class="text-xs font-bold text-gray-500 hover:underline mt-1 reply-button">Reply</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
         </div>
     </main>
-{% endblock %}
-{% block extra_scripts %}
+    
+    <!-- Hidden Reply Form Template -->
+    <div id="reply-form-template" class="hidden">
+        <div class="flex items-start gap-3 mt-3 reply-form">
+            <img src="https://placehold.co/32x32/7048e8/ffffff?text=U" alt="Your reply picture" class="w-8 h-8 rounded-full">
+            <div class="flex-grow">
+                <textarea class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition text-sm" rows="1" placeholder="Write a reply..."></textarea>
+                <div class="text-right mt-2">
+                    <button class="bg-indigo-600 text-white font-semibold px-3 py-1 rounded-full hover:bg-indigo-700 transition-colors text-xs">Post</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Toggle comments section
-            const commentButtons = document.querySelectorAll('.comment-button');
-            commentButtons.forEach(button => {
+            // Toggle post options menu (3-dot)
+            document.querySelectorAll('.post-menu-button').forEach(button => {
                 button.addEventListener('click', (event) => {
                     event.stopPropagation();
-                    const postId = button.getAttribute('data-post-id');
-                    const commentsSection = document.getElementById(`comments-section-${postId}`);
-                    if (commentsSection) {
-                        commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
+                    const menu = button.nextElementSibling;
+                    document.querySelectorAll('.dropdown-menu.open').forEach(openMenu => {
+                        if (openMenu !== menu) openMenu.classList.remove('open');
+                    });
+                    menu.classList.toggle('open');
+                });
+            });
+
+            // Toggle comments section
+            document.querySelectorAll('.comment-toggle-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const postCard = button.closest('.post-card');
+                    const commentsSection = postCard.querySelector('.comments-section');
+                    commentsSection.classList.toggle('open');
+                });
+            });
+
+            // Enable/disable post button on main comment input
+            document.querySelectorAll('.comment-input').forEach(textarea => {
+                const postButton = textarea.nextElementSibling.querySelector('button');
+                textarea.addEventListener('input', () => {
+                    if (textarea.value.trim() !== '') {
+                        postButton.disabled = false;
+                    } else {
+                        postButton.disabled = true;
                     }
                 });
             });
 
-            // Toggle post options menu (3-dot)
-            const menuButtons = document.querySelectorAll('[data-menu-button]');
-            menuButtons.forEach(button => {
-                button.addEventListener('click', (event) => {
-                    event.stopPropagation(); // Prevent this click from closing the menu immediately
-                    const postId = button.dataset.menuButton;
-                    const menu = document.getElementById(`post-menu-${postId}`);
-                    
-                    // Close all other open menus before opening the new one
-                    document.querySelectorAll('.dropdown-menu').forEach(m => {
-                        if (m.id !== `post-menu-${postId}`) {
-                            m.classList.add('hidden');
+            // Handle reply button clicks
+            document.querySelectorAll('.comments-section').forEach(commentSection => {
+                commentSection.addEventListener('click', (event) => {
+                    if (event.target.classList.contains('reply-button')) {
+                        const commentDiv = event.target.closest('.flex-grow');
+                        
+                        // Remove any existing reply form in this comment thread
+                        const existingReplyForm = commentDiv.querySelector('.reply-form');
+                        if (existingReplyForm) {
+                            existingReplyForm.remove();
+                            return; // Just close if it's already open
                         }
-                    });
 
-                    // Toggle the clicked menu
-                    menu.classList.toggle('hidden');
+                        // Clone the template
+                        const template = document.getElementById('reply-form-template');
+                        const replyForm = template.firstElementChild.cloneNode(true);
+                        
+                        // Append and focus
+                        commentDiv.appendChild(replyForm);
+                        replyForm.querySelector('textarea').focus();
+                    }
                 });
             });
 
-            // Close all menus when clicking anywhere on the page
-            window.addEventListener('click', () => {
-                document.querySelectorAll('.dropdown-menu').forEach(menu => {
-                    menu.classList.add('hidden');
-                });
+            // Close menus when clicking anywhere else
+            window.addEventListener('click', (event) => {
+                if (!event.target.closest('.post-menu-button')) {
+                    document.querySelectorAll('.dropdown-menu.open').forEach(openMenu => {
+                        openMenu.classList.remove('open');
+                    });
+                }
             });
         });
     </script>
-{% endblock %}
+</body>
+</html>
