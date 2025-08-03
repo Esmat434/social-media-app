@@ -36,6 +36,8 @@ class PostForm(forms.ModelForm):
 class PostMediaForm(forms.ModelForm):
     VIDEO_TYPES = ['mp4','mkv','avi','webm']
     IMAGE_TYPES = ['jpg','jpeg','png','gif','svg','avif']
+
+    file = forms.FileField(required=False)
     class Meta:
         model = PostMedia
         fields = (
