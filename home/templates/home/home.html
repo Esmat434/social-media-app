@@ -202,8 +202,8 @@
                     </div>
                 </div>
 
-                <!-- Post 1 -->
-                {% for post in best_posts %}
+                <!-- Other Posts -->
+                {% for post in other_posts %}
                     <article class="card post-card mb-6">
                         <div class="p-5">
                             <div class="flex items-start gap-3 mb-4">
@@ -216,44 +216,37 @@
                                     <p class="font-bold">{{ post.user.username }}</p>
                                     <p class="text-xs text-gray-500">{{ post.created_at }}</p>
                                 </div>
-                                <button
-                                    hx-post="{% url 'connect_user' user.id %}" 
-                                    hx-target="this" 
-                                    hx-swap="outerHTML"
- 
-                                    class="ml-auto mr-2 px-3 py-1 text-sm rounded-full font-semibold border border-indigo-600 text-indigo-600 hover:bg-indigo-50 flex items-center gap-1">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 11a1 1 0 100-2 1 1 0 000 2z" /><path d="M16 11a1 1 0 100-2 1 1 0 000 2z" /></svg>
-                                    <span>Connect</span>
-                                </button>
-                                <div class="relative">
-                                    <button class="p-2 rounded-full hover:bg-gray-100 post-menu-button">
-                                        <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/></svg>
-                                    </button>
-                                    <div class="dropdown-menu absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10">
-                                        <a
-                                        hx-post="{% url 'mvt_connection:follow_private_request' user.username %}" 
-                                        hx-target="this" 
-                                        hx-swap="outerHTML"
- 
-                                        href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-3.13L5 18V4z" /></svg>
-                                            <span>Save</span>
-                                        </a>
-                                        <a 
-                                            hx-post="{% url 'mvt_connection:un-follow' request.user.username %}" 
-                                            hx-target="this" 
-                                            hx-swap="outerHTML"
-                                            href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.022 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" /></svg>
-                                            <span
-                                                hx-post="{% url 'connect_user' user.id %}" 
-                                                hx-target="this" 
-                                                hx-swap="outerHTML">
-                                                Unfollow
-                                            </span>
-                                        </a>
+                                {% if request.user.is_authenticated %}
+                                    {% if post.user != request.user and  %}
+                                        <button id="connect-btn"
+                                            class="ml-auto mr-2 px-3 py-1 text-sm rounded-full font-semibold border border-indigo-600 text-indigo-600 hover:bg-indigo-50 flex items-center gap-1"
+                                            data-url="{% url 'mvt_connection:follow-private-request' request.user.username %}"
+                                            data-user-id="{{ request.user.username }}">
+
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                                <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 11a1 1 0 100-2 1 1 0 000 2z" />
+                                            </svg>
+                                            <span>Connect</span>
+                                        </button>
+                                    {% endif %}
+                                    <div class="relative">
+                                        <button class="p-2 rounded-full hover:bg-gray-100 post-menu-button">
+                                            <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/></svg>
+                                        </button>
+                                        <div class="dropdown-menu absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10">
+                                            <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-3.13L5 18V4z" /></svg>
+                                                <span>Save</span>
+                                            </a>
+                                            <a href="#" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.022 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" /></svg>
+                                                <span>
+                                                    Unfollow
+                                                </span>
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>
+                                {% endif %}
                             </div>
                             <p class="text-gray-700 leading-relaxed">{{ post.content }}</p>
                         </div>
@@ -344,6 +337,47 @@
 
 
     <script>
+        // Connect Button Fetch
+        document.addEventListener("DOMContentLoaded", function () {
+        const btn = document.getElementById("connect-btn");
+        if (!btn) return;  // اگر پیدا نشد از خطا جلوگیری کن
+
+        btn.addEventListener("click", function () {
+            const url = btn.dataset.url;
+            const userId = btn.dataset.userId;
+            console.log(url)
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ user_id: userId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(err => console.error(err));
+            });
+        });
+
+        // گرفتن CSRF از کوکی (برای Django)
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             // Toggle post options menu (3-dot)
             document.querySelectorAll('.post-menu-button').forEach(button => {
