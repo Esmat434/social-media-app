@@ -96,7 +96,7 @@ class CommentForm(forms.ModelForm):
             'comment',
         )
         widgets = {
-            'comment':forms.TextInput(attrs={'class':'comment-form w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition comment-input', 'placeholder':'Enter your comment.'})
+            'comment':forms.TextInput(attrs={'class':'comment-input w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition comment-input', 'placeholder':'Enter your comment.'})
         }
     
     def clean_comment(self):
