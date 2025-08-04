@@ -219,10 +219,10 @@
                                 </div>
                                 {% if request.user.is_authenticated %}
                                     {% if post.user != request.user and not post.user|is_connected:request.user and not post.user|is_pending:request.user %}
-                                        <button id="connect-btn"
-                                            class="ml-auto mr-2 px-3 py-1 text-sm rounded-full font-semibold border border-indigo-600 text-indigo-600 hover:bg-indigo-50 flex items-center gap-1"
-                                            data-url="{% url 'mvt_connection:follow-private-request' request.user.username %}"
-                                            data-user-id="{{ request.user.username }}">
+                                        <button
+                                            class="connect-btn ml-auto mr-2 px-3 py-1 text-sm rounded-full font-semibold border border-indigo-600 text-indigo-600 hover:bg-indigo-50 flex items-center gap-1"
+                                            data-url="{% url 'mvt_connection:follow-private-request' post.user.username %}"
+                                            data-user-id="{{ post.user.username }}">
 
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                                                 <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 11a1 1 0 100-2 1 1 0 000 2z" />
@@ -235,18 +235,18 @@
                                             <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/></svg>
                                         </button>
                                         <div class="dropdown-menu absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10">
-                                            <a href="#" id="save-btn" 
-                                                class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                            <a href="#" 
+                                                class="save-btn items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                                 data-url="{% url 'mvt_posts:create_save' post.id %}"
                                                 data-user-id="{{ post.id }}">
                                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-3.13L5 18V4z" /></svg>
                                                 <span>Save</span>
                                             </a>
                                             {% if post.user != request.user and post.user|is_connected:request.user and not post.user|is_pending:request.user %}
-                                                <a href="#" id="un-follow-btn"
-                                                    class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                                    data-url="{% url 'mvt_connection:un-follow' request.user.username %}"
-                                                    data-user-id="{{ request.user.username }}">
+                                                <a href="#"
+                                                    class="un-follow-btn flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                    data-url="{% url 'mvt_connection:un-follow' post.user.username %}"
+                                                    data-user-id="{{ post.user.username }}">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.022 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" /></svg>
                                                     <span>
                                                         Unfollow
@@ -278,15 +278,23 @@
                             {% endwith %}
                         {% endif %}        
                         <div class="p-3 border-t flex justify-around">
-                            <div class="action-button"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3zM7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3" /></svg><span>Like</span></div>
-                            <div class="action-button comment-toggle-button"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 5.523-4.477 10-10 10S1 17.523 1 12 5.477 2 11 2s10 4.477 10 10z" /></svg><span>Comment</span></div>
-                            <div class="action-button"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5M5.5 9.5L4 11m5.5-1.5L11 11m0 0l-1.5 1.5M11 11l1.5-1.5m0 0l1.5 1.5M11 11l1.5 1.5M12 2.252A8.014 8.014 0 0117.748 8H12V2.252zM17.748 8a8.014 8.014 0 01-5.748 5.748V8h5.748zM8 17.748A8.014 8.014 0 012.252 12H8v5.748zM8 12A8.014 8.014 0 0113.748 6.252V12H8z" /></svg><span>Repost</span></div>
+                            <div class="action-button like-btn"
+                                data-url="{% url 'mvt_posts:create_like' post.id %}"
+                                data-user-id="{{ post.id }}"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3zM7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3" /></svg><span>{{ post.post_like.count }}</span></div>
+                            <div class="action-button comment-toggle-button"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 5.523-4.477 10-10 10S1 17.523 1 12 5.477 2 11 2s10 4.477 10 10z" /></svg><span>{{ post.post_comment.count}}</span></div>
+                            <div class="action-button share-btn"
+                                data-url="{% url 'mvt_posts:create_share' post.id %}"
+                                data-user-id="{{ post.id }}"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5M5.5 9.5L4 11m5.5-1.5L11 11m0 0l-1.5 1.5M11 11l1.5-1.5m0 0l1.5 1.5M11 11l1.5 1.5M12 2.252A8.014 8.014 0 0117.748 8H12V2.252zM17.748 8a8.014 8.014 0 01-5.748 5.748V8h5.748zM8 17.748A8.014 8.014 0 012.252 12H8v5.748zM8 12A8.014 8.014 0 0113.748 6.252V12H8z" /></svg><span>{{ post.post_share.count }}</span></div>
                         </div>
                         <!-- Comments Section -->
                         <div class="comments-section bg-gray-50 p-5 border-t">
                             <!-- New Comment Form -->
                             <div class="flex items-start gap-3 mb-5">
-                                <img src="https://placehold.co/40x40/7048e8/ffffff?text=U" alt="Your profile picture" class="w-10 h-10 rounded-full">
+                                {% if request.user.avatar %}
+                                    <img src="{{ request.user.avatar.url }}" alt="Your profile picture" class="w-10 h-10 rounded-full">
+                                {% else %}
+                                    <img src="https://placehold.co/40x40/7048e8/ffffff?text=U" alt="Your profile picture" class="w-10 h-10 rounded-full">
+                                {% endif %}    
                                 <div class="flex-grow">
                                     <textarea class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition comment-input" rows="1" placeholder="Add a comment..."></textarea>
                                     <div class="text-right mt-2">
@@ -296,33 +304,36 @@
                             </div>
                             <!-- Existing Comments -->
                             <div class="space-y-4">
-                                <!-- Comment 1 -->
-                                <div class="flex items-start gap-3">
-                                    <img src="https://placehold.co/40x40/f97316/ffffff?text=C1" alt="Commenter's picture" class="w-10 h-10 rounded-full">
-                                    <div class="flex-grow">
-                                        <p class="font-semibold text-sm">Commenter One</p>
-                                        <p class="text-sm text-gray-700">This is a great design! Very clean.</p>
-                                        <button class="text-xs font-bold text-gray-500 hover:underline mt-1 reply-button">Reply</button>
-                                    </div>
-                                </div>
-                                <!-- Comment 2 with a visible reply -->
-                                <div class="flex items-start gap-3">
-                                    <img src="https://placehold.co/40x40/10b981/ffffff?text=C2" alt="Commenter's picture" class="w-10 h-10 rounded-full">
-                                    <div class="flex-grow">
-                                        <p class="font-semibold text-sm">Commenter Two</p>
-                                        <p class="text-sm text-gray-700">I agree, the use of whitespace is excellent.</p>
-                                        <button class="text-xs font-bold text-gray-500 hover:underline mt-1 reply-button">Reply</button>
-                                        <!-- Visible Reply -->
-                                        <div class="flex items-start gap-3 mt-3">
-                                            <img src="https://placehold.co/32x32/10b981/ffffff?text=A" alt="Author's reply picture" class="w-8 h-8 rounded-full">
-                                            <div>
-                                                <p class="font-semibold text-sm">Author One</p>
-                                                <p class="text-sm text-gray-700">Thanks for the feedback!</p>
-                                                <button class="text-xs font-bold text-gray-500 hover:underline mt-1 reply-button">Reply</button>
-                                            </div>
+                                {% for comment in post.get_top_level_comments %}
+                                    <!-- Comment 2 with a visible reply -->
+                                    <div class="flex items-start gap-3">
+                                        {% if comment.user.avatar %}
+                                            <img src="{{ comment.user.avatar.url }}" alt="Commenter's picture" class="w-10 h-10 rounded-full">
+                                        {% else %}
+                                            <img src="https://placehold.co/40x40/10b981/ffffff?text=C2" alt="Commenter's picture" class="w-10 h-10 rounded-full">
+                                        {% endif %}    
+                                        <div class="flex-grow">
+                                            <p class="font-semibold text-sm">{{ comment.user.username }}</p>
+                                            <p class="text-sm text-gray-700">{{ comment.comment }}</p>
+                                            <button class="text-xs font-bold text-gray-500 hover:underline mt-1 reply-button">Reply</button>
+                                            <!-- Visible Reply -->
+                                            {% for reply in comment.parent_comment.all %} 
+                                                <div class="flex items-start gap-3 mt-3">
+                                                    {% if reply.user.avatar %}
+                                                        <img src="{{ reply.user.avatar.url }}" alt="Author's reply picture" class="w-8 h-8 rounded-full">
+                                                    {% else %}
+                                                        <img src="https://placehold.co/32x32/10b981/ffffff?text=A" alt="Author's reply picture" class="w-8 h-8 rounded-full">
+                                                    {% endif %}    
+                                                    <div>
+                                                        <p class="font-semibold text-sm">{{ reply.user.username }}</p>
+                                                        <p class="text-sm text-gray-700">{{ reply.comment }}</p>
+                                                        <button class="text-xs font-bold text-gray-500 hover:underline mt-1 reply-button">Reply</button>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
                                         </div>
                                     </div>
-                                </div>
+                                {% endfor %}
                             </div>
                         </div>
                     </article>
@@ -346,76 +357,233 @@
 
 
     <script>
-        // Save Button Fetch
+        // Un-Follow Button Fetch
         document.addEventListener("DOMContentLoaded", function () {
-        const btn = document.getElementById("un-follow-btn");
-        if (!btn) return;  // اگر پیدا نشد از خطا جلوگیری کن
 
-        btn.addEventListener("click", function () {
-            const url = btn.dataset.url;
-            const userId = btn.dataset.userId;
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({ user_id: userId })
-            })
-            .then(res => res.json())
-            .then(data => {
-                console.log(data);
-            })
-            .catch(err => console.error(err));
+            document.body.addEventListener("click", function(event) {
+
+                const unFollowButton = event.target.closest(".un-follow-btn");
+            
+                if (!unFollowButton) {
+                    return;
+                }
+            
+                event.preventDefault();
+            
+                const url = unFollowButton.dataset.url;
+                const userId = unFollowButton.dataset.userId;
+                const csrftoken = getCookie('csrftoken');
+            
+                if (!url) {
+                    console.error("خطا: ویژگی data-url روی دکمه پیدا نشد.");
+                    return;
+                }
+            
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: JSON.stringify({ user_id: userId })
+                })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error('پاسخ شبکه صحیح نبود. وضعیت: ' + res.status);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    console.log("موفقیت:", data);
+                })
+                .catch(err => {
+                    console.error("خطا در هنگام fetch:", err);
+                    alert("عملیات با خطا مواجه شد. لطفاً دوباره تلاش کنید.");
+                });
             });
         });
         
         // Save Button Fetch
         document.addEventListener("DOMContentLoaded", function () {
-        const btn = document.getElementById("save-btn");
-        if (!btn) return;  // اگر پیدا نشد از خطا جلوگیری کن
 
-        btn.addEventListener("click", function () {
-            const url = btn.dataset.url;
-            const userId = btn.dataset.userId;
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({ user_id: userId })
-            })
-            .then(res => res.json())
-            .then(data => {
-                console.log(data);
-            })
-            .catch(err => console.error(err));
+            document.body.addEventListener("click", function(event) {
+
+                const unFollowButton = event.target.closest(".save-btn");
+            
+                if (!unFollowButton) {
+                    return;
+                }
+            
+                event.preventDefault();
+            
+                const url = unFollowButton.dataset.url;
+                const userId = unFollowButton.dataset.userId;
+                const csrftoken = getCookie('csrftoken');
+            
+                if (!url) {
+                    console.error("خطا: ویژگی data-url روی دکمه پیدا نشد.");
+                    return;
+                }
+            
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: JSON.stringify({ user_id: userId })
+                })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error('پاسخ شبکه صحیح نبود. وضعیت: ' + res.status);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    console.log("موفقیت:", data);
+                })
+                .catch(err => {
+                    console.error("خطا در هنگام fetch:", err);
+                    alert("عملیات با خطا مواجه شد. لطفاً دوباره تلاش کنید.");
+                });
             });
         });
 
         // Connect Button Fetch
         document.addEventListener("DOMContentLoaded", function () {
-        const btn = document.getElementById("connect-btn");
-        if (!btn) return;  // اگر پیدا نشد از خطا جلوگیری کن
 
-        btn.addEventListener("click", function () {
-            const url = btn.dataset.url;
-            const userId = btn.dataset.userId;
-            console.log(url)
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({ user_id: userId })
-            })
-            .then(res => res.json())
-            .then(data => {
-                console.log(data);
-            })
-            .catch(err => console.error(err));
+            document.body.addEventListener("click", function(event) {
+
+                const unFollowButton = event.target.closest(".connect-btn");
+            
+                if (!unFollowButton) {
+                    return;
+                }
+            
+                event.preventDefault();
+            
+                const url = unFollowButton.dataset.url;
+                const userId = unFollowButton.dataset.userId;
+                const csrftoken = getCookie('csrftoken');
+            
+                if (!url) {
+                    console.error("خطا: ویژگی data-url روی دکمه پیدا نشد.");
+                    return;
+                }
+            
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: JSON.stringify({ user_id: userId })
+                })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error('پاسخ شبکه صحیح نبود. وضعیت: ' + res.status);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    console.log("موفقیت:", data);
+                })
+                .catch(err => {
+                    console.error("خطا در هنگام fetch:", err);
+                    alert("عملیات با خطا مواجه شد. لطفاً دوباره تلاش کنید.");
+                });
+            });
+        });
+
+        // Like Button Fetch
+        document.addEventListener("DOMContentLoaded", function () {
+
+            document.body.addEventListener("click", function(event) {
+
+                const unFollowButton = event.target.closest(".like-btn");
+            
+                if (!unFollowButton) {
+                    return;
+                }
+            
+                event.preventDefault();
+            
+                const url = unFollowButton.dataset.url;
+                const userId = unFollowButton.dataset.userId;
+                const csrftoken = getCookie('csrftoken');
+            
+                if (!url) {
+                    console.error("خطا: ویژگی data-url روی دکمه پیدا نشد.");
+                    return;
+                }
+            
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: JSON.stringify({ user_id: userId })
+                })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error('پاسخ شبکه صحیح نبود. وضعیت: ' + res.status);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    console.log("موفقیت:", data);
+                })
+                .catch(err => {
+                    console.error("خطا در هنگام fetch:", err);
+                    alert("عملیات با خطا مواجه شد. لطفاً دوباره تلاش کنید.");
+                });
+            });
+        });
+
+        // Share Button Fetch
+        document.addEventListener("DOMContentLoaded", function () {
+
+            document.body.addEventListener("click", function(event) {
+
+                const unFollowButton = event.target.closest(".share-btn");
+            
+                if (!unFollowButton) {
+                    return;
+                }
+            
+                event.preventDefault();
+            
+                const url = unFollowButton.dataset.url;
+                const userId = unFollowButton.dataset.userId;
+                const csrftoken = getCookie('csrftoken');
+            
+                if (!url) {
+                    console.error("خطا: ویژگی data-url روی دکمه پیدا نشد.");
+                    return;
+                }
+            
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: JSON.stringify({ user_id: userId })
+                })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error('پاسخ شبکه صحیح نبود. وضعیت: ' + res.status);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    console.log("موفقیت:", data);
+                })
+                .catch(err => {
+                    console.error("خطا در هنگام fetch:", err);
+                    alert("عملیات با خطا مواجه شد. لطفاً دوباره تلاش کنید.");
+                });
             });
         });
 
@@ -484,10 +652,10 @@
 
                         // Clone the template
                         const template = document.getElementById('reply-form-template');
-                        const replyForm = template.firstElementChild.cloneNode(true);
+                        const replyForm = template.firstElementreply.cloneNode(true);
                         
                         // Append and focus
-                        commentDiv.appendChild(replyForm);
+                        commentDiv.appendreply(replyForm);
                         replyForm.querySelector('textarea').focus();
                     }
                 });
