@@ -96,7 +96,7 @@ class CommentForm(forms.ModelForm):
             'comment',
         )
         widgets = {
-            'comment':forms.Textarea(attrs={'class':'form-control', 'placeholder':'Enter your comment.'})
+            'comment':forms.TextInput(attrs={'class':'comment-form form-control', 'placeholder':'Enter your comment.'})
         }
     
     def clean_comment(self):
