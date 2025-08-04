@@ -295,15 +295,18 @@
                                 {% else %}
                                     <img src="https://placehold.co/40x40/7048e8/ffffff?text=U" alt="Your profile picture" class="w-10 h-10 rounded-full">
                                 {% endif %}    
-                                <div class="flex-grow">
-                                    {{ comment_form.comment }}
-                                    <div class="text-right mt-2">
-                                        <button 
-                                            class="comment-submit-btn bg-indigo-600 text-white font-semibold px-4 py-1.5 rounded-full hover:bg-indigo-700 transition-colors text-sm disabled:bg-indigo-300 disabled:cursor-not-allowed" disabled
-                                            data-url="{% url 'mvt_posts:create_comment' post.id %}"
-                                            data-user-id="{{ post.id }}">Post</button>
+                                <form class="comment-form" method="POST">
+                                    {% csrf_tkoken %}
+                                    <div class="flex-grow">
+                                        {{ comment_form.comment }}
+                                        <div class="text-right mt-2">
+                                            <button 
+                                                class="comment-submit-btn bg-indigo-600 text-white font-semibold px-4 py-1.5 rounded-full hover:bg-indigo-700 transition-colors text-sm disabled:bg-indigo-300 disabled:cursor-not-allowed" disabled
+                                                data-url="{% url 'mvt_posts:create_comment' post.id %}"
+                                                data-user-id="{{ post.id }}">Post</button>
+                                        </div>
                                     </div>
-                                </div>
+                                </form>
                             </div>
                             <!-- Existing Comments -->
                             <div class="space-y-4">
