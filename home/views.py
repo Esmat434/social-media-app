@@ -12,6 +12,9 @@ from connections.algorithms.FriendsConnections import (
 from posts.models import (
     Post,Save
 )
+from posts.mvt.forms import (
+    CommentForm
+)
 from posts.algorithms.recomenders import (
     get_recomended_posts
 )
@@ -31,7 +34,8 @@ class PostListView(View):
 
         context = {
             'best_posts':best_posts,
-            'other_posts':other_posts
+            'other_posts':other_posts,
+            'comment_form':CommentForm()
         }
 
         return render(request,'home/home.html',context=context)
