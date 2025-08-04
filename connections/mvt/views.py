@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse,HttpResponse
+from django.db.models import Q
 from django.views import View
 from django.contrib.auth import get_user_model
 
@@ -100,13 +101,12 @@ class UnFollowView(CustomLoginRequiredMixin,View):
         return super().dispatch(request, *args, **kwargs)
     
     def post(self,request, *args, **kwargs):
-        from_user = request.user
-        to_user = self.user_instance
+        Connection.objects.filter(
+            (
+                Q(from_user=request.user, to_user=self.user_instance) |
+                Q(from_user=self.user_instance, to_user=request.user)
+            ) &
+            Q(status=Connection.ConnectionStatus.ACCEPTED)
+        ).delete()
 
-        connection = get_object_or_404(Connection, from_user=from_user, to_user=to_user, status=Connection.ConnectionStatus.ACCEPTED)
-        
-        connection.delete()
-        
-        Connection.objects.filter(from_user=to_user, to_user=from_user, status=Connection.ConnectionStatus.ACCEPTED).delete()
-
-        return HttpResponse(status=204)
+        return JsonResponse({'success': 'Connection removed'}, status=200)
