@@ -20,6 +20,11 @@ class Post(models.Model):
     def get_absolute_url(self):
         return reverse('home:home-feed') + f'#post-{self.pk}'
 
+    def get_top_level_comments(self):
+        return self.post_comment.filter(
+            parent_comment__isnull=True
+        ).order_by('-created_at')
+
 class PostMedia(models.Model):
     MEDIA_TYPE_CHOICES = (
         ('image','Image'),
