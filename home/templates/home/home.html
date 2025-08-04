@@ -296,9 +296,12 @@
                                     <img src="https://placehold.co/40x40/7048e8/ffffff?text=U" alt="Your profile picture" class="w-10 h-10 rounded-full">
                                 {% endif %}    
                                 <div class="flex-grow">
-                                    <textarea class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition comment-input" rows="1" placeholder="Add a comment..."></textarea>
+                                    {{ comment_form.comment }}
                                     <div class="text-right mt-2">
-                                        <button class="bg-indigo-600 text-white font-semibold px-4 py-1.5 rounded-full hover:bg-indigo-700 transition-colors text-sm disabled:bg-indigo-300 disabled:cursor-not-allowed" disabled>Post</button>
+                                        <button 
+                                            class="comment-submit-btn bg-indigo-600 text-white font-semibold px-4 py-1.5 rounded-full hover:bg-indigo-700 transition-colors text-sm disabled:bg-indigo-300 disabled:cursor-not-allowed" disabled
+                                            data-url="{% url 'mvt_posts:create_comment' post.id %}"
+                                            data-user-id="{{ post.id }}">Post</button>
                                     </div>
                                 </div>
                             </div>
@@ -584,6 +587,62 @@
                     console.error("خطا در هنگام fetch:", err);
                     alert("عملیات با خطا مواجه شد. لطفاً دوباره تلاش کنید.");
                 });
+            });
+        });
+
+        // Comment Button Fetch
+        document.addEventListener('DOMContentLoaded', () => {
+    
+            document.body.addEventListener('submit', function(event) {
+
+                // فقط اگر فرمی با کلاس 'comment-form' ارسال شد، کد را اجرا کن
+                if (event.target.matches('.comment-form')) {
+                    event.preventDefault(); 
+
+                    const form = event.target;
+                    const submitButton = form.querySelector('.comment-submit-btn');
+                    const url = submitButton.dataset.url;
+                
+                    // ۱. ساخت یک آبجکت FormData از خود فرم
+                    // این کار تمام فیلدهای فرم (شامل csrf_token) را به صورت خودکار جمع‌آوری می‌کند
+                    const formData = new FormData(form);
+                
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            // ۲. هنگام استفاده از FormData، مرورگر خودش Content-Type را تنظیم می‌کند
+                            // پس ما آن را مشخص نمی‌کنیم. فقط توکن CSRF را برای امنیت در هدر قرار می‌دهیم.
+                            'X-CSRFToken': getCookie('csrftoken'),
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        // ۳. بدنه درخواست، خود آبجکت FormData است
+                        body: formData
+                    })
+                    .then(response => {
+                        // چون status 201 هم به معنی موفقیت است، آن را نیز بررسی می‌کنیم
+                        if (response.status === 201 || response.ok) {
+                            return response.json();
+                        }
+                        // اگر خطا بود، آن را برای .catch بفرست
+                        return response.json().then(err => { throw err; });
+                    })
+                    .then(data => {
+                        // با توجه به پاسخ ویو شما، فقط یک پیام موفقیت داریم
+                        console.log('Success:', data.success);
+
+                        // **** نکته بسیار مهم در اینجا ****
+                        // چون ویو شما اطلاعات کامنت جدید را برنمی‌گرداند،
+                        // بهترین کار در اینجا رفرش کردن صفحه است تا کامنت جدید نمایش داده شود.
+                        // این کار هدف AJAX را از بین می‌برد. (راه حل در پایین توضیح داده شده)
+                        alert('نظر شما با موفقیت ثبت شد!');
+                        location.reload(); // صفحه را رفرش می‌کند
+                    
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('خطا در ثبت کامنت: ' + (error.error || 'خطای ناشناخته'));
+                    });
+                }
             });
         });
 
