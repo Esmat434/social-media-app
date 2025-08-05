@@ -283,8 +283,14 @@
                             <div class="action-button comment-toggle-button"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 5.523-4.477 10-10 10S1 17.523 1 12 5.477 2 11 2s10 4.477 10 10z" /></svg><span>{{ post.post_comment.count}}</span></div>
                             <div class="action-button share-btn"
                                 data-url="{% url 'mvt_posts:create_share' post.id %}"
-                                data-user-id="{{ post.id }}"><i class="fas fa fa-retweet"></i>
-                                                            <span>{{ post.post_share.count }}</span></div>
+                                data-user-id="{{ post.id }}">
+                                {% if request.user in post.post_share.values_list('user', flat=True) %}
+                                    <i class="fas fa fa-retweet"></i>
+                                {% else %}
+                                    <i class="fa-regular fa-retweet"></i>
+                                {% endif %}
+                                <span>{{ post.post_share.count }}</span>
+                            </div>
                         </div>
                         <!-- Comments Section -->
                         <div class="comments-section bg-gray-50 p-5 border-t">
@@ -309,61 +315,105 @@
                             </div>
                             <!-- Existing Comments -->
                             <div class="space-y-4">
-                                {% for comment in post.get_top_level_comments %}
-                                    <!-- Comment 2 with a visible reply -->
-                                    <div class="flex items-start gap-3">
-                                        {% if comment.user.avatar %}
-                                            <img src="{{ comment.user.avatar.url }}" alt="Commenter's picture" class="w-10 h-10 rounded-full">
-                                        {% else %}
-                                            <img src="https://placehold.co/40x40/10b981/ffffff?text=C2" alt="Commenter's picture" class="w-10 h-10 rounded-full">
-                                        {% endif %}    
-                                        <div class="flex-grow">
-                                            <p class="font-semibold text-sm">{{ comment.user.username }}</p>
-                                            <p class="text-sm text-gray-700">{{ comment.comment }}</p>
-                                            <button class="text-xs font-bold text-gray-500 hover:underline mt-1 reply-button">
-                                                Reply
-                                            </button>
-                                            <button 
-                                                class="delete-comment-btn text-xs font-bold text-red-500 hover:underline mt-1"
-                                                data-url="{% url 'mvt_posts:delete_comment' comment.id %}"
-                                                data-user-id="{{ comment.id }}">
-                                                Delete
-                                            </button>
-                                            <form class="reply-form hidden mt-3" method="POST">
-                                                <div class="flex items-start gap-2">
-                                                    <img src="{{ request.user.avatar.url|default:'https://placehold.co/32x32/7048e8/ffffff?text=U' }}" class="w-8 h-8 rounded-full">
-                                                    <div class="flex-grow">
-                                                        {{ comment_form.comment }}
+                                {% for comment in post.post_comment.all %}
+                                    {% if comment.parent_comment.all %}
+                                        <!-- Comment 2 with a visible reply -->
+                                        <div class="flex items-start gap-3">
+                                            {% if comment.user.avatar %}
+                                                <img src="{{ comment.user.avatar.url }}" alt="Commenter's picture" class="w-10 h-10 rounded-full">
+                                            {% else %}
+                                                <img src="https://placehold.co/40x40/10b981/ffffff?text=C2" alt="Commenter's picture" class="w-10 h-10 rounded-full">
+                                            {% endif %}    
+                                            <div class="flex-grow">
+                                                <p class="font-semibold text-sm">{{ comment.user.username }}</p>
+                                                <p class="text-sm text-gray-700">{{ comment.comment }}</p>
 
-                                                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
-                                                    
-                                                        <div class="text-left mt-2">
-                                                            <button type="submit" 
-                                                                    class="reply-submit-btn bg-indigo-600 text-white font-semibold px-3 py-1 rounded-full hover:bg-indigo-700 text-xs"
-                                                                    data-url="{% url 'mvt_posts:create_parent_comment' post.id comment.id %}">
-                                                                Post
-                                                            </button>
+                                                <button 
+                                                    class="delete-comment-btn text-xs font-bold text-red-500 hover:underline mt-1"
+                                                    data-url="{% url 'mvt_posts:delete_comment' comment.id %}"
+                                                    data-user-id="{{ comment.id }}">
+                                                    Delete
+                                                </button>
+                                                <button class="text-xs font-bold text-gray-500 hover:underline mt-1 reply-button">
+                                                    Reply
+                                                </button>
+                                                <form class="reply-form hidden mt-3" method="POST">
+                                                    <div class="flex items-start gap-2">
+                                                        <img src="{{ request.user.avatar.url|default:'https://placehold.co/32x32/7048e8/ffffff?text=U' }}" class="w-8 h-8 rounded-full">
+                                                        <div class="flex-grow">
+                                                            {{ comment_form.comment }}
+
+                                                            <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                                        
+                                                            <div class="text-left mt-2">
+                                                                <button type="submit" 
+                                                                        class="reply-submit-btn bg-indigo-600 text-white font-semibold px-3 py-1 rounded-full hover:bg-indigo-700 text-xs"
+                                                                        data-url="{% url 'mvt_posts:create_parent_comment' post.id comment.id %}">
+                                                                    Post
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </form>
-                                            <!-- Visible Reply -->
-                                            {% for reply in comment.parent_comment.all %} 
-                                                <div class="flex items-start gap-3 mt-3">
-                                                    {% if reply.user.avatar %}
-                                                        <img src="{{ reply.user.avatar.url }}" alt="Author's reply picture" class="w-8 h-8 rounded-full">
-                                                    {% else %}
-                                                        <img src="https://placehold.co/32x32/10b981/ffffff?text=A" alt="Author's reply picture" class="w-8 h-8 rounded-full">
-                                                    {% endif %}    
-                                                    <div>
-                                                        <p class="font-semibold text-sm">{{ reply.user.username }}</p>
-                                                        <p class="text-sm text-gray-700">{{ reply.comment }}</p>
-                                                        <!-- <button class="text-xs font-bold text-gray-500 hover:underline mt-1 reply-button">Reply</button> -->
+                                                </form>
+                                                <!-- Visible Reply -->
+                                                {% for reply in comment.parent_comment.all %} 
+                                                    <div class="flex items-start gap-3 mt-3">
+                                                        {% if reply.user.avatar %}
+                                                            <img src="{{ reply.user.avatar.url }}" alt="Author's reply picture" class="w-8 h-8 rounded-full">
+                                                        {% else %}
+                                                            <img src="https://placehold.co/32x32/10b981/ffffff?text=A" alt="Author's reply picture" class="w-8 h-8 rounded-full">
+                                                        {% endif %}    
+                                                        <div>
+                                                            <p class="font-semibold text-sm">{{ reply.user.username }}</p>
+                                                            <p class="text-sm text-gray-700">{{ reply.comment }}</p>
+                                                            <!-- <button class="text-xs font-bold text-gray-500 hover:underline mt-1 reply-button">Reply</button> -->
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            {% endfor %}
+                                                {% endfor %}
+                                            </div>
                                         </div>
-                                    </div>
+                                    {% else %}
+                                        <!-- Comment 2 with a visible reply -->
+                                        <div class="flex items-start gap-3">
+                                            {% if comment.user.avatar %}
+                                                <img src="{{ comment.user.avatar.url }}" alt="Commenter's picture" class="w-10 h-10 rounded-full">
+                                            {% else %}
+                                                <img src="https://placehold.co/40x40/10b981/ffffff?text=C2" alt="Commenter's picture" class="w-10 h-10 rounded-full">
+                                            {% endif %}    
+                                            <div class="flex-grow">
+                                                <p class="font-semibold text-sm">{{ comment.user.username }}</p>
+                                                <p class="text-sm text-gray-700">{{ comment.comment }}</p>
+                                                
+                                                <button 
+                                                    class="delete-comment-btn text-xs font-bold text-red-500 hover:underline mt-1"
+                                                    data-url="{% url 'mvt_posts:delete_comment' comment.id %}"
+                                                    data-user-id="{{ comment.id }}">
+                                                    Delete
+                                                </button>
+                                                <button class="text-xs font-bold text-gray-500 hover:underline mt-1 reply-button">
+                                                    Reply
+                                                </button>
+                                                <form class="reply-form hidden mt-3" method="POST">
+                                                    <div class="flex items-start gap-2">
+                                                        <img src="{{ request.user.avatar.url|default:'https://placehold.co/32x32/7048e8/ffffff?text=U' }}" class="w-8 h-8 rounded-full">
+                                                        <div class="flex-grow">
+                                                            {{ comment_form.comment }}
+                                                        
+                                                            <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                                        
+                                                            <div class="text-left mt-2">
+                                                                <button type="submit" 
+                                                                        class="reply-submit-btn bg-indigo-600 text-white font-semibold px-3 py-1 rounded-full hover:bg-indigo-700 text-xs"
+                                                                        data-url="{% url 'mvt_posts:create_parent_comment' post.id comment.id %}">
+                                                                    Post
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    {% endif %}
                                 {% endfor %}
                             </div>
                         </div>
