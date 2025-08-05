@@ -214,7 +214,7 @@
                                     <img src="https://placehold.co/48x48/10b981/ffffff?text=A" alt="Author's profile picture" class="w-12 h-12 rounded-full flex-shrink-0">
                                 {% endif %}    
                                 <div class="flex-grow">
-                                    <p class="font-bold">{{ post.user.username }}</p>
+                                    <a href="{% url 'mvt:profile' post.user.username %}"><p class="font-bold">{{ post.user.username }}</p></a>
                                     <p class="text-xs text-gray-500">{{ post.created_at }}</p>
                                 </div>
                                 {% if request.user.is_authenticated %}
@@ -263,7 +263,9 @@
                                     </div>
                                 {% endif %}
                             </div>
-                            <p class="text-gray-700 leading-relaxed">{{ post.content }}</p>
+                            <div class="text-gray-700 leading-relaxed break-words expandable-text">
+                                {{ post.content}}
+                            </div>
                         </div>
                         {% if post.post_media.all %}
                            {% with media=post.post_media.all.first %}
@@ -705,7 +707,7 @@
             });
         });
 
-        // Delete Button Fetch
+        // Comment Delete Button Fetch
         document.addEventListener("DOMContentLoaded", function () {
 
             document.body.addEventListener("click", function(event) {
@@ -743,6 +745,7 @@
                 })
                 .then(data => {
                     console.log("موفقیت:", data);
+                    location.reload();
                 })
                 .catch(err => {
                     console.error("خطا در هنگام fetch:", err);
