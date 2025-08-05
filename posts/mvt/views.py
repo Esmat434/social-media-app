@@ -143,7 +143,7 @@ class DeleteCommentView(CustomLoginRequiredMixin,View):
     def post(self,request,pk):
         comment = get_object_or_404(Comment, id=pk, user=request.user)
         comment.delete()
-        return JsonResponse({'succes':'data successfully deleted.'},status=204)
+        return JsonResponse({'succes':'data successfully deleted.'},status=200)
 
 class CreateLikeView(CustomLoginRequiredMixin,View):
     
@@ -153,7 +153,7 @@ class CreateLikeView(CustomLoginRequiredMixin,View):
         like = Like.objects.filter(user=request.user,post=post)
         if like.exists():
             like.delete()
-            return JsonResponse({'success':'unlike'},status=204)
+            return JsonResponse({'success':'unlike'},status=200)
         else:
             Like.objects.create(user=request.user,post=post)
 
@@ -167,7 +167,7 @@ class CreateShareView(CustomLoginRequiredMixin,View):
         share = Share.objects.filter(user=request.user, post=post)
         if share.exists():
             share.delete()
-            return JsonResponse({'success':'unshare'},status=204)
+            return JsonResponse({'success':'unshare'},status=200)
         else:
             Share.objects.create(user=request.user, post=post)
         
@@ -181,8 +181,8 @@ class CreateSaveView(CustomLoginRequiredMixin,View):
         save = Save.objects.filter(user=request.user, post=post)
         if save.exists():
             save.delete()
-            return JsonResponse({'success':'unsave'},status=204)
+            return JsonResponse({'success':'unsaved'},status=200)
         else:
             Save.objects.create(user=request.user, post=post)
         
-        return JsonResponse({'success':'save'},status=201)
+        return JsonResponse({'success':'saved'},status=201)
