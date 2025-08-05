@@ -22,7 +22,7 @@ class Post(models.Model):
 
     def get_top_level_comments(self):
         return self.post_comment.filter(
-            parent_comment__isnull=True
+            parent__isnull=True
         ).order_by('-created_at')
 
 class PostMedia(models.Model):
