@@ -37,20 +37,22 @@ class PostMediaForm(forms.ModelForm):
     VIDEO_TYPES = ['mp4','mkv','avi','webm']
     IMAGE_TYPES = ['jpg','jpeg','png','gif','svg','avif']
 
-    file = forms.FileField(required=False)
+    file = forms.FileField(
+        required=False,
+        widget = forms.FileInput(attrs={
+                "id":"file-upload", 
+                "name":"image", 
+                "type":"file", 
+                "accept":"image/*", 
+                "onchange":"previewImage(event)"
+        })
+    )
+
     class Meta:
         model = PostMedia
         fields = (
             'file',
         )
-        widgets = {
-            'file': forms.FileInput(attrs={
-                "id":"file-upload", 
-                "name":"image", 
-                "type":"file", 
-                "accept":"image/*", 
-                "onchange":"previewImage(event)"})
-        }
     
     def clean_file(self):
         file = self.cleaned_data['file']
