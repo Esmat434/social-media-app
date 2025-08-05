@@ -1,199 +1,333 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block title %}
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Network | Social Network</title>
-{% endblock %}
 
-{% block extra_styles %}
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <!-- Custom Styles -->
-    <link rel="stylesheet" href="{% static 'css/home/network.css' %}">
-{% endblock %}
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f2ee;
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem;
+            border: 1px solid #e0e0e0;
+            overflow: hidden;
+        }
+        .profile-card-button {
+            background-color: transparent;
+            color: #0a66c2;
+            border: 1px solid #0a66c2;
+            transition: all 0.2s ease;
+        }
+        .profile-card-button:hover {
+            background-color: #eef5ff;
+            box-shadow: inset 0 0 0 1px #0a66c2;
+        }
+        .invitation-button {
+            transition: background-color 0.2s ease;
+        }
+        .invitation-button.accept {
+            background-color: #0a66c2;
+            color: white;
+        }
+        .invitation-button.accept:hover {
+            background-color: #004182;
+        }
+        .invitation-button.ignore {
+            color: #4b5563;
+            border: 1px solid #adb5bd;
+        }
+        .invitation-button.ignore:hover {
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
 
-{% block content %}
+    <!-- Header / Navbar - CORRECTED FOR RESPONSIVENESS -->
+    <header class="bg-white sticky top-0 z-50 border-b border-gray-200">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-2">
+                <!-- Left Side: Logo and Search -->
+                <div class="flex items-center gap-2">
+                    <a href="#" class="text-2xl font-bold text-indigo-700">Connect</a>
+                    <form class="hidden md:flex items-center ml-4">
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
+                            </span>
+                            <input type="text" placeholder="Search" class="bg-gray-100 border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:bg-white rounded-md py-2 pl-10 pr-4 w-64 transition border">
+                        </div>
+                    </form>
+                </div>
+                <!-- Right Side: Navigation and Profile -->
+                <nav class="flex items-center gap-3 sm:gap-4">
+                    <a href="{% url 'home:home-feed' %}" class="flex flex-col items-center justify-center text-gray-500 hover:text-blue-600" title="Home">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6 sm:w-7 sm:h-7">
+                            <path d="M11.47 3.84a.75.75 0 011.06 0l8.69 8.69a.75.75 0 101.06-1.06l-8.689-8.69a2.25 2.25 0 00-3.182 0l-8.69 8.69a.75.75 0 001.061 1.06l8.69-8.69z" />
+                            <path d="M12 5.432l8.159 8.159c.026.026.05.054.07.084v6.101A2.25 2.25 0 0117.75 22H6.25a2.25 2.25 0 01-2.25-2.25V13.675a.75.75 0 01.07-.084l8.159-8.159zM12 7.932L6.75 13.182V20h10.5V13.182L12 7.932z" />
+                        </svg>
+                        <span class="hidden sm:block text-xs font-medium mt-1">Home</span>
+                    </a>
+                    <a href="{% url 'home:networks' %}" class="flex flex-col items-center justify-center text-gray-500 hover:text-blue-600" title="My Network">
+                        <i class="fas fa-user-friends text-xl sm:text-2xl"></i>
+                        <span class="hidden sm:block text-xs font-medium mt-1">Network</span>
+                    </a>
+                    <a href="#" class="flex flex-col items-center justify-center text-gray-500 hover:text-blue-600" title="Messaging">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 sm:w-7 sm:h-7">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                        </svg>
+                        <span class="hidden sm:block text-xs font-medium mt-1">Messaging</span>
+                    </a>
+                    <a href="{% url 'home:notifications' %}" class="relative flex flex-col items-center justify-center text-gray-500 hover:text-blue-600" title="Notifications">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 sm:w-7 sm:h-7">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                        </svg>
+                        <span class="hidden sm:block text-xs font-medium mt-1">Notifications</span>
+                        <span class="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">3</span>
+                    </a>
+                    <div class="relative">
+                        {% if request.user.avatar %}
+                            <img src="{{ request.user.avatar.url }}" alt="Profile Picture" class="w-10 h-10 rounded-full cursor-pointer">
+                        {% else %}
+                            <img src="https://placehold.co/40x40/7048e8/ffffff?text=U" alt="Profile Picture" class="w-10 h-10 rounded-full cursor-pointer">
+                        {% endif %}
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
     <!-- Main Content -->
-    <main class="container mx-auto px-2 sm:px-4 mt-4 sm:mt-8 max-w-5xl">
-        
-        <!-- Invitations Section -->
-        <div class="card p-4 mb-6">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="text-lg font-semibold">Invitations</h2>
-                <a href="#" class="text-sm text-blue-600 hover:underline">See all</a>
-            </div>
-            <div class="space-y-4">
-                <!-- Django invitations loop starts: {% for invitation in invitations %} -->
-                <!-- Sample Invitation 1 -->
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-3 flex-grow min-w-0">
-                        <img src="https://placehold.co/48x48/f472b6/ffffff?text=C1" alt="Profile Picture" class="w-12 h-12 rounded-full flex-shrink-0">
-                        <div class="min-w-0">
-                            <p class="font-bold text-sm truncate">User One</p>
-                            <p class="text-xs text-gray-500 truncate">Python Developer</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-start gap-2 flex-shrink-0 ml-2">
-                        <button class="px-3 sm:px-4 py-1 rounded-full font-semibold btn-secondary text-xs sm:text-sm">Reject</button>
-                        <button class="px-3 sm:px-4 py-1 rounded-full font-semibold btn-primary text-xs sm:text-sm">Accept</button>
-                    </div>
-                </div>
-                <hr>
-                <!-- End Sample Invitation 1 -->
+    <main class="container mx-auto px-4 mt-6">
+        <div class="flex flex-col lg:flex-row gap-6">
 
-                <!-- Sample Invitation 2 -->
-                <div class="flex items-center justify-between">
-                   <div class="flex items-center gap-3 flex-grow min-w-0">
-                        <img src="https://placehold.co/48x48/34d399/ffffff?text=C2" alt="Profile Picture" class="w-12 h-12 rounded-full flex-shrink-0">
-                        <div class="min-w-0">
-                            <p class="font-bold text-sm truncate">User Two With a Very Long Name</p>
-                            <p class="text-xs text-gray-500 truncate">UI/UX Designer and Frontend Specialist</p>
-                        </div>
+            <!-- Left Sidebar: Manage Network -->
+            <aside class="w-full lg:w-1/4 xl:w-1/5 flex-shrink-0">
+                <div class="card sticky top-24">
+                    <div class="p-4 border-b">
+                        <h2 class="font-semibold text-gray-800">Manage my network</h2>
                     </div>
-                    <div class="flex items-center justify-start gap-2 flex-shrink-0 ml-2">
-                        <button class="px-3 sm:px-4 py-1 rounded-full font-semibold btn-secondary text-xs sm:text-sm">Reject</button>
-                        <button class="px-3 sm:px-4 py-1 rounded-full font-semibold btn-primary text-xs sm:text-sm">Accept</button>
+                    <nav class="text-gray-600 font-medium">
+                        <a href="#" class="flex justify-between items-center p-3 hover:bg-gray-100">
+                            <div class="flex items-center gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-gray-500" viewBox="0 0 16 16"><path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/><path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/></svg>
+                                <span>Connections</span>
+                            </div>
+                            <span class="font-semibold">123</span>
+                        </a>
+                        <a href="#" class="flex justify-between items-center p-3 hover:bg-gray-100">
+                            <div class="flex items-center gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-gray-500" viewBox="0 0 16 16"><path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/></svg>
+                                <span>People I Follow</span>
+                            </div>
+                            <span class="font-semibold">45</span>
+                        </a>
+                        <a href="#" class="flex justify-between items-center p-3 hover:bg-gray-100">
+                            <div class="flex items-center gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-gray-500" viewBox="0 0 16 16"><path d="M14 2a1 1 0 0 1 1 1v10.535a.5.5 0 0 1-.832.374l-4.5-3L5.332 14.91a.5.5 0 0 1-.832-.374V3a1 1 0 0 1 1-1h8z"/></svg>
+                                <span>Events</span>
+                            </div>
+                            <span class="font-semibold">2</span>
+                        </a>
+                        <a href="#" class="flex justify-between items-center p-3 hover:bg-gray-100">
+                            <div class="flex items-center gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-gray-500" viewBox="0 0 16 16"><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/></svg>
+                                <span>Pages</span>
+                            </div>
+                            <span class="font-semibold">8</span>
+                        </a>
+                    </nav>
+                </div>
+            </aside>
+
+            <!-- Right Content: Invitations and Suggestions -->
+            <div class="w-full lg:w-3/4 xl:w-4/5">
+                <!-- Invitations Card -->
+                <div class="card mb-6">
+                    <div class="p-4 flex justify-between items-center">
+                        <h2 class="font-semibold">Invitations</h2>
+                        <a href="#" class="font-semibold text-gray-500 hover:bg-gray-100 p-2 rounded-md">See all (5)</a>
+                    </div>
+                    <div class="border-t">
+                        {% for invite in invitation_list %}
+                            <!-- Invitation Item -->
+                            <div class="p-4 flex flex-wrap items-center justify-between hover:bg-gray-50">
+                                <div class="flex items-center gap-3 mb-3 sm:mb-0">
+                                    <img src="{{ invite.user.avatar.url|default:'https://placehold.co/56x56/f472b6/ffffff?text=C1' }}" alt="Profile Picture" class="w-14 h-14 rounded-full flex-shrink-0">
+                                    <div>
+                                        <p class="font-bold">{{ invite.user.username }}</p>
+                                        <p class="text-xs text-gray-500 mt-1">{{ invite.user.date_joined }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                                    <button class="px-4 py-1.5 rounded-full font-semibold invitation-button ignore ignore-btn"
+                                        data-url="{% url 'mvt_connection:follow-private-reject' invite.from_user.username %}"
+                                        data-user-id="{{ invite.from_user.username }}">Ignore</button>
+                                    <button class="px-4 py-1.5 rounded-full font-semibold invitation-button accept accept-btn"
+                                        data-url="{% url 'mvt_connection:follow-private-accept' invite.from_user.username %}"
+                                        data-user-id="{{ invite.from_user.username }}">Accept</button>
+                                </div>
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
-                <!-- End Sample Invitation 2 -->
-                <!-- Django loop ends: {% endfor %} -->
+
+                <!-- Suggestions Card -->
+                <div class="card p-4">
+                    <h2 class="font-semibold mb-4">People you may know</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                        {% for near in near_network_list %}
+                            <!-- Profile Card 1 -->
+                            <div class="card profile-card text-center border">
+                                <div class="h-16 bg-cover bg-center" style="background-image: url('https://placehold.co/400x100/a5b4fc/ffffff')"></div>
+                                <div class="p-4">
+                                    <img src="{{ near.from_user.avatar.url|default:'https://placehold.co/56x56/f472b6/ffffff?text=P1' }}" alt="Profile Picture" class="w-16 h-16 rounded-full mx-auto -mt-12 border-2 border-white">
+                                    <h3 class="mt-2 font-bold text-md hover:underline cursor-pointer">{{ near.from_user.username }}</h3>
+                                    <p class="text-xs text-gray-500 flex items-center justify-center gap-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/><path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/></svg>
+                                        <span>5 mutual connections</span>
+                                    </p>
+                                    <button class="w-full mt-4 py-1.5 px-4 rounded-full font-semibold profile-card-button text-sm"
+                                        data-url="{% url 'mvt_connection:follow-private-request' near.from_user.username %}"
+                                        data-user-id="{{ near.from_user.username }}">Connect</button>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                        {% for other in other_network_list %}
+                            <!-- Profile Card 1 -->
+                            <div class="card profile-card text-center border">
+                                <div class="h-16 bg-cover bg-center" style="background-image: url('https://placehold.co/400x100/a5b4fc/ffffff')"></div>
+                                <div class="p-4">
+                                    <img src="{{ other.from_user.avatar.url|default:'https://placehold.co/56x56/f472b6/ffffff?text=P1' }}" alt="Profile Picture" class="w-16 h-16 rounded-full mx-auto -mt-12 border-2 border-white">
+                                    <h3 class="mt-2 font-bold text-md hover:underline cursor-pointer">{{ other.from_user.username }}</h3>
+                                    <p class="text-xs text-gray-500 flex items-center justify-center gap-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/><path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/></svg>
+                                        <span>5 mutual connections</span>
+                                    </p>
+                                    <button class="w-full mt-4 py-1.5 px-4 rounded-full font-semibold profile-card-button text-sm"
+                                        data-url="{% url 'mvt_connection:follow-private-request' other.from_user.username %}"
+                                        data-user-id="{{ other.from_user.username }}">Connect</button>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                </div>
             </div>
+
         </div>
-
-        <!-- Suggestions Section -->
-        <div class="card p-4">
-            <h2 class="text-lg font-semibold mb-4">People you may know</h2>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                
-                <!-- Django suggestions loop starts: {% for person in suggestions %} -->
-                <!-- Sample Profile Card 1 -->
-                <div class="card profile-card text-center">
-                    <div class="h-16 bg-cover bg-center" style="background-image: url('https://placehold.co/400x100/a5b4fc/ffffff')"></div>
-                    <div class="p-4">
-                        <img src="https://placehold.co/64x64/ec4899/ffffff?text=P1" alt="Profile Picture" class="w-16 h-16 rounded-full mx-auto -mt-12 border-2 border-white">
-                        <h3 class="mt-2 font-bold text-md hover:underline cursor-pointer">Person One</h3>
-                        <p class="text-xs text-gray-500 mb-2">Project Manager</p>
-                        <p class="text-xs text-gray-500 flex items-center justify-center gap-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                            <span>5 mutual connections</span>
-                        </p>
-                        <button class="w-full mt-4 py-1.5 px-4 rounded-full font-semibold btn-secondary text-sm">Connect</button>
-                    </div>
-                </div>
-                <!-- End Sample Profile Card 1 -->
-
-                <!-- Sample Profile Card 2 -->
-                <div class="card profile-card text-center">
-                    <div class="h-16 bg-cover bg-center" style="background-image: url('https://placehold.co/400x100/93c5fd/ffffff')"></div>
-                    <div class="p-4">
-                        <img src="https://placehold.co/64x64/34d399/ffffff?text=P2" alt="Profile Picture" class="w-16 h-16 rounded-full mx-auto -mt-12 border-2 border-white">
-                        <h3 class="mt-2 font-bold text-md hover:underline cursor-pointer">Person Two</h3>
-                        <p class="text-xs text-gray-500 mb-2">Software Engineer</p>
-                        <p class="text-xs text-gray-500 flex items-center justify-center gap-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                            <span>2 mutual connections</span>
-                        </p>
-                        <button class="w-full mt-4 py-1.5 px-4 rounded-full font-semibold btn-secondary text-sm">Connect</button>
-                    </div>
-                </div>
-                <!-- End Sample Profile Card 2 -->
-                
-                <!-- Sample Profile Card 1 -->
-                <div class="card profile-card text-center">
-                    <div class="h-16 bg-cover bg-center" style="background-image: url('https://placehold.co/400x100/a5b4fc/ffffff')"></div>
-                    <div class="p-4">
-                        <img src="https://placehold.co/64x64/ec4899/ffffff?text=P1" alt="Profile Picture" class="w-16 h-16 rounded-full mx-auto -mt-12 border-2 border-white">
-                        <h3 class="mt-2 font-bold text-md hover:underline cursor-pointer">Person One</h3>
-                        <p class="text-xs text-gray-500 mb-2">Project Manager</p>
-                        <p class="text-xs text-gray-500 flex items-center justify-center gap-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                            <span>5 mutual connections</span>
-                        </p>
-                        <button class="w-full mt-4 py-1.5 px-4 rounded-full font-semibold btn-secondary text-sm">Connect</button>
-                    </div>
-                </div>
-                <!-- End Sample Profile Card 1 -->
-
-                <!-- Sample Profile Card 2 -->
-                <div class="card profile-card text-center">
-                    <div class="h-16 bg-cover bg-center" style="background-image: url('https://placehold.co/400x100/93c5fd/ffffff')"></div>
-                    <div class="p-4">
-                        <img src="https://placehold.co/64x64/34d399/ffffff?text=P2" alt="Profile Picture" class="w-16 h-16 rounded-full mx-auto -mt-12 border-2 border-white">
-                        <h3 class="mt-2 font-bold text-md hover:underline cursor-pointer">Person Two</h3>
-                        <p class="text-xs text-gray-500 mb-2">Software Engineer</p>
-                        <p class="text-xs text-gray-500 flex items-center justify-center gap-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                            <span>2 mutual connections</span>
-                        </p>
-                        <button class="w-full mt-4 py-1.5 px-4 rounded-full font-semibold btn-secondary text-sm">Connect</button>
-                    </div>
-                </div>
-                <!-- End Sample Profile Card 2 -->
-                <!-- Sample Profile Card 1 -->
-                <div class="card profile-card text-center">
-                    <div class="h-16 bg-cover bg-center" style="background-image: url('https://placehold.co/400x100/a5b4fc/ffffff')"></div>
-                    <div class="p-4">
-                        <img src="https://placehold.co/64x64/ec4899/ffffff?text=P1" alt="Profile Picture" class="w-16 h-16 rounded-full mx-auto -mt-12 border-2 border-white">
-                        <h3 class="mt-2 font-bold text-md hover:underline cursor-pointer">Person One</h3>
-                        <p class="text-xs text-gray-500 mb-2">Project Manager</p>
-                        <p class="text-xs text-gray-500 flex items-center justify-center gap-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                            <span>5 mutual connections</span>
-                        </p>
-                        <button class="w-full mt-4 py-1.5 px-4 rounded-full font-semibold btn-secondary text-sm">Connect</button>
-                    </div>
-                </div>
-                <!-- End Sample Profile Card 1 -->
-
-                <!-- Sample Profile Card 2 -->
-                <div class="card profile-card text-center">
-                    <div class="h-16 bg-cover bg-center" style="background-image: url('https://placehold.co/400x100/93c5fd/ffffff')"></div>
-                    <div class="p-4">
-                        <img src="https://placehold.co/64x64/34d399/ffffff?text=P2" alt="Profile Picture" class="w-16 h-16 rounded-full mx-auto -mt-12 border-2 border-white">
-                        <h3 class="mt-2 font-bold text-md hover:underline cursor-pointer">Person Two</h3>
-                        <p class="text-xs text-gray-500 mb-2">Software Engineer</p>
-                        <p class="text-xs text-gray-500 flex items-center justify-center gap-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                            <span>2 mutual connections</span>
-                        </p>
-                        <button class="w-full mt-4 py-1.5 px-4 rounded-full font-semibold btn-secondary text-sm">Connect</button>
-                    </div>
-                </div>
-                <!-- End Sample Profile Card 2 -->
-                <!-- Sample Profile Card 1 -->
-                <div class="card profile-card text-center">
-                    <div class="h-16 bg-cover bg-center" style="background-image: url('https://placehold.co/400x100/a5b4fc/ffffff')"></div>
-                    <div class="p-4">
-                        <img src="https://placehold.co/64x64/ec4899/ffffff?text=P1" alt="Profile Picture" class="w-16 h-16 rounded-full mx-auto -mt-12 border-2 border-white">
-                        <h3 class="mt-2 font-bold text-md hover:underline cursor-pointer">Person One</h3>
-                        <p class="text-xs text-gray-500 mb-2">Project Manager</p>
-                        <p class="text-xs text-gray-500 flex items-center justify-center gap-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                            <span>5 mutual connections</span>
-                        </p>
-                        <button class="w-full mt-4 py-1.5 px-4 rounded-full font-semibold btn-secondary text-sm">Connect</button>
-                    </div>
-                </div>
-                <!-- End Sample Profile Card 1 -->
-
-                <!-- Sample Profile Card 2 -->
-                <div class="card profile-card text-center">
-                    <div class="h-16 bg-cover bg-center" style="background-image: url('https://placehold.co/400x100/93c5fd/ffffff')"></div>
-                    <div class="p-4">
-                        <img src="https://placehold.co/64x64/34d399/ffffff?text=P2" alt="Profile Picture" class="w-16 h-16 rounded-full mx-auto -mt-12 border-2 border-white">
-                        <h3 class="mt-2 font-bold text-md hover:underline cursor-pointer">Person Two</h3>
-                        <p class="text-xs text-gray-500 mb-2">Software Engineer</p>
-                        <p class="text-xs text-gray-500 flex items-center justify-center gap-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                            <span>2 mutual connections</span>
-                        </p>
-                        <button class="w-full mt-4 py-1.5 px-4 rounded-full font-semibold btn-secondary text-sm">Connect</button>
-                    </div>
-                </div>
-                <!-- End Sample Profile Card 2 -->
-                
-                <!-- Add more cards here -->
-
-            </div>
-        </div>
-
     </main>
-{% endblock %}
+
+    <script>
+        // Reject Invitation Button Fetch
+        document.addEventListener("DOMContentLoaded", function () {
+
+            document.body.addEventListener("click", function(event) {
+
+                const unFollowButton = event.target.closest(".ignore-btn");
+            
+                if (!unFollowButton) {
+                    return;
+                }
+            
+                event.preventDefault();
+            
+                const url = unFollowButton.dataset.url;
+                const userId = unFollowButton.dataset.userId;
+                const csrftoken = getCookie('csrftoken');
+            
+                if (!url) {
+                    console.error("خطا: ویژگی data-url روی دکمه پیدا نشد.");
+                    return;
+                }
+            
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: JSON.stringify({ user_id: userId })
+                })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error('پاسخ شبکه صحیح نبود. وضعیت: ' + res.status);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    console.log("موفقیت:", data);
+                    location.reload();
+                })
+                .catch(err => {
+                    console.error("خطا در هنگام fetch:", err);
+                    alert("عملیات با خطا مواجه شد. لطفاً دوباره تلاش کنید.");
+                });
+            });
+        });
+
+        // Accept Invitation Button Fetch
+        document.addEventListener("DOMContentLoaded", function () {
+
+            document.body.addEventListener("click", function(event) {
+
+                const unFollowButton = event.target.closest(".accept-btn");
+            
+                if (!unFollowButton) {
+                    return;
+                }
+            
+                event.preventDefault();
+            
+                const url = unFollowButton.dataset.url;
+                const userId = unFollowButton.dataset.userId;
+                const csrftoken = getCookie('csrftoken');
+            
+                if (!url) {
+                    console.error("خطا: ویژگی data-url روی دکمه پیدا نشد.");
+                    return;
+                }
+            
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: JSON.stringify({ user_id: userId })
+                })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error('پاسخ شبکه صحیح نبود. وضعیت: ' + res.status);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    console.log("موفقیت:", data);
+                    location.reload();
+                })
+                .catch(err => {
+                    console.error("خطا در هنگام fetch:", err);
+                    alert("عملیات با خطا مواجه شد. لطفاً دوباره تلاش کنید.");
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
