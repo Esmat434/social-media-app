@@ -14,6 +14,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/htmx/2.0.6/htmx.min.js">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
     <!-- Custom Styles -->
     <style>
         body {
@@ -121,9 +122,7 @@
 
                     <!-- My Network Link -->
                     <a href="{% url 'home:networks' %}" class="nav-link flex flex-col items-center justify-center text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400" title="My Network">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m-7.5-2.962A3.75 3.75 0 0112 15v-2.25L9.375 9.75M9 11.25v2.25a3.75 3.75 0 01-3.75 3.75v-2.25m1.5-1.5l-1.5-1.5m0 0a3.75 3.75 0 015.25 0l1.5 1.5m-5.25 0l1.5 1.5m3-3l1.5-1.5m-1.5 1.5l-1.5-1.5m-3 3l-1.5-1.5m6.75 1.5l-1.5-1.5m-3.75-1.5a3.75 3.75 0 015.25 0m-5.25 0a3.75 3.75 0 01-5.25 0m5.25 0l-1.5-1.5m-1.5 1.5l-1.5-1.5" />
-                        </svg>
+                        <i class="fas fa-user-friends"></i>
                         <span class="text-xs font-medium mt-1">Network</span>
                     </a>
 
@@ -284,7 +283,8 @@
                             <div class="action-button comment-toggle-button"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 5.523-4.477 10-10 10S1 17.523 1 12 5.477 2 11 2s10 4.477 10 10z" /></svg><span>{{ post.post_comment.count}}</span></div>
                             <div class="action-button share-btn"
                                 data-url="{% url 'mvt_posts:create_share' post.id %}"
-                                data-user-id="{{ post.id }}"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h5M5.5 9.5L4 11m5.5-1.5L11 11m0 0l-1.5 1.5M11 11l1.5-1.5m0 0l1.5 1.5M11 11l1.5 1.5M12 2.252A8.014 8.014 0 0117.748 8H12V2.252zM17.748 8a8.014 8.014 0 01-5.748 5.748V8h5.748zM8 17.748A8.014 8.014 0 012.252 12H8v5.748zM8 12A8.014 8.014 0 0113.748 6.252V12H8z" /></svg><span>{{ post.post_share.count }}</span></div>
+                                data-user-id="{{ post.id }}"><i class="fas fa fa-retweet"></i>
+                                                            <span>{{ post.post_share.count }}</span></div>
                         </div>
                         <!-- Comments Section -->
                         <div class="comments-section bg-gray-50 p-5 border-t">
@@ -295,8 +295,7 @@
                                 {% else %}
                                     <img src="https://placehold.co/40x40/7048e8/ffffff?text=U" alt="Your profile picture" class="w-10 h-10 rounded-full">
                                 {% endif %}    
-                                <form class="comment-form" method="POST">
-                                    {% csrf_tkoken %}
+                                <form class="comment-form w-full" method="POST">
                                     <div class="flex-grow">
                                         {{ comment_form.comment }}
                                         <div class="text-right mt-2">
@@ -321,7 +320,33 @@
                                         <div class="flex-grow">
                                             <p class="font-semibold text-sm">{{ comment.user.username }}</p>
                                             <p class="text-sm text-gray-700">{{ comment.comment }}</p>
-                                            <button class="text-xs font-bold text-gray-500 hover:underline mt-1 reply-button">Reply</button>
+                                            <button class="text-xs font-bold text-gray-500 hover:underline mt-1 reply-button">
+                                                Reply
+                                            </button>
+                                            <button 
+                                                class="delete-comment-btn text-xs font-bold text-red-500 hover:underline mt-1"
+                                                data-url="{% url 'mvt_posts:delete_comment' comment.id %}"
+                                                data-user-id="{{ comment.id }}">
+                                                Delete
+                                            </button>
+                                            <form class="reply-form hidden mt-3" method="POST">
+                                                <div class="flex items-start gap-2">
+                                                    <img src="{{ request.user.avatar.url|default:'https://placehold.co/32x32/7048e8/ffffff?text=U' }}" class="w-8 h-8 rounded-full">
+                                                    <div class="flex-grow">
+                                                        {{ comment_form.comment }}
+
+                                                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                                    
+                                                        <div class="text-left mt-2">
+                                                            <button type="submit" 
+                                                                    class="reply-submit-btn bg-indigo-600 text-white font-semibold px-3 py-1 rounded-full hover:bg-indigo-700 text-xs"
+                                                                    data-url="{% url 'mvt_posts:create_parent_comment' post.id comment.id %}">
+                                                                Post
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
                                             <!-- Visible Reply -->
                                             {% for reply in comment.parent_comment.all %} 
                                                 <div class="flex items-start gap-3 mt-3">
@@ -333,7 +358,7 @@
                                                     <div>
                                                         <p class="font-semibold text-sm">{{ reply.user.username }}</p>
                                                         <p class="text-sm text-gray-700">{{ reply.comment }}</p>
-                                                        <button class="text-xs font-bold text-gray-500 hover:underline mt-1 reply-button">Reply</button>
+                                                        <!-- <button class="text-xs font-bold text-gray-500 hover:underline mt-1 reply-button">Reply</button> -->
                                                     </div>
                                                 </div>
                                             {% endfor %}
@@ -347,20 +372,6 @@
             </div>
         </div>
     </main>
-    
-    <!-- Hidden Reply Form Template -->
-    <div id="reply-form-template" class="hidden">
-        <div class="flex items-start gap-3 mt-3 reply-form">
-            <img src="https://placehold.co/32x32/7048e8/ffffff?text=U" alt="Your reply picture" class="w-8 h-8 rounded-full">
-            <div class="flex-grow">
-                <textarea class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition text-sm" rows="1" placeholder="Write a reply..."></textarea>
-                <div class="text-right mt-2">
-                    <button class="bg-indigo-600 text-white font-semibold px-3 py-1 rounded-full hover:bg-indigo-700 transition-colors text-xs">Post</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
 
     <script>
         // Un-Follow Button Fetch
@@ -595,57 +606,124 @@
 
         // Comment Button Fetch
         document.addEventListener('DOMContentLoaded', () => {
-    
-            document.body.addEventListener('submit', function(event) {
 
-                // فقط اگر فرمی با کلاس 'comment-form' ارسال شد، کد را اجرا کن
+            document.body.addEventListener('submit', function(event) {
+                // فقط اگر فرمی با کلاس 'comment-form' ارسال شد...
                 if (event.target.matches('.comment-form')) {
-                    event.preventDefault(); 
+                    event.preventDefault(); // از رفرش شدن صفحه جلوگیری کن
 
                     const form = event.target;
                     const submitButton = form.querySelector('.comment-submit-btn');
                     const url = submitButton.dataset.url;
-                
-                    // ۱. ساخت یک آبجکت FormData از خود فرم
-                    // این کار تمام فیلدهای فرم (شامل csrf_token) را به صورت خودکار جمع‌آوری می‌کند
                     const formData = new FormData(form);
                 
                     fetch(url, {
                         method: 'POST',
                         headers: {
-                            // ۲. هنگام استفاده از FormData، مرورگر خودش Content-Type را تنظیم می‌کند
-                            // پس ما آن را مشخص نمی‌کنیم. فقط توکن CSRF را برای امنیت در هدر قرار می‌دهیم.
                             'X-CSRFToken': getCookie('csrftoken'),
                             'X-Requested-With': 'XMLHttpRequest'
                         },
-                        // ۳. بدنه درخواست، خود آبجکت FormData است
                         body: formData
                     })
                     .then(response => {
-                        // چون status 201 هم به معنی موفقیت است، آن را نیز بررسی می‌کنیم
                         if (response.status === 201 || response.ok) {
                             return response.json();
                         }
-                        // اگر خطا بود، آن را برای .catch بفرست
                         return response.json().then(err => { throw err; });
                     })
                     .then(data => {
-                        // با توجه به پاسخ ویو شما، فقط یک پیام موفقیت داریم
                         console.log('Success:', data.success);
-
-                        // **** نکته بسیار مهم در اینجا ****
-                        // چون ویو شما اطلاعات کامنت جدید را برنمی‌گرداند،
-                        // بهترین کار در اینجا رفرش کردن صفحه است تا کامنت جدید نمایش داده شود.
-                        // این کار هدف AJAX را از بین می‌برد. (راه حل در پایین توضیح داده شده)
-                        alert('نظر شما با موفقیت ثبت شد!');
                         location.reload(); // صفحه را رفرش می‌کند
-                    
                     })
                     .catch(error => {
                         console.error('Error:', error);
                         alert('خطا در ثبت کامنت: ' + (error.error || 'خطای ناشناخته'));
                     });
                 }
+            });
+        });
+
+        // Comment Parent Button Fetch
+        document.addEventListener('DOMContentLoaded', () => {
+
+            document.body.addEventListener('submit', function(event) {
+                if (event.target.matches('.reply-form')) {
+                    event.preventDefault();
+
+                    const form = event.target;
+                    const submitButton = form.querySelector('.reply-submit-btn');
+                    const url = submitButton.dataset.url;
+                    const formData = new FormData(form);
+                
+                    fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken'),
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: formData
+                    })
+                    .then(response => {
+                        if (response.status === 201 || response.ok) {
+                            return response.json();
+                        }
+                        return response.json().then(err => { throw err; });
+                    })
+                    .then(data => {
+                        console.log('Success:', data.success);
+                        location.reload(); // صفحه را رفرش می‌کند
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('خطا در ثبت کامنت: ' + (error.error || 'خطای ناشناخته'));
+                    });
+                }
+            });
+        });
+
+        // Delete Button Fetch
+        document.addEventListener("DOMContentLoaded", function () {
+
+            document.body.addEventListener("click", function(event) {
+
+                const unFollowButton = event.target.closest(".delete-comment-btn");
+            
+                if (!unFollowButton) {
+                    return;
+                }
+            
+                event.preventDefault();
+            
+                const url = unFollowButton.dataset.url;
+                const userId = unFollowButton.dataset.userId;
+                const csrftoken = getCookie('csrftoken');
+            
+                if (!url) {
+                    console.error("خطا: ویژگی data-url روی دکمه پیدا نشد.");
+                    return;
+                }
+            
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: JSON.stringify({ user_id: userId })
+                })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error('پاسخ شبکه صحیح نبود. وضعیت: ' + res.status);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    console.log("موفقیت:", data);
+                })
+                .catch(err => {
+                    console.error("خطا در هنگام fetch:", err);
+                    alert("عملیات با خطا مواجه شد. لطفاً دوباره تلاش کنید.");
+                });
             });
         });
 
@@ -699,28 +777,22 @@
                 });
             });
 
-            // Handle reply button clicks
-            document.querySelectorAll('.comments-section').forEach(commentSection => {
-                commentSection.addEventListener('click', (event) => {
-                    if (event.target.classList.contains('reply-button')) {
-                        const commentDiv = event.target.closest('.flex-grow');
-                        
-                        // Remove any existing reply form in this comment thread
-                        const existingReplyForm = commentDiv.querySelector('.reply-form');
-                        if (existingReplyForm) {
-                            existingReplyForm.remove();
-                            return; // Just close if it's already open
+            // کد جدید و ساده برای دکمه Reply
+            document.body.addEventListener('click', function(event) {
+                if (event.target.classList.contains('reply-button')) {
+                    // فرم پاسخ، عنصر بعدی بعد از دکمه است
+                    const replyForm = event.target.nextElementSibling;
+                
+                    if (replyForm && replyForm.classList.contains('reply-form')) {
+                        // کلاس hidden را حذف یا اضافه کن (toggle)
+                        replyForm.classList.toggle('hidden');
+                    
+                        // اگر فرم نمایش داده شد، روی فیلد متن آن فوکوس کن
+                        if (!replyForm.classList.contains('hidden')) {
+                            replyForm.querySelector('textarea').focus();
                         }
-
-                        // Clone the template
-                        const template = document.getElementById('reply-form-template');
-                        const replyForm = template.firstElementreply.cloneNode(true);
-                        
-                        // Append and focus
-                        commentDiv.appendreply(replyForm);
-                        replyForm.querySelector('textarea').focus();
                     }
-                });
+                }
             });
 
             // Close menus when clicking anywhere else
