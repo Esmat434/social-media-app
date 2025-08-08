@@ -10,7 +10,7 @@ class DeleteNotificatoinView(LoginRequiredMixin,View):
         notification = get_object_or_404(
             Notification, 
             id=pk,
-            actor = request.user
+            recipient=request.user
         )
 
         target_url = None
