@@ -120,8 +120,7 @@ class NotificationListView(View):
     def get(self,request):
         
         context = {
-            'notifications':self.get_notifications(request),
-            'notification_count':self.get_notification_count(request)
+            'notifications':self.get_notifications(request)
         }
         
         return render(request,'home/notification.html',context=context)
@@ -131,12 +130,6 @@ class NotificationListView(View):
             notifications = Notification.objects.filter(recipient=request.user)
             return notifications
         return Notification.objects.none()
-    
-    def get_notification_count(self, request):
-        if request.user.is_authenticated:
-            notification_count = Notification.objects.filter(recipient=request.user).count()
-            return notification_count
-        return 0
 
 class SaveListView(LoginRequiredMixin,View):
     def get(self,request):
