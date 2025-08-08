@@ -6,4 +6,6 @@ class PostsConfig(AppConfig):
     name = "posts"
 
     def ready(self):
-        import posts.signals
+        import posts.signals, watson
+        Post = self.get_model('Post')
+        watson.register(Post, fields=("content",))
