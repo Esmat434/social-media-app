@@ -15,6 +15,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <!-- Custom Styles -->
     <style>
         body {
@@ -151,10 +152,16 @@
                         <span class="absolute top-0 right-0 -mt-1 -mr-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">3</span>
                     </a>
                     <div class="relative">
-                        {% if request.user.avatar %}
-                            <img src="{{ request.user.avatar.url }}" alt="Profile Picture" class="w-10 h-10 rounded-full cursor-pointer">
+                        {% if request.user.is_authenticated %}
+                            {% if request.user.avatar %}
+                                <img src="{{ request.user.avatar.url }}" alt="Profile Picture" class="w-10 h-10 rounded-full cursor-pointer">
+                            {% else %}
+                                <img src="https://placehold.co/80x80/7048e8/ffffff?text=U" alt="Profile Picture" class="w-10 h-10 rounded-full cursor-pointer">
+                            {% endif %}        
                         {% else %}
-                            <img src="https://placehold.co/40x40/7048e8/ffffff?text=U" alt="Profile Picture" class="w-10 h-10 rounded-full cursor-pointer">
+                            <a href="{% url 'mvt:login' %}">
+                                <button type="button" class="btn btn-outline-success">Sign In</button>
+                            </a>
                         {% endif %}
                     </div>
                 </nav>
@@ -202,7 +209,256 @@
                     </div>
                 </div>
 
-                <!-- Other Posts -->
+                <!-- Other Posts Part -->
+                {% for post in best_posts %}
+                    <article class="card post-card mb-6">
+                        <div class="p-5">
+                            <div class="flex items-start gap-3 mb-4">
+                                {% if post.user.avatar %}
+                                    <img src="{{ post.user.avatar.url }}" alt="Author's profile picture" class="w-12 h-12 rounded-full flex-shrink-0">
+                                {% else %}
+                                    <img src="https://placehold.co/48x48/10b981/ffffff?text=A" alt="Author's profile picture" class="w-12 h-12 rounded-full flex-shrink-0">
+                                {% endif %}    
+                                <div class="flex-grow">
+                                    <a href="{% url 'mvt:profile' post.user.username %}"><p class="font-bold">{{ post.user.username }}</p></a>
+                                    <p class="text-xs text-gray-500">{{ post.created_at }}</p>
+                                </div>
+                                {% if request.user.is_authenticated %}
+                                    {% if post.user != request.user and not post.user|is_connected:request.user and not post.user|is_pending:request.user %}
+                                        <button
+                                            class="connect-btn ml-auto mr-2 px-3 py-1 text-sm rounded-full font-semibold border border-indigo-600 text-indigo-600 hover:bg-indigo-50 flex items-center gap-1"
+                                            data-url="{% url 'mvt_connection:follow-private-request' post.user.username %}"
+                                            data-user-id="{{ post.user.username }}">
+
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                                <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 11a1 1 0 100-2 1 1 0 000 2z" />
+                                            </svg>
+                                            <span>Connect</span>
+                                        </button>
+                                    {% endif %}
+                                {% else %}
+                                    <a href="{% url 'mvt:login' %}">
+                                        <button
+                                            class="ml-auto mr-2 px-3 py-1 text-sm rounded-full font-semibold border border-indigo-600 text-indigo-600 hover:bg-indigo-50 flex items-center gap-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                                <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 11a1 1 0 100-2 1 1 0 000 2z" />
+                                            </svg>
+                                            <span>Connect</span>
+                                        </button>
+                                    </a>
+                                {% endif %}
+                                <div class="relative">
+                                    <button class="p-2 rounded-full hover:bg-gray-100 post-menu-button">
+                                        <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/></svg>
+                                    </button>
+                                    <div class="dropdown-menu absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10">
+                                        {% if request.user.is_authenticated %}
+                                            <a href="#" 
+                                                class="save-btn items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                data-url="{% url 'mvt_posts:create_save' post.id %}"
+                                                data-user-id="{{ post.id }}">
+                                                {% if post|is_saved:request.user %}
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-3.13L5 18V4z" /></svg>
+                                                {% else %}
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 20 20" stroke="currentColor" stroke-width="1.5">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h6a2 2 0 012 2v12l-5-2.5L5 17V5z" />
+                                                    </svg>
+                                                {% endif %}    
+                                                <span>Save</span>
+                                            </a>
+                                        {% else %}
+                                            <a href="{% url 'mvt:login' %}" 
+                                                class="items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 20 20" stroke="currentColor" stroke-width="1.5">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h6a2 2 0 012 2v12l-5-2.5L5 17V5z" />
+                                                </svg>
+                                            </a>
+                                            <span>Save</span>
+                                        {% endif %}
+                                        {% if request.user.is_authenticated and post.user != request.user and post.user|is_connected:request.user and not post.user|is_pending:request.user %}
+                                            <a href="#"
+                                                class="un-follow-btn flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                data-url="{% url 'mvt_connection:un-follow' post.user.username %}"
+                                                data-user-id="{{ post.user.username }}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.022 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" /></svg>
+                                                <span>
+                                                    Unfollow
+                                                </span>
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="post-{{post.pk}}" class="text-gray-700 leading-relaxed break-words expandable-text">
+                                {{ post.content}}
+                            </div>
+                        </div>
+                        {% if post.post_media.all %}
+                           {% with media=post.post_media.all.first %}
+                                {% if media.media_type == 'image' %}
+                                    <!-- اگر نوع مدیا 'image' باشد، این بخش تصویر را نمایش می‌دهد -->
+                                    <div class="mt-3">
+                                        <img src="{{ media.file.url }}" alt="Post image" class="w-full h-auto rounded-lg object-cover">
+                                    </div>
+                                {% elif media.media_type == 'video' %}
+                                    <!-- اگر نوع مدیا 'video' باشد، این بخش ویدیو را به همراه کنترل‌ها نمایش می‌دهد -->
+                                    <div class="mt-3">
+                                        <video controls class="w-full h-auto rounded-lg">
+                                            <source src="{{ media.file.url }}" type="video/mp4">
+                                             (Your browser does not support the video tag.)
+                                        </video>
+                                    </div>
+                                {% endif %}
+                            {% endwith %}
+                        {% endif %}        
+                        <div class="p-3 border-t flex justify-around">
+                            {% if request.user.is_authenticated %}
+                                <div class="action-button like-btn"
+                                    data-url="{% url 'mvt_posts:create_like' post.id %}"
+                                    data-user-id="{{ post.id }}">
+                                    {% if post|is_liked:request.user %}
+                                        <i class="fa-solid fa-thumbs-up"></i>
+                                    {% else %}
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3zM7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3" /></svg>
+                                    {% endif %}    
+                                    <span>{{ post.post_like.count }}</span>
+                                </div>
+                            {% else %}
+                                <a href="{% url 'mvt:login' %}">
+                                    <div class="action-button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3zM7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3" /></svg>
+                                        <span>{{ post.post_like.count }}</span>
+                                    </div>
+                                </a>
+                            {% endif %}
+                            <div class="action-button comment-toggle-button"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 5.523-4.477 10-10 10S1 17.523 1 12 5.477 2 11 2s10 4.477 10 10z" /></svg><span>{{ post.post_comment.count}}</span></div>
+                            {% if request.user.is_authenticated %}
+                                <div class="action-button share-btn"
+                                    data-url="{% url 'mvt_posts:create_share' post.id %}"
+                                    data-user-id="{{ post.id }}">
+                                    {% if request.user.is_authenticated and post|is_shared:request.user %}
+                                        <i class="fas fa fa-retweet"></i>
+                                    {% else %}
+                                        <i class="fas fa-regular fa-retweet"></i>
+                                    {% endif %}
+                                    <span>{{ post.post_share.count }}</span>
+                                </div>
+                            {% else %}
+                                <a href="{% url 'mvt:login' %}">
+                                    <div class="action-button">
+                                        <i class="fas fa-regular fa-retweet"></i>
+                                        <span>{{ post.post_share.count }}</span>
+                                    </div>
+                                </a>
+                            {% endif %}
+                        </div>
+                        <!-- Comments Section -->
+                        <div class="comments-section bg-gray-50 p-5 border-t">
+                            <!-- New Comment Form -->
+                            <div class="flex items-start gap-3 mb-5">
+                                {% if request.user.is_authenticated and request.user.avatar %}
+                                    <img src="{{ request.user.avatar.url }}" alt="Your profile picture" class="w-10 h-10 rounded-full">
+                                {% else %}
+                                    <img src="https://placehold.co/40x40/7048e8/ffffff?text=U" alt="Your profile picture" class="w-10 h-10 rounded-full">
+                                {% endif %}    
+                                <form class="comment-form w-full" method="POST">
+                                    <div class="flex-grow">
+                                        {{ comment_form.comment }}
+                                        <div class="text-right mt-2">
+                                            {% if request.user.is_authenticated %}
+                                                <button 
+                                                    class="comment-submit-btn bg-indigo-600 text-white font-semibold px-4 py-1.5 rounded-full hover:bg-indigo-700 transition-colors text-sm disabled:bg-indigo-300 disabled:cursor-not-allowed" disabled
+                                                    data-url="{% url 'mvt_posts:create_comment' post.id %}"
+                                                    data-user-id="{{ post.id }}">
+                                                    Post
+                                                </button>
+                                            {% else %}
+                                                <a href="{% url 'mvt:login' %}">
+                                                    <button 
+                                                        class="bg-indigo-600 text-white font-semibold px-4 py-1.5 rounded-full hover:bg-indigo-700 transition-colors text-sm disabled:bg-indigo-300 disabled:cursor-not-allowed" disabled>
+                                                        Post
+                                                    </button>
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <!-- Existing Comments -->
+                            <div class="space-y-4">
+                                {% for comment in post.get_top_level_comments %}
+                                    <!-- Comment 2 with a visible reply -->
+                                    <div class="flex items-start gap-3">
+                                        {% if comment.user.avatar %}
+                                            <img src="{{ comment.user.avatar.url }}" alt="Commenter's picture" class="w-10 h-10 rounded-full">
+                                        {% else %}
+                                            <img src="https://placehold.co/40x40/10b981/ffffff?text=C2" alt="Commenter's picture" class="w-10 h-10 rounded-full">
+                                        {% endif %}    
+                                        <div class="flex-grow">
+                                            <p class="font-semibold text-sm">{{ comment.user.username }}</p>
+                                            <p class="text-sm text-gray-700">{{ comment.comment }}</p>
+                                            {% if request.user.is_authenticated and comment.user == request.user %}
+                                                <button 
+                                                    class="delete-comment-btn text-xs font-bold text-red-500 hover:underline mt-1"
+                                                    data-url="{% url 'mvt_posts:delete_comment' comment.id %}"
+                                                    data-user-id="{{ comment.id }}">
+                                                    Delete
+                                                </button>
+                                            {% endif %}
+                                            {% if request.user.is_authenticated %}
+                                                <button class="text-xs font-bold text-gray-500 hover:underline mt-1 reply-button">
+                                                    Reply
+                                                </button>
+                                            {% else %}
+                                                <a href="{% url 'mvt:login' %}"><button class="text-xs font-bold text-gray-500 hover:underline mt-1">
+                                                    Reply
+                                                </button></a>
+                                            {% endif %}
+                                            <form class="reply-form hidden mt-3" method="POST">
+                                                <div class="flex items-start gap-2">
+                                                    {% if request.user.avatar %}
+                                                        <img src="{{ request.user.avatar.url }}" class="w-8 h-8 rounded-full">
+                                                    {% else %}    
+                                                        <img src="https://placehold.co/32x32/7048e8/ffffff?text=U" class="w-8 h-8 rounded-full">
+                                                    {% endif %}
+                                                    <div class="flex-grow">
+                                                        {{ comment_form.comment }}
+                                                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                                                    
+                                                        <div class="text-left mt-2">
+                                                            <button type="submit" 
+                                                                    class="reply-submit-btn bg-indigo-600 text-white font-semibold px-3 py-1 rounded-full hover:bg-indigo-700 text-xs"
+                                                                    data-url="{% url 'mvt_posts:create_parent_comment' post.id comment.id %}">
+                                                                Post
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            <!-- Visible Reply -->
+                                            {% for reply in comment.parent_comment.all %} 
+                                                <div class="flex items-start gap-3 mt-3">
+                                                    {% if reply.user.avatar %}
+                                                        <img src="{{ reply.user.avatar.url }}" alt="Author's reply picture" class="w-8 h-8 rounded-full">
+                                                    {% else %}
+                                                        <img src="https://placehold.co/32x32/10b981/ffffff?text=A" alt="Author's reply picture" class="w-8 h-8 rounded-full">
+                                                    {% endif %}    
+                                                    <div>
+                                                        <p class="font-semibold text-sm">{{ reply.user.username }}</p>
+                                                        <p class="text-sm text-gray-700">{{ reply.comment }}</p>
+                                                        <!-- <button class="text-xs font-bold text-gray-500 hover:underline mt-1 reply-button">Reply</button> -->
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </article>
+                {% endfor %}
+
+                <!-- Other Posts Part -->
                 {% for post in other_posts %}
                     <article class="card post-card mb-6">
                         <div class="p-5">
@@ -229,11 +485,23 @@
                                             <span>Connect</span>
                                         </button>
                                     {% endif %}
-                                    <div class="relative">
-                                        <button class="p-2 rounded-full hover:bg-gray-100 post-menu-button">
-                                            <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/></svg>
+                                {% else %}
+                                    <a href="{% url 'mvt:login' %}">
+                                        <button
+                                            class="ml-auto mr-2 px-3 py-1 text-sm rounded-full font-semibold border border-indigo-600 text-indigo-600 hover:bg-indigo-50 flex items-center gap-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                                <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 11a1 1 0 100-2 1 1 0 000 2z" />
+                                            </svg>
+                                            <span>Connect</span>
                                         </button>
-                                        <div class="dropdown-menu absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10">
+                                    </a>
+                                {% endif %}
+                                <div class="relative">
+                                    <button class="p-2 rounded-full hover:bg-gray-100 post-menu-button">
+                                        <svg class="w-5 h-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 16"><path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/></svg>
+                                    </button>
+                                    <div class="dropdown-menu absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10">
+                                        {% if request.user.is_authenticated %}
                                             <a href="#" 
                                                 class="save-btn items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                                 data-url="{% url 'mvt_posts:create_save' post.id %}"
@@ -247,20 +515,28 @@
                                                 {% endif %}    
                                                 <span>Save</span>
                                             </a>
-                                            {% if post.user != request.user and post.user|is_connected:request.user and not post.user|is_pending:request.user %}
-                                                <a href="#"
-                                                    class="un-follow-btn flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                                    data-url="{% url 'mvt_connection:un-follow' post.user.username %}"
-                                                    data-user-id="{{ post.user.username }}">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.022 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" /></svg>
-                                                    <span>
-                                                        Unfollow
-                                                    </span>
-                                                </a>
-                                            {% endif %}
-                                        </div>
+                                        {% else %}
+                                            <a href="{% url 'mvt:login' %}" 
+                                                class="items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 20 20" stroke="currentColor" stroke-width="1.5">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 5a2 2 0 012-2h6a2 2 0 012 2v12l-5-2.5L5 17V5z" />
+                                                </svg>
+                                            </a>
+                                            <span>Save</span>
+                                        {% endif %}
+                                        {% if request.user.is_authenticated and post.user != request.user and post.user|is_connected:request.user and not post.user|is_pending:request.user %}
+                                            <a href="#"
+                                                class="un-follow-btn flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                data-url="{% url 'mvt_connection:un-follow' post.user.username %}"
+                                                data-user-id="{{ post.user.username }}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z" /><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.022 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" /></svg>
+                                                <span>
+                                                    Unfollow
+                                                </span>
+                                            </a>
+                                        {% endif %}
                                     </div>
-                                {% endif %}
+                                </div>
                             </div>
                             <div class="text-gray-700 leading-relaxed break-words expandable-text">
                                 {{ post.content}}
@@ -285,33 +561,51 @@
                             {% endwith %}
                         {% endif %}        
                         <div class="p-3 border-t flex justify-around">
-                            <div class="action-button like-btn"
-                                data-url="{% url 'mvt_posts:create_like' post.id %}"
-                                data-user-id="{{ post.id }}">
-                                {% if post|is_liked:request.user %}
-                                    <i class="fa-solid fa-thumbs-up"></i>
-                                {% else %}
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3zM7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3" /></svg>
-                                {% endif %}    
-                                <span>{{ post.post_like.count }}</span>
-                            </div>
+                            {% if request.user.is_authenticated %}
+                                <div class="action-button like-btn"
+                                    data-url="{% url 'mvt_posts:create_like' post.id %}"
+                                    data-user-id="{{ post.id }}">
+                                    {% if post|is_liked:request.user %}
+                                        <i class="fa-solid fa-thumbs-up"></i>
+                                    {% else %}
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3zM7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3" /></svg>
+                                    {% endif %}    
+                                    <span>{{ post.post_like.count }}</span>
+                                </div>
+                            {% else %}
+                                <a href="{% url 'mvt:login' %}">
+                                    <div class="action-button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3zM7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3" /></svg>
+                                        <span>{{ post.post_like.count }}</span>
+                                    </div>
+                                </a>
+                            {% endif %}
                             <div class="action-button comment-toggle-button"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 5.523-4.477 10-10 10S1 17.523 1 12 5.477 2 11 2s10 4.477 10 10z" /></svg><span>{{ post.post_comment.count}}</span></div>
-                            <div class="action-button share-btn"
-                                data-url="{% url 'mvt_posts:create_share' post.id %}"
-                                data-user-id="{{ post.id }}">
-                                {% if post|is_shared:request.user %}
-                                    <i class="fas fa fa-retweet"></i>
-                                {% else %}
-                                    <i class="fas fa-regular fa-retweet"></i>
-                                {% endif %}
-                                <span>{{ post.post_share.count }}</span>
-                            </div>
+                            {% if request.user.is_authenticated %}
+                                <div class="action-button share-btn"
+                                    data-url="{% url 'mvt_posts:create_share' post.id %}"
+                                    data-user-id="{{ post.id }}">
+                                    {% if request.user.is_authenticated and post|is_shared:request.user %}
+                                        <i class="fas fa fa-retweet"></i>
+                                    {% else %}
+                                        <i class="fas fa-regular fa-retweet"></i>
+                                    {% endif %}
+                                    <span>{{ post.post_share.count }}</span>
+                                </div>
+                            {% else %}
+                                <a href="{% url 'mvt:login' %}">
+                                    <div class="action-button">
+                                        <i class="fas fa-regular fa-retweet"></i>
+                                        <span>{{ post.post_share.count }}</span>
+                                    </div>
+                                </a>
+                            {% endif %}
                         </div>
                         <!-- Comments Section -->
                         <div class="comments-section bg-gray-50 p-5 border-t">
                             <!-- New Comment Form -->
                             <div class="flex items-start gap-3 mb-5">
-                                {% if request.user.avatar %}
+                                {% if request.user.is_authenticated and request.user.avatar %}
                                     <img src="{{ request.user.avatar.url }}" alt="Your profile picture" class="w-10 h-10 rounded-full">
                                 {% else %}
                                     <img src="https://placehold.co/40x40/7048e8/ffffff?text=U" alt="Your profile picture" class="w-10 h-10 rounded-full">
@@ -320,10 +614,21 @@
                                     <div class="flex-grow">
                                         {{ comment_form.comment }}
                                         <div class="text-right mt-2">
-                                            <button 
-                                                class="comment-submit-btn bg-indigo-600 text-white font-semibold px-4 py-1.5 rounded-full hover:bg-indigo-700 transition-colors text-sm disabled:bg-indigo-300 disabled:cursor-not-allowed" disabled
-                                                data-url="{% url 'mvt_posts:create_comment' post.id %}"
-                                                data-user-id="{{ post.id }}">Post</button>
+                                            {% if request.user.is_authenticated %}
+                                                <button 
+                                                    class="comment-submit-btn bg-indigo-600 text-white font-semibold px-4 py-1.5 rounded-full hover:bg-indigo-700 transition-colors text-sm disabled:bg-indigo-300 disabled:cursor-not-allowed" disabled
+                                                    data-url="{% url 'mvt_posts:create_comment' post.id %}"
+                                                    data-user-id="{{ post.id }}">
+                                                    Post
+                                                </button>
+                                            {% else %}
+                                                <a href="{% url 'mvt:login' %}">
+                                                    <button 
+                                                        class="bg-indigo-600 text-white font-semibold px-4 py-1.5 rounded-full hover:bg-indigo-700 transition-colors text-sm disabled:bg-indigo-300 disabled:cursor-not-allowed" disabled>
+                                                        Post
+                                                    </button>
+                                                </a>
+                                            {% endif %}
                                         </div>
                                     </div>
                                 </form>
@@ -341,18 +646,30 @@
                                         <div class="flex-grow">
                                             <p class="font-semibold text-sm">{{ comment.user.username }}</p>
                                             <p class="text-sm text-gray-700">{{ comment.comment }}</p>
-                                            <button 
-                                                class="delete-comment-btn text-xs font-bold text-red-500 hover:underline mt-1"
-                                                data-url="{% url 'mvt_posts:delete_comment' comment.id %}"
-                                                data-user-id="{{ comment.id }}">
-                                                Delete
-                                            </button>
-                                            <button class="text-xs font-bold text-gray-500 hover:underline mt-1 reply-button">
-                                                Reply
-                                            </button>
+                                            {% if request.user.is_authenticated and comment.user == request.user %}
+                                                <button 
+                                                    class="delete-comment-btn text-xs font-bold text-red-500 hover:underline mt-1"
+                                                    data-url="{% url 'mvt_posts:delete_comment' comment.id %}"
+                                                    data-user-id="{{ comment.id }}">
+                                                    Delete
+                                                </button>
+                                            {% endif %}
+                                            {% if request.user.is_authenticated %}
+                                                <button class="text-xs font-bold text-gray-500 hover:underline mt-1 reply-button">
+                                                    Reply
+                                                </button>
+                                            {% else %}
+                                                <a href="{% url 'mvt:login' %}"><button class="text-xs font-bold text-gray-500 hover:underline mt-1">
+                                                    Reply
+                                                </button></a>
+                                            {% endif %}
                                             <form class="reply-form hidden mt-3" method="POST">
                                                 <div class="flex items-start gap-2">
-                                                    <img src="{{ request.user.avatar.url|default:'https://placehold.co/32x32/7048e8/ffffff?text=U' }}" class="w-8 h-8 rounded-full">
+                                                    {% if request.user.avatar %}
+                                                        <img src="{{ request.user.avatar.url }}" class="w-8 h-8 rounded-full">
+                                                    {% else %}    
+                                                        <img src="https://placehold.co/32x32/7048e8/ffffff?text=U" class="w-8 h-8 rounded-full">
+                                                    {% endif %}
                                                     <div class="flex-grow">
                                                         {{ comment_form.comment }}
                                                         <input type="hidden" name="parent_id" value="{{ comment.id }}">

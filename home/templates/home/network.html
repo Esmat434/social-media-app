@@ -127,28 +127,14 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-gray-500" viewBox="0 0 16 16"><path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/><path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/></svg>
                                 <span>Connections</span>
                             </div>
-                            <span class="font-semibold">123</span>
+                            <span class="font-semibold">{{ connection_count }}</span>
                         </a>
                         <a href="#" class="flex justify-between items-center p-3 hover:bg-gray-100">
                             <div class="flex items-center gap-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-gray-500" viewBox="0 0 16 16"><path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/></svg>
                                 <span>People I Follow</span>
                             </div>
-                            <span class="font-semibold">45</span>
-                        </a>
-                        <a href="#" class="flex justify-between items-center p-3 hover:bg-gray-100">
-                            <div class="flex items-center gap-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-gray-500" viewBox="0 0 16 16"><path d="M14 2a1 1 0 0 1 1 1v10.535a.5.5 0 0 1-.832.374l-4.5-3L5.332 14.91a.5.5 0 0 1-.832-.374V3a1 1 0 0 1 1-1h8z"/></svg>
-                                <span>Events</span>
-                            </div>
-                            <span class="font-semibold">2</span>
-                        </a>
-                        <a href="#" class="flex justify-between items-center p-3 hover:bg-gray-100">
-                            <div class="flex items-center gap-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="text-gray-500" viewBox="0 0 16 16"><path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/></svg>
-                                <span>Pages</span>
-                            </div>
-                            <span class="font-semibold">8</span>
+                            <span class="font-semibold">{{ follower_count }}</span>
                         </a>
                     </nav>
                 </div>
@@ -160,21 +146,24 @@
                 <div class="card mb-6">
                     <div class="p-4 flex justify-between items-center">
                         <h2 class="font-semibold">Invitations</h2>
-                        <a href="#" class="font-semibold text-gray-500 hover:bg-gray-100 p-2 rounded-md">See all (5)</a>
                     </div>
                     <div class="border-t">
                         {% for invite in invitation_list %}
                             <!-- Invitation Item -->
                             <div class="p-4 flex flex-wrap items-center justify-between hover:bg-gray-50">
                                 <div class="flex items-center gap-3 mb-3 sm:mb-0">
-                                    <img src="{{ invite.user.avatar.url|default:'https://placehold.co/56x56/f472b6/ffffff?text=C1' }}" alt="Profile Picture" class="w-14 h-14 rounded-full flex-shrink-0">
+                                    {% if invite.from_user.avatar %}
+                                        <img src="{{ invite.from_user.avatar.url }}" alt="Profile Picture" class="w-14 h-14 rounded-full flex-shrink-0">
+                                    {% else %}
+                                        <img src="https://placehold.co/56x56/f472b6/ffffff?text=C1" alt="Profile Picture" class="w-14 h-14 rounded-full flex-shrink-0">    
+                                    {% endif %}    
                                     <div>
-                                        <p class="font-bold">{{ invite.user.username }}</p>
-                                        <p class="text-xs text-gray-500 mt-1">{{ invite.user.date_joined }}</p>
+                                        <p class="font-bold">{{ invite.from_user.username }}</p>
+                                        <p class="text-xs text-gray-500 mt-1">{{ invite.from_user.date_joined }}</p>
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                                    <button class="px-4 py-1.5 rounded-full font-semibold invitation-button ignore ignore-btn"
+                                    <button class="px-4 py-1.5 rounded-full font-semibold invitation-button ignore reject-btn"
                                         data-url="{% url 'mvt_connection:follow-private-reject' invite.from_user.username %}"
                                         data-user-id="{{ invite.from_user.username }}">Ignore</button>
                                     <button class="px-4 py-1.5 rounded-full font-semibold invitation-button accept accept-btn"
@@ -193,17 +182,35 @@
                         {% for near in near_network_list %}
                             <!-- Profile Card 1 -->
                             <div class="card profile-card text-center border">
-                                <div class="h-16 bg-cover bg-center" style="background-image: url('https://placehold.co/400x100/a5b4fc/ffffff')"></div>
+                                {% if near.avatar %}
+                                    <div class="h-16 bg-cover bg-center" style='background-image: url("{{ near.avatar.url }}")'></div>
+                                {% else %}
+                                    <div class="h-16 bg-cover bg-center" style="background-image: url('https://placehold.co/400x100/a5b4fc/ffffff')"></div>
+                                {% endif %}
                                 <div class="p-4">
-                                    <img src="{{ near.from_user.avatar.url|default:'https://placehold.co/56x56/f472b6/ffffff?text=P1' }}" alt="Profile Picture" class="w-16 h-16 rounded-full mx-auto -mt-12 border-2 border-white">
-                                    <h3 class="mt-2 font-bold text-md hover:underline cursor-pointer">{{ near.from_user.username }}</h3>
+                                    {% if near.avatar %}
+                                        <img src="{{ near.avatar.url }}" alt="Profile Picture" class="w-16 h-16 rounded-full mx-auto -mt-12 border-2 border-white">
+                                    {% else %}
+                                        <img src="https://placehold.co/56x56/f472b6/ffffff?text=P1" alt="Profile Picture" class="w-16 h-16 rounded-full mx-auto -mt-12 border-2 border-white">    
+                                    {% endif %}    
+                                    <h3 class="mt-2 font-bold text-md hover:underline cursor-pointer">{{ near.username }}</h3>
                                     <p class="text-xs text-gray-500 flex items-center justify-center gap-1">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/><path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/></svg>
                                         <span>5 mutual connections</span>
                                     </p>
-                                    <button class="w-full mt-4 py-1.5 px-4 rounded-full font-semibold profile-card-button text-sm"
-                                        data-url="{% url 'mvt_connection:follow-private-request' near.from_user.username %}"
-                                        data-user-id="{{ near.from_user.username }}">Connect</button>
+                                    {% if request.user.is_authenticated %}
+                                        <button class="request-btn w-full mt-4 py-1.5 px-4 rounded-full font-semibold profile-card-button text-sm"
+                                            data-url="{% url 'mvt_connection:follow-private-request' near.username %}"
+                                            data-user-id="{{ near.username }}">
+                                            Connect
+                                        </button>
+                                    {% else %}
+                                        <a href="{% url 'mvt:login' %}">
+                                            <button class="request-btn w-full mt-4 py-1.5 px-4 rounded-full font-semibold profile-card-button text-sm">
+                                                Connect
+                                            </button>
+                                        </a>
+                                    {% endif %}
                                 </div>
                             </div>
                         {% endfor %}
@@ -211,44 +218,107 @@
                         {% for other in other_network_list %}
                             <!-- Profile Card 1 -->
                             <div class="card profile-card text-center border">
-                                <div class="h-16 bg-cover bg-center" style="background-image: url('https://placehold.co/400x100/a5b4fc/ffffff')"></div>
+                                {% if other.avatar %}
+                                    <div class="h-16 bg-cover bg-center" style='background-image: url("{{ other.avatar.url }}")'></div>
+                                {% else %}
+                                    <div class="h-16 bg-cover bg-center" style="background-image: url('https://placehold.co/400x100/a5b4fc/ffffff')"></div>
+                                {% endif %}    
                                 <div class="p-4">
-                                    <img src="{{ other.from_user.avatar.url|default:'https://placehold.co/56x56/f472b6/ffffff?text=P1' }}" alt="Profile Picture" class="w-16 h-16 rounded-full mx-auto -mt-12 border-2 border-white">
-                                    <h3 class="mt-2 font-bold text-md hover:underline cursor-pointer">{{ other.from_user.username }}</h3>
+                                    {% if other.avatar %}
+                                        <img src="{{ other.avatar.url }}" alt="Profile Picture" class="w-16 h-16 rounded-full mx-auto -mt-12 border-2 border-white">
+                                    {% else %}
+                                        <img src="https://placehold.co/56x56/f472b6/ffffff?text=P1" alt="Profile Picture" class="w-16 h-16 rounded-full mx-auto -mt-12 border-2 border-white">    
+                                    {% endif %}    
+                                    <h3 class="mt-2 font-bold text-md hover:underline cursor-pointer">{{ other.username }}</h3>
                                     <p class="text-xs text-gray-500 flex items-center justify-center gap-1">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/><path fill-rule="evenodd" d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z"/><path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z"/></svg>
                                         <span>5 mutual connections</span>
                                     </p>
-                                    <button class="w-full mt-4 py-1.5 px-4 rounded-full font-semibold profile-card-button text-sm"
-                                        data-url="{% url 'mvt_connection:follow-private-request' other.from_user.username %}"
-                                        data-user-id="{{ other.from_user.username }}">Connect</button>
+                                    {% if request.user.is_authenticated %}
+                                        <button class="request-btn w-full mt-4 py-1.5 px-4 rounded-full font-semibold profile-card-button text-sm"
+                                            data-url="{% url 'mvt_connection:follow-private-request' other.username %}"
+                                            data-user-id="{{ other.username }}">
+                                            Connect
+                                        </button>
+                                    {% else %}
+                                        <a href="{% url 'mvt:login' %}">
+                                            <button class="w-full mt-4 py-1.5 px-4 rounded-full font-semibold profile-card-button text-sm">
+                                                Connect
+                                            </button>
+                                        </a>
+                                    {% endif %}
                                 </div>
                             </div>
                         {% endfor %}
-
                     </div>
                 </div>
             </div>
-
         </div>
     </main>
 
     <script>
-        // Reject Invitation Button Fetch
+        // Request Button Fetch
         document.addEventListener("DOMContentLoaded", function () {
 
             document.body.addEventListener("click", function(event) {
 
-                const unFollowButton = event.target.closest(".ignore-btn");
+                const RequestButton = event.target.closest(".request-btn");
             
-                if (!unFollowButton) {
+                if (!RequestButton) {
                     return;
                 }
             
                 event.preventDefault();
             
-                const url = unFollowButton.dataset.url;
-                const userId = unFollowButton.dataset.userId;
+                const url = RequestButton.dataset.url;
+                const userId = RequestButton.dataset.userId;
+                const csrftoken = getCookie('csrftoken');
+            
+                if (!url) {
+                    console.error("خطا: ویژگی data-url روی دکمه پیدا نشد.");
+                    return;
+                }
+            
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: JSON.stringify({ user_id: userId })
+                })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error('پاسخ شبکه صحیح نبود. وضعیت: ' + res.status);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    console.log("موفقیت:", data);
+                    location.reload();
+                })
+                .catch(err => {
+                    console.error("خطا در هنگام fetch:", err);
+                    alert("عملیات با خطا مواجه شد. لطفاً دوباره تلاش کنید.");
+                });
+            });
+        });        
+
+        // Reject Invitation Button Fetch
+        document.addEventListener("DOMContentLoaded", function () {
+
+            document.body.addEventListener("click", function(event) {
+
+                const RejectButton = event.target.closest(".reject-btn");
+            
+                if (!RejectButton) {
+                    return;
+                }
+            
+                event.preventDefault();
+            
+                const url = RejectButton.dataset.url;
+                const userId = RejectButton.dataset.userId;
                 const csrftoken = getCookie('csrftoken');
             
                 if (!url) {
@@ -286,16 +356,16 @@
 
             document.body.addEventListener("click", function(event) {
 
-                const unFollowButton = event.target.closest(".accept-btn");
+                const AcceptButton = event.target.closest(".accept-btn");
             
-                if (!unFollowButton) {
+                if (!AcceptButton) {
                     return;
                 }
             
                 event.preventDefault();
             
-                const url = unFollowButton.dataset.url;
-                const userId = unFollowButton.dataset.userId;
+                const url = AcceptButton.dataset.url;
+                const userId = AcceptButton.dataset.userId;
                 const csrftoken = getCookie('csrftoken');
             
                 if (!url) {
@@ -327,6 +397,22 @@
                 });
             });
         });
+
+        // Csrf Token
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
     </script>
 
 </body>
