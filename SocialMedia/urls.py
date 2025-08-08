@@ -26,6 +26,7 @@ urlpatterns = [
     path('',include('posts.urls')),
     path('',include('notification.urls',namespace='notification')),
     path('',include('home.urls',namespace='home')),
+    path('',include('search.urls')),
 ]
 
 if settings.DEBUG:
