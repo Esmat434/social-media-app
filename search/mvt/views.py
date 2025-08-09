@@ -93,16 +93,9 @@ class SearchNetworkView(View):
 
 class SearchNotificationView(View):
     def get(self,request):
-        query = request.GET.get('q', '')
-        my_notification_ids = self.get_my_notification_ids(request)
-        if not query:
-            return []
-        
-        notification_results = watson_search.filter(Notification,query)
-        results = notification_results.filter(id__in=my_notification_ids)
         
         context = {
-            'notifications': results
+            'notifications': self.get_results(request) 
         }
 
         return render(request,'home/notification.html', context=context)
@@ -111,8 +104,25 @@ class SearchNotificationView(View):
         if not request.user.is_authenticated:
             return []
         
-        notification_ids = Notification.objects.filter(
+        return Notification.objects.filter(
             recipient=request.user
         ).values_list('id', flat=True)
 
-        return notification_ids
+    def get_results(self,request):
+        query = request.GET.get('q', '')
+        my_notification_ids = self.get_my_notification_ids(request)
+        if not query:
+            return []
+        
+        notification_results = watson_search.filter(Notification,query)
+        watson_results = notification_results.filter(id__in=my_notification_ids)
+        
+        partial_results = Notification.objects.filter(
+            verb__icontains=query
+        ).exclude(
+            id__in=[result.id for result in watson_results]
+        )
+
+        results = list(chain(partial_results, watson_results))
+
+        return results
