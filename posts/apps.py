@@ -9,4 +9,4 @@ class PostsConfig(AppConfig):
         import posts.signals
         from watson import search as watson
         Post = self.get_model('Post')
-        watson.register(Post, fields=('content',))
+        watson.register(Post, fields=('content',), search_engine="default")
