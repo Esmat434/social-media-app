@@ -8,4 +8,4 @@ class AccountsConfig(AppConfig):
     def ready(self):
         from watson import search as watson
         User = self.get_model('CustomUser')
-        watson.register(User, fields=('verb',))
+        watson.register(User, fields=('username','first_name','last_name',))
