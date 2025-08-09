@@ -19,7 +19,7 @@ class SearchPostView(View):
         results = []
         if query:
             post_results = watson_search.filter(Post,query)
-            results = [result.object for result in post_results]
+            results = post_results
         
         context = {
             'other_posts': results,
@@ -34,11 +34,11 @@ class SearchNetworkView(View):
         results = []
         if query:
             user_results = watson_search.filter(User,query)
-            results = [result.object for result in user_results]
-        
+            results = user_results
+        print(query)
         context = {
-            'other_network': results,
-            'near_network': []
+            'other_network_list': results,
+            'near_network_list': []
         }
 
         return render(request,'home/network.html', context=context)
@@ -49,7 +49,7 @@ class SearchNotificationView(View):
         results = []
         if query:
             notification_results = watson_search.filter(Notification,query)
-            results = [result.object for result in notification_results]
+            results = notification_results
         
         context = {
             'notifications': results
