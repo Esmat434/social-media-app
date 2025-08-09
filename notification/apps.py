@@ -8,4 +8,4 @@ class NotificationConfig(AppConfig):
     def ready(self):
         from watson import search as watson
         Notification = self.get_model('Notification')
-        watson.register(Notification, fields=('verb',))
+        watson.register(Notification, fields=('verb',), search_engine="default")
