@@ -64,13 +64,16 @@
                 <!-- Left Side: Logo and Search -->
                 <div class="flex items-center gap-2">
                     <a href="#" class="text-2xl font-bold text-indigo-700">Connect</a>
-                    <form class="hidden md:flex items-center ml-4">
+                    <form action="{% url 'mvt_search:network_search' %}" method="GET" class="hidden md:flex items-center ml-4">
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                                 <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" /></svg>
                             </span>
-                            <input type="text" placeholder="Search" class="bg-gray-100 border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:bg-white rounded-md py-2 pl-10 pr-4 w-64 transition border">
+                            <input type="text" name="q" placeholder="Search" class="bg-gray-100 border-gray-200 focus:ring-2 focus:ring-indigo-500 focus:bg-white rounded-md py-2 pl-10 pr-4 w-64 transition border">
                         </div>
+                        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-r-full hover:bg-indigo-700 transition-colors border border-indigo-600 -ml-1 font-semibold">
+                            Search
+                        </button>
                     </form>
                 </div>
                 <!-- Right Side: Navigation and Profile -->
