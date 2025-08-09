@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'axes',
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
+    'watson',
     # myapp
     'accounts',
     'connections',
