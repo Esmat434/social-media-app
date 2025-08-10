@@ -1,8 +1,11 @@
 from django.shortcuts import render
 from django.views import View
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.contrib.auth import get_user_model
+
+from .mixins import (
+    CustomLoginRequiredMixin
+)
 
 from connections.models import (
     Connection
@@ -131,11 +134,19 @@ class NotificationListView(View):
             return notifications
         return Notification.objects.none()
 
-class SaveListView(LoginRequiredMixin,View):
+class SaveListView(CustomLoginRequiredMixin,View):
     def get(self,request):
-        post_save = Save.objects.filter(user=request.user)
 
         context = {
-            'posts':post_save
+            'posts':self.get_post_save(request)
         }
+        
         return render(request,'home/post_save.html',context=context)
+    
+    def get_post_save(self, request):
+        if not request.user.is_authenticated:
+            return []
+        
+        return Save.objects.filter(
+            user=request.user
+        )
