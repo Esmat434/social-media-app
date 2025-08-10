@@ -6,7 +6,7 @@ from watson import search as watson_search
 from itertools import chain
 
 from posts.models import (
-    Post
+    Post,Save
 )
 
 from connections.models import (
@@ -126,3 +126,38 @@ class SearchNotificationView(View):
         results = list(chain(partial_results, watson_results))
 
         return results
+    
+class SearchPostSaveView(View):
+    def get(self, request):
+
+        context = {
+            'posts':self.get_post_save(request)
+        }
+
+        return render(request,'home/post_save.html', context=context)
+    
+    def get_posts(self, request):
+        query = request.GET.get('q','')
+        if not query:
+            return []
+        
+        watson_result = watson_search.filter(Post, query)
+        watson_result_ids = watson_result.values_list('id', flat=True)
+
+        partial_result_ids = Post.objects.filter(
+            content__icontains=query
+        ).exclude(id__in=watson_result_ids).values_list('id', flat=True)
+
+        results = list(chain(watson_result_ids,partial_result_ids))
+
+        return results
+    
+    def get_post_save(self, request):
+        post_ids = self.get_posts(request)
+
+        post_save = Save.objects.filter(
+            post__in=post_ids,
+            user=request.user
+        )
+
+        return post_save
