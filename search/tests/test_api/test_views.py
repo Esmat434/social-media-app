@@ -16,3 +16,11 @@ class TestSearchUserView:
         response = client.get(url)
 
         assert response.status_code == 200
+
+@pytest.mark.django_db
+class TestSearchPostSaveView:
+    def test_get_method(self,client):
+        url = reverse('api_search:post_save_search')+'?q=test'
+        response = client.get(url)
+
+        assert response.status_code == 200

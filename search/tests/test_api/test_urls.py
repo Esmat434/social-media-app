@@ -10,3 +10,8 @@ class TestUrls:
         url = reverse('api_search:user_search')+'?q=test'
 
         assert url == '/api/search/user/?q=test'
+    
+    def test_post_save_search_url(Self):
+        url = reverse('api_search:post_save_search')+'?q=test'
+
+        assert url == '/api/search/saves/?q=test'
