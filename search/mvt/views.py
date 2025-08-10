@@ -153,6 +153,9 @@ class SearchPostSaveView(View):
         return results
     
     def get_post_save(self, request):
+        if not request.user.is_authenticated:
+            return []
+        
         post_ids = self.get_posts(request)
 
         post_save = Save.objects.filter(
