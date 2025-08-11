@@ -28,8 +28,8 @@ def recipient_user(db):
     return user
 
 @pytest.fixture
-def auth_client(actor_user,client):
-    client.force_login(actor_user)
+def auth_client(recipient_user,client):
+    client.force_login(recipient_user)
     return client
 
 class TestDeleteNotoficationView:
