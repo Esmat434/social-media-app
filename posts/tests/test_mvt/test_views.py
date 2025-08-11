@@ -139,7 +139,7 @@ class TestDeleteCommentView:
         url = reverse('mvt_posts:delete_comment', args=[self.comment.pk])
         response = self.client.post(url)
 
-        assert response.status_code == 204
+        assert response.status_code == 200
 
 class TestCreateLikeView:
     @pytest.fixture(autouse=True)
