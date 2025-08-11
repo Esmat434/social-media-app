@@ -91,7 +91,7 @@ class UserPrivateRejectRequestView(CustomLoginRequiredMixin,View):
                 )
             connection.delete()
 
-            return HttpResponse(status=204)
+            return JsonResponse({'success':'Connection is rejected.'}, status=200)
 
 class UnFollowView(CustomLoginRequiredMixin,View):
     def dispatch(self, request, *args, **kwargs):
