@@ -9,9 +9,9 @@
 
             <div class="hidden md:block">
                 <div class="ml-10 flex items-baseline space-x-4">
-                    <a href="#" class="text-gray-500 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium"><i class="fas fa-home"></i></a>
-                    <a href="#" class="text-gray-500 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium"><i class="fas fa-users"></i></a>
-                    <a href="#" class="text-gray-500 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium"><i class="fas fa-bell"></i></a>
+                    <a href="{% url 'home:home-feed' %}" class="text-gray-500 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium"><i class="fas fa-home"></i></a>
+                    <a href="{% url 'home:networks' %}" class="text-gray-500 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium"><i class="fas fa-users"></i></a>
+                    <a href="{% url 'home:notifications' %}" class="text-gray-500 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium"><i class="fas fa-bell"></i></a>
                     <a href="#" class="text-gray-500 hover:text-indigo-600 dark:text-gray-300 dark:hover:text-indigo-400 px-3 py-2 rounded-md text-sm font-medium"><i class="fas fa-envelope"></i></a>
                 </div>
             </div>
