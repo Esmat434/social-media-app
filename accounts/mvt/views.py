@@ -5,17 +5,17 @@ from django.http import HttpResponseNotFound
 from django.urls import reverse,reverse_lazy
 from django.utils import timezone
 from django.db import transaction
+from django.db.models import Q
 from django.contrib.auth import authenticate,login,logout,update_session_auth_hash
 from django.contrib import messages
 from django.conf import settings
 from django.views.generic.edit import FormView
 from django.views import View
 from django.views.generic import (
-    DetailView,CreateView,UpdateView
+    ListView,DetailView,CreateView,UpdateView
 )
 from django.contrib.auth import get_user_model
 
-from .email import send_verification_mail_async
 from .tasks import send_verification_mail
 
 from .mixins import (
@@ -105,8 +105,31 @@ class ProfileView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         from_user = self.request.user
-        context['is_followed'] = Connection.objects.filter(from_user=from_user, to_user=self.user_instance).exists()
+        context['is_connected'] = Connection.objects.filter(
+                                            Q(from_user=from_user, to_user=self.user_instance)|
+                                            Q(from_user=self.user_instance, to_user=from_user),
+                                            status=Connection.ConnectionStatus.ACCEPTED
+                                        ).exists()
         return context
+
+class FriendListView(LoginRequiredMixin, ListView):
+    template_name = 'accounts/friends.html'
+    context_object_name = 'users'
+
+    def get_queryset(self):
+        friend_ids = Connection.objects.filter(
+            Q(from_user=self.request.user) | Q(to_user=self.request.user),
+            status=Connection.ConnectionStatus.ACCEPTED
+        ).values_list('from_user', 'to_user')
+
+        ids = set()
+        for from_id, to_id in friend_ids:
+            if from_id != self.request.user.id:
+                ids.add(from_id)
+            if to_id != self.request.user.id:
+                ids.add(to_id)
+
+        return User.objects.filter(id__in=ids)
 
 class ProfileUpdateView(LoginRequiredMixin,UpdateView):
     model = User
