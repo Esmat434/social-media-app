@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-
+{% load custom_tags %}
 {% block title %}
     User Profile - Social Network
 {% endblock %}
@@ -39,17 +39,25 @@
                             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ user.username }} {{ user.last_name }}</h1>
                             <p class="text-sm text-gray-500 dark:text-gray-400">{{ user.email}}</p>
                         </div>
-                        <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">{{ user.username }} is living in {{ user.address }} {{ user.city }} 🌍✨ | Coffee enthusiast ☕</p>
+                        <p class="text-sm text-gray-600 dark:text-gray-300 mt-1">{{ user.username }} is living in {{ user.address }} {{ user.city }} 🌍✨</p>
                     </div>
 
                     <div class="mt-4 sm:mt-0 flex space-x-2">
-                        {% if not request.user.is_authenticated %}
-                            {% if not is_followed %}
-                                <button id="add-friend-btn" data-username="{{ user.username }}" class="flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300">
+                        {% if not request.user.is_authenticated and user != request.user.username %}
+                            {% if not is_connected %}
+                                <button 
+                                    class="connect-btn flex items-center bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
+                                    data-url="{% url 'mvt_connection:follow-private-request' user.username %}"
+                                    data-user-id="{{ user.username }}">
                                     <i class="fas fa-user-plus mr-2"></i> Add Friend
                                 </button>
                             {% else %}
-                                <span style="color: red;">Connected</span>
+                                <button 
+                                    class="un-follow-btn flex items-center bg-indigo-600 hover:bg-indigo-700 text-danger font-bold py-2 px-4 rounded-lg transition duration-300"
+                                    data-url="{% url 'mvt_connection:un-follow' user.username %}"
+                                    data-user-id="{{ user.username }}">
+                                    Disconnect
+                                </button>
                             {% endif %}
                         {% endif %}
                         <button class="flex items-center bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-white font-bold py-2 px-4 rounded-lg transition duration-300">
@@ -61,7 +69,6 @@
                 <!-- Profile Stats & Navigation -->
                 <div class="mt-6 flex flex-wrap items-center justify-center sm:justify-start gap-y-2 gap-x-6 border-t border-gray-200 dark:border-gray-700 pt-4">
                     <a href="#" class="text-sm font-medium text-indigo-600 dark:text-indigo-400 border-b-2 border-indigo-600 dark:border-indigo-400 pb-2">Timeline</a>
-                    <a href="#" class="text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">About</a>
                     <a href="#" class="text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">Friends <span class="bg-gray-200 dark:bg-gray-700 rounded-full px-2 py-0.5 text-xs">129</span></a>
                      <div class="hidden sm:flex ml-auto items-center space-x-4 text-sm text-gray-500 dark:text-gray-400">
                         <div><strong>{{ user.post.count }}</strong> Posts</div>
@@ -180,32 +187,115 @@
 
 {% block script %}
 {{ block.super }}
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const username = "{{ user.username }}";  // مستقیم از Django Template
-    const btn = document.getElementById('add-friend-btn');
+    <script>
+        // Connect Button Fetch
+        document.addEventListener("DOMContentLoaded", function () {
 
-    btn.addEventListener('click', function () {
-        fetch(`/follow/${username}/`, {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': '{{ csrf_token }}',
-                'Content-Type': 'application/json'
-            },
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                alert('Friend request sent!');
-            } else {
-                alert(data.error || 'Something went wrong.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Request failed.');
+            document.body.addEventListener("click", function(event) {
+
+                const unFollowButton = event.target.closest(".connect-btn");
+            
+                if (!unFollowButton) {
+                    return;
+                }
+            
+                event.preventDefault();
+            
+                const url = unFollowButton.dataset.url;
+                const userId = unFollowButton.dataset.userId;
+                const csrftoken = getCookie('csrftoken');
+            
+                if (!url) {
+                    console.error("خطا: ویژگی data-url روی دکمه پیدا نشد.");
+                    return;
+                }
+            
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: JSON.stringify({ user_id: userId })
+                })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error('پاسخ شبکه صحیح نبود. وضعیت: ' + res.status);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    console.log("موفقیت:", data);
+                    location.reload();
+                })
+                .catch(err => {
+                    console.error("خطا در هنگام fetch:", err);
+                    alert("عملیات با خطا مواجه شد. لطفاً دوباره تلاش کنید.");
+                });
+            });
         });
-    });
-});
-</script>
+
+        // Un-Follow Button Fetch
+        document.addEventListener("DOMContentLoaded", function () {
+
+            document.body.addEventListener("click", function(event) {
+
+                const unFollowButton = event.target.closest(".un-follow-btn");
+            
+                if (!unFollowButton) {
+                    return;
+                }
+            
+                event.preventDefault();
+            
+                const url = unFollowButton.dataset.url;
+                const userId = unFollowButton.dataset.userId;
+                const csrftoken = getCookie('csrftoken');
+            
+                if (!url) {
+                    console.error("خطا: ویژگی data-url روی دکمه پیدا نشد.");
+                    return;
+                }
+            
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: JSON.stringify({ user_id: userId })
+                })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error('پاسخ شبکه صحیح نبود. وضعیت: ' + res.status);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    console.log("موفقیت:", data);
+                    location.reload();
+                })
+                .catch(err => {
+                    console.error("خطا در هنگام fetch:", err);
+                    alert("عملیات با خطا مواجه شد. لطفاً دوباره تلاش کنید.");
+                });
+            });
+        });
+
+        // گرفتن CSRF از کوکی (برای Django)
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
 {% endblock %}
