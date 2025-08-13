@@ -70,6 +70,8 @@ class EditPostView(CustomLoginRequiredMixin,UpdateView):
         if self.request.FILES:
             media_form = PostMediaForm(files=self.request.FILES, instance=media)
             if media_form.is_valid():
+                media_form = media_form.save(commit=False)
+                media_form.post = self.object
                 media_form.save()
             else:
                 return render(self.request, self.template_name, {
