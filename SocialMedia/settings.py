@@ -155,7 +155,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MAINTENANCE_MODE = False
 
 # Celery Denpendencies
-WORKER_POOL = 'solo'
+CELERY_WORKER_POOL = 'solo'
 CELERY_BROKER_URL = config('CELERY_BROKER_URL')  # توجه به نام سرویس redis در docker-compose
 CELERY_RESULT_BACKEND = config('CELERY_RESULT_BACKEND')
 CELERY_ACCEPT_CONTENT = ['json']
