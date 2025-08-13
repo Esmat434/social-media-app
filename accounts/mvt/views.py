@@ -15,7 +15,8 @@ from django.views.generic import (
 )
 from django.contrib.auth import get_user_model
 
-from .email import send_verification_mail
+from .email import send_verification_mail_async
+from .tasks import send_verification_mail
 
 from .mixins import (
     LoginRequiredMixin,LogoutRequiredMixin,AccountVerifiedBeforeLoginMixin
@@ -51,7 +52,7 @@ class RegisterView(LogoutRequiredMixin, CreateView):
                 domain = getattr(settings, 'SITE_DOMAIN', 'http://localhost:8000')
                 link = domain + reverse('mvt:account_verified', args=[token_instance.token])
 
-                send_verification_mail(
+                send_verification_mail.delay(
                     token_instance.user.email,
                     'Account Activation Token',
                     token_instance.user.username,
@@ -142,7 +143,7 @@ class CreateAccountVerifiedTokenView(LogoutRequiredMixin,FormView):
         domain = getattr(settings, 'SITE_DOMAIN', 'http://localhost:8000')
         link = domain + reverse('mvt:account_verified', args=[avt_token.token])
 
-        send_verification_mail(
+        send_verification_mail.delay(
             avt_token.user.email,
             'Account Activation Token',
             avt_token.user.username,
@@ -189,7 +190,7 @@ class CreateChangePasswordTokenView(LoginRequiredMixin,View):
         link = domain + reverse('mvt:change_password', args=[cpt_obj.token])
 
         # ارسال ایمیل
-        send_verification_mail(
+        send_verification_mail.delay(
             to=user.email,
             subject='Change Password Token',
             username=user.username,
@@ -250,7 +251,7 @@ class CreateForgotPasswordTokenView(LogoutRequiredMixin,FormView):
 
         domain = getattr(settings,'SITE_DOMAIN','http://localhost:8000')
         link = domain + reverse('mvt:forgot_password', args=[fpt_obj.token])
-        send_verification_mail(
+        send_verification_mail.delay(
             fpt_obj.user.email,
             'Forgot Password Token.',
             fpt_obj.user.username,link
