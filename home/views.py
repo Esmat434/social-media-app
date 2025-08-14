@@ -61,19 +61,26 @@ class NetworkListView(View):
         return render(request,'home/network.html',context=context)
 
     def get_connected_ids(self,request):
-        if request.user.is_authenticated:
-            connections = Connection.objects.filter(
-                (
-                    Q(to_user=request.user) | Q(from_user=request.user)
-                ) & (
-                    Q(status=Connection.ConnectionStatus.ACCEPTED) | Q(status=Connection.ConnectionStatus.PENDING)
-                )
+        if not request.user.is_authenticated:
+            return []
+        
+        connections = Connection.objects.filter(
+            (
+                Q(to_user=request.user) | Q(from_user=request.user)
+            ) & (
+                Q(status=Connection.ConnectionStatus.ACCEPTED) | Q(status=Connection.ConnectionStatus.PENDING)
             )
+        ).values_list('from_user','to_user')
+        
+        connected_ids = set()
 
-            from_user_ids = connections.values_list('from_user', flat=True)
-            to_user_ids = connections.values_list('to_user', flat=True)
-            return from_user_ids, to_user_ids
-        return [],[]
+        for from_user,to_user in connections:
+            if from_user != request.user.id:
+                connected_ids.add(from_user)
+            if to_user != request.user.id:
+                connected_ids.add(to_user)
+        
+        return connected_ids
     
     def get_invitation_users(self,request):
         if request.user.is_authenticated:
@@ -88,14 +95,16 @@ class NetworkListView(View):
     def get_other_network_users(self,request):
         near_network_list = self.get_near_network_users(request)
 
-        from_user_ids,to_user_ids = self.get_connected_ids(request)
+        connected_ids = self.get_connected_ids(request)
 
         near_network_ids = near_network_list.values_list('id', flat=True)
         
+        # Combine all IDs to be excluded
+        exclude_ids = set(near_network_ids) | connected_ids
+        
         other_network_list = User.objects.exclude(
-            Q(id__in=near_network_ids) |
-            Q(id__in=from_user_ids) |
-            Q(id__in=to_user_ids)
+            # Exclude users in near network, existing connections, AND the user themselves
+            Q(id__in=exclude_ids) | Q(id=request.user.id)
         )
 
         return other_network_list
