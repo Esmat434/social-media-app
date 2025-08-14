@@ -110,6 +110,11 @@ class ProfileView(LoginRequiredMixin, DetailView):
                                             Q(from_user=self.user_instance, to_user=from_user),
                                             status=Connection.ConnectionStatus.ACCEPTED
                                         ).exists()
+        context['friend_count'] = Connection.objects.filter(
+                                            Q(from_user=from_user)|
+                                            Q(to_user=from_user),
+                                            status=Connection.ConnectionStatus.ACCEPTED
+                                        ).count()
         return context
 
 class FriendListView(LoginRequiredMixin, ListView):
