@@ -164,3 +164,51 @@ class SearchPostSaveView(View):
         )
 
         return post_save
+
+class SearchFriendView(View):
+    def get(self,request):
+        
+        context = {
+            'users':self.get_users(request)
+        }
+
+        return render(request, 'accounts/friends.html', context=context)
+    
+    def get_all_connection(self, request):
+        connection_ids = Connection.objects.filter(
+            Q(from_user=request.user) |
+            Q(to_user=request.user),
+            status=Connection.ConnectionStatus.ACCEPTED
+        ).values_list('from_user', 'to_user')
+
+        result = set()
+        for from_user,to_user in connection_ids:
+            if from_user != request.user.id:
+                result.add(from_user)
+            if to_user != request.user.id:
+                result.add(to_user)
+        
+        return result
+
+    def get_users(self,request):
+        query = request.GET.get('q', '')
+        if not query:
+            return []
+        
+        connection_ids = self.get_all_connection(request)        
+        
+        watson_result = watson_search.filter(User, query).filter(
+            id__in=connection_ids
+        )
+        watson_result_ids = set(watson_result.values_list('id', flat=True))
+        
+        partial_result = User.objects.filter(
+                Q(username__icontains=query) |
+                Q(first_name__icontains=query) |
+                Q(last_name__icontains=query),
+                id__in=connection_ids, 
+            ).exclude(id__in=watson_result_ids)
+        
+        result = list(chain(watson_result, partial_result))
+
+        return result
