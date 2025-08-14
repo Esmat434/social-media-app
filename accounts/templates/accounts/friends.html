@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ارتباطات | شبکه اجتماعی</title>
+    <title>Communication | Social network</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -48,6 +48,7 @@
 </head>
 <body class="text-gray-900">
 
+    <!-- Header / Navbar - CORRECTED FOR RESPONSIVENESS AND BUTTON STYLE -->
     <header class="bg-white sticky top-0 z-50 border-b border-gray-200">
         <div class="container mx-auto px-2 sm:px-4">
             <div class="flex justify-between items-center py-2">
@@ -127,26 +128,42 @@
     <main class="container mx-auto px-4 mt-6 sm:mt-8 main-container">
         <div class="card p-5">
             <!-- Connections Grid -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {% for user in users %}
-                    <!-- Connection Card 1 -->
-                    <div class="connection-card border border-gray-200 rounded-lg p-4 flex flex-col items-center text-center">
-                        {% if user.avatar %}
-                            <img src="{{ user.avatar.url }}" alt="Profile Picture" class="w-24 h-24 rounded-full mb-3">
-                        {% else %}
-                            <img src="https://placehold.co/96x96/10b981/ffffff?text=A" alt="Profile Picture" class="w-24 h-24 rounded-full mb-3">
-                        {% endif %}    
-                        <h2 class="font-bold text-lg">{{ user.username }}</h2>
-                        <p class="text-sm text-gray-500 mb-4 h-10">{{ user.date_joined }}</p>
-                        <button 
-                            class="un-follow-btn w-full py-2 px-4 rounded-full font-semibold btn-secondary text-sm"
-                            data-url="{% url 'mvt_connection:un-follow' user.username %}"
-                            data-user-id="{{ user.username }}">
-                            Disconnect
-                        </button>
+            {% if users %}
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {% for user in users %}
+                        <!-- Connection Card 1 -->
+                        <div class="connection-card border border-gray-200 rounded-lg p-4 flex flex-col items-center text-center">
+                            {% if user.avatar %}
+                                <img src="{{ user.avatar.url }}" alt="Profile Picture" class="w-24 h-24 rounded-full mb-3">
+                            {% else %}
+                                <img src="https://placehold.co/96x96/10b981/ffffff?text=A" alt="Profile Picture" class="w-24 h-24 rounded-full mb-3">
+                            {% endif %}    
+                            <h2 class="font-bold text-lg">{{ user.username }}</h2>
+                            <p class="text-sm text-gray-500 mb-4 h-10">{{ user.date_joined }}</p>
+                            <button 
+                                class="un-follow-btn w-full py-2 px-4 rounded-full font-semibold btn-secondary text-sm"
+                                data-url="{% url 'mvt_connection:un-follow' user.username %}"
+                                data-user-id="{{ user.username }}">
+                                Disconnect
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <!-- Empty State Card Wrapper for Centering -->
+                <div class="flex justify-center">
+                    <div class="text-center py-16 px-6 bg-gray-50 rounded-lg border-2 border-dashed">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.084-1.28-.24-1.887M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.653.084-1.28.24-1.887m10.42-8.332a3 3 0 10-5.84 0 3 3 0 005.84 0zM7 11.832a3 3 0 10-5.84 0 3 3 0 005.84 0zM12 6a3 3 0 110-6 3 3 0 010 6z" />
+                        </svg>
+                        <h2 class="mt-4 text-xl font-bold text-gray-800">You have not yet established a connection.</h2>
+                        <p class="mt-2 text-gray-500">Expand your network by finding and connecting with new people.</p>
+                        <a href="{% url 'home:networks' %}" class="mt-6 inline-block bg-indigo-600 text-white font-semibold px-6 py-2 rounded-full hover:bg-indigo-700 transition-colors">
+                            Find people
+                        </a>
                     </div>
-                {% endfor %}
-            </div>
+                </div>
+            {% endif %}
         </div>
     </main>
     <script>
