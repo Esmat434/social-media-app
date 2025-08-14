@@ -20,3 +20,8 @@ class TestUrls:
         url = reverse('mvt_search:post_save_search')+'?q=test'
 
         assert url == '/search/saves/?q=test'
+    
+    def test_friend_search_url(self):
+        url = reverse('mvt_search:friend_search')+'?q=test'
+
+        assert url == '/search/friends/?q=test'
