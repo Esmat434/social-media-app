@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate,login,logout
+from django.db.models import Q
 
 from rest_framework import status
 from rest_framework.views import APIView
@@ -18,6 +19,10 @@ from accounts.models import (
 from .serializers import (
     UserSerializer,UpdateUserSerializer,LoginSerializer,ChangePasswordSerializer,
     ForgotPasswordSerializer
+)
+
+from connections.models import (
+    Connection
 )
 
 class RegisterAPIView(APIView):
@@ -91,6 +96,24 @@ class ProfileUpdateAPIView(APIView):
             return Response(serializer.data,status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+class FriendListAPIView(APIView):
+    def get(self, request):
+        friend_ids = Connection.objects.filter(
+            Q(from_user=request.user) | Q(to_user=request.user),
+            status=Connection.ConnectionStatus.ACCEPTED
+        ).values_list('from_user', 'to_user')
+
+        ids = set()
+        for from_id, to_id in friend_ids:
+            if from_id != self.request.user.id:
+                ids.add(from_id)
+            if to_id != self.request.user.id:
+                ids.add(to_id)
+
+        users = CustomUser.objects.filter(id__in=ids)
+        serializer = UserSerializer(users)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class ChangePasswordAPIView(APIView):
     permission_classes = [isAuthenticatedCustom]
