@@ -19,19 +19,18 @@
             <!-- Avatar Section with Dropdown -->
             <div class="flex items-center space-x-3">
                 <!-- Dropdown Menu Wrapper -->
-                <div class="relative inline-block text-left">
-                  <!-- Dropdown Button -->
-                  <button id="menuButton" type="button"
-                    class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
-                    onclick="toggleDropdown()">
-                    Menu
-                    <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                      stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                  
-                  {% if request.user.is_authenticated %}
+                {% if request.user.is_authenticated and request.user == profile_user %}
+                  <div class="relative inline-block text-left">
+                    <!-- Dropdown Button -->
+                    <button id="menuButton" type="button"
+                      class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
+                      onclick="toggleDropdown()">
+                      Menu
+                      <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
                         <!-- Dropdown Items -->
                         <div id="dropdownMenu"
                           class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
@@ -47,8 +46,8 @@
                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Logout</a>
                           </div>
                         </div>
-                  {% endif %}
-                </div>                      
+                  </div>                      
+                {% endif %}
 
                 <!-- Avatar Image -->
                 {% if user.avatar %}
