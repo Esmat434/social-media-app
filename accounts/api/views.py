@@ -112,7 +112,7 @@ class FriendListAPIView(APIView):
                 ids.add(to_id)
 
         users = CustomUser.objects.filter(id__in=ids)
-        serializer = UserSerializer(users)
+        serializer = UserSerializer(users, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 class ChangePasswordAPIView(APIView):
