@@ -105,16 +105,30 @@ class ProfileView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         from_user = self.request.user
+        
         context['is_connected'] = Connection.objects.filter(
-                                            Q(from_user=from_user, to_user=self.user_instance)|
+                                            Q(from_user=from_user, to_user=self.user_instance) |
                                             Q(from_user=self.user_instance, to_user=from_user),
                                             status=Connection.ConnectionStatus.ACCEPTED
                                         ).exists()
-        context['friend_count'] = Connection.objects.filter(
+        
+        context['is_pending'] = Connection.objects.filter(
+                                            Q(from_user=from_user, to_user=self.user_instance) |
+                                            Q(from_user=self.user_instance, to_user=from_user),
+                                            status=Connection.ConnectionStatus.PENDING
+                                        ).exists()
+        
+        friends = Connection.objects.filter(
                                             Q(from_user=from_user)|
                                             Q(to_user=from_user),
                                             status=Connection.ConnectionStatus.ACCEPTED
-                                        ).count()
+                                        ).values_list('from_user','to_user')
+        friend_ids = set()
+        for f1,f2 in friends:
+            friend_ids.add(f1 if f1 != self.request.user.id else f2)
+        
+        context['friend_count'] = len(friend_ids)
+        
         return context
 
 class FriendListView(LoginRequiredMixin, ListView):
