@@ -35,4 +35,9 @@ class TestUrls:
     def test_forgot_password_url(self):
         url = reverse('api:forgot_password')
 
-        assert url == f'/api/forgot_password/'
+        assert url == '/api/forgot_password/'
+    
+    def test_friends_url(self):
+        url = reverse('api:friends')
+
+        assert url == '/api/friends/'
