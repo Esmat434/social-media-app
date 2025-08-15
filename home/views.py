@@ -110,22 +110,27 @@ class NetworkListView(View):
         return other_network_list
     
     def get_connection_count(self,request):
-        if request.user.is_authenticated:
-            return Connection.objects.filter(
-                (
-                    Q(from_user=request.user) | Q(to_user=request.user)
-                ) & (
-                    Q(status=Connection.ConnectionStatus.ACCEPTED)
-                )
-            ).count()
-        return 0
+        if not request.user.is_authenticated:
+            return 0
+        friends = Connection.objects.filter(
+            (
+                Q(from_user=request.user) | Q(to_user=request.user)
+            ), 
+            status=Connection.ConnectionStatus.ACCEPTED
+        ).values_list('from_user','to_user')
+
+        friend_ids = set()
+        for f1,f2 in friends:
+            friend_ids.add(f1 if f1 != request.user.id else f2)
+        count = len(friend_ids)
+        return count
     
     def get_follower_count(self,request):
         if request.user.is_authenticated:
             return Connection.objects.filter(
-                to_user = request.user,
-                status = Connection.ConnectionStatus.ACCEPTED
-            ).count()
+                    to_user=request.user,
+                    status=Connection.ConnectionStatus.ACCEPTED
+                ).count()
         return 0
 
 class NotificationListView(View):
