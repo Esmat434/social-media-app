@@ -4,7 +4,7 @@ from rest_framework_simplejwt.views import (
 )
 from .views import (
     RegisterAPIView,LoginAPIView,LogoutAPIView,ProfileAPIView,ProfileUpdateAPIView,
-    ChangePasswordAPIView,ForgotPasswordAPIView
+    FriendListAPIView,ChangePasswordAPIView,ForgotPasswordAPIView
 )
 
 app_name = 'accounts'
@@ -20,6 +20,7 @@ urlpatterns = [
     path('logout/',LogoutAPIView.as_view(),name='logout'),
     path('profile/<int:pk>/',ProfileAPIView.as_view(),name='profile'),
     path('profile/<int:pk>/update/',ProfileUpdateAPIView.as_view(),name='profile-update'),
+    path('friends/', FriendListAPIView.as_view(), name='friends'),
     path('change_password/',ChangePasswordAPIView.as_view(),name='change_password'),
     path('forgot_password/',ForgotPasswordAPIView.as_view(),name='forgot_password'),
 
