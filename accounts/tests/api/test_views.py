@@ -25,6 +25,12 @@ def auth_client(user,client):
     client.defaults['HTTP_AUTHORIZATION'] = f'Bearer {access_token}'
     return client
 
+class SetUp:
+    @pytest.fixture(autouse=True)
+    def setUp(self,auth_client, user):
+        self.client = auth_client
+        self.user = user 
+
 @pytest.mark.django_db
 class TestRegisterAPIView:
 
@@ -60,13 +66,7 @@ class TestLoginAPIView:
 
         assert response.status_code == 200
 
-class TestLogoutAPIView:
-
-    @pytest.fixture(autouse=True)
-    def setUp(self,user,auth_client):
-        self.client = auth_client
-        self.user = user
-    
+class TestLogoutAPIView(SetUp):
     def test_logout_api_view(self):
         data = {
             'refresh':RefreshToken.for_user(self.user)
@@ -76,26 +76,14 @@ class TestLogoutAPIView:
 
         assert response.status_code == 205
 
-class TestProfileAPIView:
-
-    @pytest.fixture(autouse=True)
-    def setUp(self,user,auth_client):
-        self.client = auth_client
-        self.user = user
-
+class TestProfileAPIView(SetUp):
     def test_profile_api_view(self):
         url = reverse('api:profile', args=[self.user.id])
         response = self.client.get(url)
 
         assert response.status_code == 200
 
-class TestProfileUpdateAPIView:
-
-    @pytest.fixture(autouse=True)
-    def setUp(self,user,auth_client):
-        self.client=auth_client
-        self.user=user
-    
+class TestProfileUpdateAPIView(SetUp):
     def test_profile_update_api_view(self):
         data = {
             'username':'change'
@@ -109,13 +97,7 @@ class TestProfileUpdateAPIView:
 
         assert response.status_code == 200
 
-class TestChangePasswordAPIView:
-
-    @pytest.fixture(autouse=True)
-    def setUp(self,user,auth_client):
-        self.client = auth_client
-        self.user = user
-    
+class TestChangePasswordAPIView(SetUp):
     def test_change_password_api_view(self):
         data = {
             'password':'Change0000%',
@@ -141,5 +123,12 @@ class TestForgotPasswordAPIView:
         }
         url = reverse('api:forgot_password')
         response = self.client.post(url,data)
+
+        assert response.status_code == 200
+
+class TestFriendListAPIView(SetUp):
+    def test_get_method(self):
+        url = reverse('api:friends')
+        response = self.client.get(url)
 
         assert response.status_code == 200
