@@ -58,9 +58,11 @@
                     <p class="text-sm text-indigo-200">
                         Didn't receive the verification email?
                     </p>
-                    <button class="w-full mt-2 bg-pink-500/80 hover:bg-pink-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg transform hover:scale-105 transition duration-300 ease-in-out">
+                    <a href="{% url 'mvt:create_account_verify_token' %}">
+                      <button class="w-full mt-2 bg-pink-500/80 hover:bg-pink-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg transform hover:scale-105 transition duration-300 ease-in-out">
                         Resend Verification Email
-                    </button>
+                      </button>
+                    </a>
                 </div>
 
                 <!-- Back to Login Link -->
