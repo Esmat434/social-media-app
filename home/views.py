@@ -62,7 +62,7 @@ class NetworkListView(View):
 
     def get_connected_ids(self,request):
         if not request.user.is_authenticated:
-            return []
+            return set()
         
         connections = Connection.objects.filter(
             (
