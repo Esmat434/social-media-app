@@ -1,4 +1,4 @@
-FROM python:3.10-slim-buster
+FROM python:3.10-alpine
 
 ENV PYTHONWRITEBYTECODE=1
 ENV PYTHONBUFFERED=1
@@ -7,22 +7,21 @@ WORKDIR /src/app
 
 COPY requirements.txt .
 
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpq-dev \
-    libjpeg-dev \
-    zlib1g-dev \
-    libmysqlclient-dev \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache \
+    build-base \
+    mariadb-dev \
+    libjpeg-turbo-dev \
+    zlib-dev 
 
 RUN python -m pip install --upgrade pip && pip install -r requirements.txt
 
 COPY . .
 
-# 🔧 کپی هر دو entrypoint
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+# 🔧 کپی کردن entrypoint از پوشه جدید
+COPY docker_scripts/entrypoint.sh /entrypoint.sh 
 
-# پیش‌فرض: حالت production
+# اصلاح فرمت خطوط پایانی و اجرایی کردن فایل
+RUN sed -i 's/\r$//' /entrypoint.sh && \
+    chmod +x /entrypoint.sh
+
 ENTRYPOINT ["/entrypoint.sh"]
