@@ -26,7 +26,7 @@ services:
     container_name: social_media
     volumes:
       - ./:/src/app
-      - static:/src/app/static
+      - static:/src/app/staticfiles
       - media:/src/app/media
     depends_on:
       - db
@@ -51,7 +51,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./:/src/app
-      - static:/src/app/static
+      - static:/src/app/staticfiles
       - media:/src/app/media
 
 volumes:
