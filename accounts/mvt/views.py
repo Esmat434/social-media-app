@@ -80,7 +80,7 @@ class LoginView(AccountVerifiedBeforeLoginMixin,LogoutRequiredMixin,View):
             return redirect('/')
         else:
             messages.error(request,'Your username or password is incorrect.')
-            return render(request,'accounnts/login.html')
+            return render(request,'accounts/login.html')
 
 class LogoutView(LoginRequiredMixin,View):
     def get(self,request):
