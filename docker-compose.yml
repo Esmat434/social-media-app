@@ -24,6 +24,7 @@ services:
       context: .
     image: social_media
     container_name: social_media
+    command: gunicorn SocialMedia.wsgi:application --bind 0.0.0.0:8000
     volumes:
       - ./:/src/app
       - static:/src/app/staticfiles
