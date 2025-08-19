@@ -21,3 +21,12 @@ body {
     border-color: #db2777;
     /* pink-600 */
 }
+
+.message-container {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 1050;
+    /* بالاتر از بقیه اجزا */
+    width: 350px;
+}
