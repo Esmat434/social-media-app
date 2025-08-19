@@ -2,10 +2,13 @@
 
 set -e
 
-echo "📦 اجرای migrate..."
+echo "📦 Applying database migrations..."
 python manage.py migrate --noinput
 
-echo "🧱 اجرای collectstatic..."
+echo "🧱 Collecting static files..."
 python manage.py collectstatic --noinput
+
+echo "👤 Creating superuser if it doesn't exist..."
+python manage.py create_custom_superuser
 
 exec "$@"
