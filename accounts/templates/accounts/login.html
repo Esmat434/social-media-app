@@ -8,9 +8,78 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" xintegrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <link rel="stylesheet" href="{% static 'css/accounts/login.css' %}">
 </head>
 <body class="bg-gray-100 dark:bg-gray-900">
+    {% if form.errors %}
+        <div class="max-w-md mx-auto mt-6">
+          <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg shadow-md" role="alert">
+            <div class="flex items-start space-x-2">
+              <svg class="w-5 h-5 mt-1 text-red-600" fill="none" stroke="currentColor" stroke-width="2"
+                   viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M12 8v4m0 4h.01M21 12A9 9 0 113 12a9 9 0 0118 0z"/>
+              </svg>
+              <div>
+                <p class="font-bold">لطفاً خطاهای زیر را برطرف کنید:</p>
+                <ul class="mt-2 list-disc list-inside text-sm">
+                  {% for field in form %}
+                    {% for error in field.errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  {% endfor %}
+                  {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+    {% endif %}
+
+    {% if messages %}
+    <div class="message-container">
+        {% for message in messages %}
+            {% with message_tags=message.tags %}
+                {% if 'success' in message_tags %}
+                    {% with alert_class='alert-success' icon_class='fa-check-circle' %}
+                        <div class="alert {{ alert_class }} alert-dismissible fade show d-flex align-items-center shadow-sm" role="alert">
+                            <i class="fas {{ icon_class }} me-2"></i>
+                            <div>{{ message }}</div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endwith %}
+                {% elif 'error' in message_tags %}
+                    {% with alert_class='alert-danger' icon_class='fa-exclamation-triangle' %}
+                        <div class="alert {{ alert_class }} alert-dismissible fade show d-flex align-items-center shadow-sm" role="alert">
+                            <i class="fas {{ icon_class }} me-2"></i>
+                            <div>{{ message }}</div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endwith %}
+                {% elif 'warning' in message_tags %}
+                    {% with alert_class='alert-warning' icon_class='fa-exclamation-circle' %}
+                        <div class="alert {{ alert_class }} alert-dismissible fade show d-flex align-items-center shadow-sm" role="alert">
+                            <i class="fas {{ icon_class }} me-2"></i>
+                            <div>{{ message }}</div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endwith %}
+                {% else %}
+                    {% with alert_class='alert-info' icon_class='fa-info-circle' %}
+                        <div class="alert {{ alert_class }} alert-dismissible fade show d-flex align-items-center shadow-sm" role="alert">
+                            <i class="fas {{ icon_class }} me-2"></i>
+                            <div>{{ message }}</div>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endwith %}
+                {% endif %}
+            {% endwith %}
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-4">
         <div class="w-full max-w-md">
             <div class="bg-white/10 dark:bg-gray-800/20 form-container rounded-2xl shadow-2xl p-8 space-y-6">
