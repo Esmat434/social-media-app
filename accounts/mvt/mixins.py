@@ -23,7 +23,11 @@ class AccountVerifiedBeforeLoginMixin:
         if request.method == 'POST':
             username = request.POST.get('username')
 
-            user = get_object_or_404(User, username=username)
+            try:
+                user = User.objects.get(username=username)
+            except User.DoesNotExist:
+                messages.error(request, 'Your username or password is not correct.')
+                return render(request, 'accounts/login.html')
 
             if not getattr(user,'email_verified',False):
                 messages.error(request, 'Please verify your email before logging in.')
