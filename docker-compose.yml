@@ -26,14 +26,11 @@ services:
     container_name: social_media
     command: gunicorn SocialMedia.wsgi:application --bind 0.0.0.0:8000
     volumes:
-      - ./:/src/app
-      - static:/src/app/staticfiles
-      - media:/src/app/media
+      - static_volume:/src/app/staticfiles  
+      - media_volume:/src/app/media
     depends_on:
       - db
       - redis
-    ports:
-      - '8000:8000'
     env_file:
       - ./.env
     restart: unless-stopped
@@ -51,11 +48,22 @@ services:
       - ./.env
     restart: unless-stopped
     volumes:
-      - ./:/src/app
-      - static:/src/app/staticfiles
-      - media:/src/app/media
+      - static_volume:/src/app/staticfiles 
+      - media_volume:/src/app/media
+  
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    ports:
+      - "8080:80" 
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    depends_on:
+      - backend
+    restart: unless-stopped
 
 volumes:
   mysql:
-  static:
-  media:
+  static_volume:
+  media_volume:
