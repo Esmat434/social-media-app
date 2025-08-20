@@ -100,9 +100,17 @@
 
                 <!-- دکمه‌های ذخیره و حذف -->
                 <div class="d-grid gap-3">
-                    <button type="submit" class="btn btn-primary btn-lg fw-bold py-3 rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300">
-                        Save Changes
-                    </button>
+                    {% if request.user.is_authenticated %}
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold py-3 rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300">
+                            Save Changes
+                        </button>
+                    {% else %}
+                        <a href="{% url 'mvt:login' %}">
+                            <button type="button" class="btn btn-primary btn-lg fw-bold py-3 rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300">
+                                Save Changes
+                            </button>
+                        </a>
+                    {% endif %}
                 </div>
             </form>
             <form action="{% url 'mvt_posts:delete_post' form.instance.id %}" method="POST">

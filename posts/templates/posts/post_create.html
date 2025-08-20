@@ -109,9 +109,17 @@
 
                 <!-- دکمه ارسال -->
                 <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-primary btn-lg fw-bold py-3 rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300">
-                        Publish Post
-                    </button>
+                    {% if request.user.is_authenticated %}
+                        <button type="submit" class="btn btn-primary btn-lg fw-bold py-3 rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300">
+                            Publish Post
+                        </button>
+                    {% else %}
+                        <a href="{% url 'mvt:login' %}">
+                            <button type="button" class="btn btn-primary btn-lg fw-bold py-3 rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-300">
+                                Publish Post
+                            </button>
+                        </a>
+                    {% endif %}
                 </div>
 
             </form>
