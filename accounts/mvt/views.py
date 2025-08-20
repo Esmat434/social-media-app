@@ -49,7 +49,7 @@ class RegisterView(LogoutRequiredMixin, CreateView):
 
                 token_instance = AccountVerificationToken.objects.create(user=user)
 
-                domain = getattr(settings, 'SITE_DOMAIN', 'http://localhost:8000')
+                domain = getattr(settings, 'SITE_DOMAIN', 'http://localhost:8080')
                 link = domain + reverse('mvt:account_verified', args=[token_instance.token])
 
                 send_verification_mail.delay(
