@@ -2,7 +2,7 @@
 # Social Media Application Project README
 
 <br>
-![Social Media App Screenshot](./screenshots/social_media.png)
+![Social Media App Screenshot](https://raw.githubusercontent.com/Esmat434/social-media-app/main/screenshots/social_media.png)
 <br>
 
 ## About The Project
