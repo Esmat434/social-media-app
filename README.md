@@ -2,15 +2,13 @@
 # Social Media Application Project README
 
 <br>
-
-## About The Project
-This project is a comprehensive and dynamic social media application developed using the powerful Django framework and the Python programming language. The goal of this project is to provide a complete platform for users to connect, share content, and interact with one another. With its meticulous design and advanced algorithms, the application offers a smooth and intelligent user experience.
-
-<br><hr>
 <div align="center">
   <img src="./screenshots/social_media.png" alt="Database Diagram" width="80%" />
 </div>
-<br><hr>
+<br>
+
+## About The Project
+This project is a comprehensive and dynamic social media application developed using the powerful Django framework and the Python programming language. The goal of this project is to provide a complete platform for users to connect, share content, and interact with one another. With its meticulous design and advanced algorithms, the application offers a smooth and intelligent user experience.
 
 ## Key Features
 
@@ -79,7 +77,7 @@ docker-compose build
 docker-compose up -d
 ```
 
-After running the commands, the application will be accessible at [http://localhost:8000](http://localhost:8000).
+After running the commands, the application will be accessible at [http://localhost:8080](http://localhost:8080).
 
 ### Admin Panel Access
 You can log in to the Django admin panel with the following default credentials:
