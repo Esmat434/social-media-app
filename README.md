@@ -2,13 +2,15 @@
 # Social Media Application Project README
 
 <br>
+
+## About The Project
+This project is a comprehensive and dynamic social media application developed using the powerful Django framework and the Python programming language. The goal of this project is to provide a complete platform for users to connect, share content, and interact with one another. With its meticulous design and advanced algorithms, the application offers a smooth and intelligent user experience.
+
+<br>
 <div align="center">
   <img src="./screenshots/social_media.png" alt="Database Diagram" width="80%" />
 </div>
 <br>
-
-## About The Project
-This project is a comprehensive and dynamic social media application developed using the powerful Django framework and the Python programming language. The goal of this project is to provide a complete platform for users to connect, share content, and interact with one another. With its meticulous design and advanced algorithms, the application offers a smooth and intelligent user experience.
 
 ## Key Features
 
