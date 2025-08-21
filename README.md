@@ -2,7 +2,9 @@
 # Social Media Application Project README
 
 <br>
-![Social Media App Screenshot](https://github.com/Esmat434/social-media-app/blob/main/screenshots/social_media.png)
+<div align="center">
+  <img src="./screenshots/social_media.png" alt="Database Diagram" width="80%" />
+</div>
 <br>
 
 ## About The Project
